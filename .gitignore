@@ -5,6 +5,9 @@
 ## macOS
 .DS_Store
 
+## Project (we use Xcodegen)
+*.xcodeproj
+
 ## User settings
 xcuserdata/
 

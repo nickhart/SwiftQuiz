@@ -1,0 +1,124 @@
+# SwiftLint Configuration
+reporter: "xcode"
+
+# Include all Swift files
+included:
+  - TimeTracker/
+  - TimeTrackerTests/
+  - TimeTrackerUITests/
+
+# Exclude generated and dependency files
+excluded:
+  - Pods/
+  - .build/
+  - DerivedData/
+  - fastlane/
+  - .swiftpm/
+  - Carthage/
+  - "*.generated.swift"
+  - "*+Generated.swift"
+  - "*.g.swift"
+  - Package.resolved
+
+opt_in_rules:
+  - array_init # Prefer Array(repeating:count:) or [] over verbose init patterns
+  - closure_spacing # Enforce spacing before/after closure braces and in parameters
+  - contains_over_filter_count # Use .contains instead of filtering and checking .count > 0
+  - discouraged_none_name # Discourage naming optionals like `fooOrNone`
+  - empty_collection_literal # Prefer [] / [:] over Array() / Dictionary()
+  - explicit_init # Warn on redundant `.init` calls where type inference is clear
+  - fatal_error_message # Require a message in fatalError() for context
+  - first_where # Use .first(where:) instead of filtering then first
+  - joined_default_parameter # Avoid explicitly passing the default separator to joined()
+  - operator_usage_whitespace # Enforce spaces around operators for readability
+  - overridden_super_call # Require calling super in overriding methods where needed
+  - prefer_self_type_over_type_of_self # Prefer `Self` over `type(of: self)`
+  - redundant_nil_coalescing # Flag `foo ?? nil`
+  - sorted_first_last # Prefer `.min()`/`.max()` over sorting and taking first/last
+  - toggle_bool # Prefer `.toggle()` on Bool
+  - closure_end_indentation # Ensure the closing brace aligns with opening context
+  - collection_alignment # Align elements/keys in multi-line collections
+  - computed_accessors_order # Keep `get` before `set` in computed properties
+  - discouraged_optional_boolean # Prefer non-optional Bool or enums for tri-state logic
+  - empty_count # Prefer `.isEmpty` over `.count == 0`
+  - file_name # Match file names to primary type for discoverability
+  - file_types_order # Consistent ordering of types within a file (e.g., enums, classes)
+  - implicit_getter # Prefer explicit `get` when accessor has body/complexity
+  - missing_docs # (Optional) Require doc comments for public APIs
+  - nimble_operator # Prefer newer Nimble syntax over deprecated operators in tests
+  - pattern_matching_keywords # Encourage `where` and expressive pattern matching
+  - private_action # Limit @IBAction visibility where appropriate
+  - private_outlet # IBOutlets shouldn’t be public; prefer private(set) if needed
+  - redundant_type_annotation # Remove needless `: Type` where inference is obvious
+  - return_value_from_void_function # Don’t return values from functions declared as Void-returning
+  - unavailable_function # Specify @available annotations correctly
+  - unowned_variable_capture # Prefer `[weak self]` unless lifetime is guaranteed
+  - yoda_condition # Prefer `variable == constant` over `constant == variable`
+
+# Analyzer rules (rules that require full analysis)
+analyzer_rules:
+  - unused_import # Remove imports not referenced by the file
+
+# Disabled rules (relaxed for pre-production state)
+disabled_rules:
+  - todo # Allow TODOs (we enforce context via custom rule below)
+  - implicit_return # Permit implicit returns in short closures/functions for brevity
+  - multiline_arguments # Don’t force multiline argument style during iteration
+  - multiline_parameters # Don’t force multiline parameter style during iteration
+  - vertical_parameter_alignment_on_call # Don’t require strict vertical alignment in calls
+  - literal_expression_end_indentation # Relax indentation for line-wrapped literals
+  - nesting # Allow deeper nesting temporarily while prototyping
+  - unneeded_synthesized_initializer # Permit explicit init() even if synthesized
+
+# Rule configurations
+type_body_length:
+  warning: 300
+  error: 500
+
+file_length:
+  warning: 800 # Increased for educational playground files
+  error: 1200
+
+function_body_length:
+  warning: 150 # Increased for educational examples
+  error: 300
+
+identifier_name:
+  min_length:
+    warning: 1 # Allow single letter variables in examples
+    error: 1
+  max_length:
+    warning: 50
+    error: 70
+  excluded:
+    - id
+    - x
+    - y
+    - z
+    - i # Common loop variable
+    - j # Common nested loop variable
+    - k # Common third loop variable
+
+type_name:
+  min_length:
+    warning: 2 # Allow short type names like ID
+    error: 1
+  max_length:
+    warning: 50
+    error: 70
+  excluded:
+    - ID # Common identifier type alias
+  validates_start_with_lowercase: false # Allow test structs to start with uppercase
+
+file_name:
+  excluded:
+    - "*Tests.swift" # Test files exempt from file_name validation
+    - "CoreDataTestHelpers.swift" # Test helper files exempt from file_name validation
+
+# Custom rules for learning best practices
+custom_rules:
+  todo_with_context:
+    name: "TODO with Context"
+    regex: "TODO(?!:.*\\[)"
+    message: "TODOs should include context: TODO: [Context] Description"
+    severity: warning
