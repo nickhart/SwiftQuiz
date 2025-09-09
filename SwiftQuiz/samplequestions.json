@@ -1,0 +1,69 @@
+[
+    {
+        "id": "swift-001",
+        "type": "multipleChoice",
+        "question": "Which keyword is used to define a constant in Swift?",
+        "choices": ["let", "const", "val", "final"],
+        "answer": "let",
+        "explanation": "In Swift, 'let' is used to define a constant whose value cannot be changed.",
+        "difficulty": 1,
+        "tags": ["Swift", "Syntax", "Variables"],
+        "source": {
+            "title": "Swift Language Guide — Constants and Variables",
+            "url": "https://developer.apple.com/documentation/swift/constants_and_variables"
+        }
+    },
+    {
+        "id": "swiftui-001",
+        "type": "bool",
+        "question": "SwiftUI views must always be structs.",
+        "choices": ["True", "False"],
+        "answer": "True",
+        "explanation": "SwiftUI views are typically defined as structs conforming to the View protocol for value semantics and performance.",
+        "difficulty": 1,
+        "tags": ["SwiftUI", "Views", "Structs"],
+        "source": {
+            "title": "SwiftUI Essentials",
+            "url": "https://developer.apple.com/documentation/swiftui/view"
+        }
+    },
+    {
+        "id": "coredata-001",
+        "type": "shortAnswer",
+        "question": "What method is used to save changes in a managed object context?",
+        "answer": "save()",
+        "explanation": "You call `save()` on the NSManagedObjectContext to persist changes to the persistent store.",
+        "difficulty": 2,
+        "tags": ["CoreData", "Persistence", "NSManagedObjectContext"],
+        "source": {
+            "title": "Saving Changes",
+            "url": "https://developer.apple.com/documentation/coredata/using_core_data_with_swiftui"
+        }
+    },
+    {
+        "id": "swiftui-002",
+        "type": "freeform",
+        "question": "Explain the difference between @State and @Binding in SwiftUI, and when to use each.",
+        "answer": "Use @State to own and mutate a local piece of state in a view. Use @Binding when you want to pass a reference to state from a parent view.",
+        "explanation": "This helps reinforce your mental model of SwiftUI’s data flow. @Binding allows child views to mutate parent-owned state.",
+        "difficulty": 2,
+        "tags": ["SwiftUI", "State", "Data Flow"],
+        "source": {
+            "title": "SwiftUI Data Flow",
+            "url": "https://developer.apple.com/documentation/swiftui/binding"
+        }
+    },
+    {
+        "id": "swift-002",
+        "type": "freeform",
+        "question": "What are some common causes of retain cycles in Swift, and how can they be avoided?",
+        "answer": null,
+        "explanation": "Retain cycles occur when two objects hold strong references to each other. Use [weak self] or [unowned self] in closures to avoid them.",
+        "difficulty": 3,
+        "tags": ["Swift", "Memory Management", "ARC"],
+        "source": {
+            "title": "Strong Reference Cycles",
+            "url": "https://developer.apple.com/documentation/swift/arc"
+        }
+    }
+]
