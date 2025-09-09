@@ -5,12 +5,12 @@
 //  Created by Nick Hart on 9/9/25.
 //
 
-import SwiftUI
 import CoreData
+import SwiftUI
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    
+
     @FetchRequest(
         entity: Question.entity(),
         sortDescriptors: [],
@@ -18,37 +18,37 @@ struct ContentView: View {
         animation: .default
     )
     private var questions: FetchedResults<Question>
-    
+
     @State private var currentIndex = 0
-    
+
     var body: some View {
         VStack(spacing: 20) {
-            if questions.indices.contains(currentIndex) {
-                QuestionCardView(question: questions[currentIndex])
+            if self.questions.indices.contains(self.currentIndex) {
+                QuestionCardView(question: self.questions[self.currentIndex])
             } else {
                 Text("No questions available.")
             }
-            
+
             HStack {
                 Button("Dismiss") {
-                    // TODO: implement dismiss logic
+                    // implement dismiss logic
                 }
                 .buttonStyle(.bordered)
-                
+
                 Menu("Snooze") {
-                    Button("1 hour") { /* TODO */ }
-                    Button("2 hours") { /* TODO */ }
-                    Button("4 hours") { /* TODO */ }
-                    Button("8 hours") { /* TODO */ }
-                    Button("1 day") { /* TODO */ }
+                    Button("1 hour") { /* snooze 1 hour */ }
+                    Button("2 hours") { /* snooze 2 hours */ }
+                    Button("4 hours") { /* snooze 4 hours */ }
+                    Button("8 hours") { /* snooze 8 hours */ }
+                    Button("1 day") { /* snooze 24 hours */ }
                 }
                 .buttonStyle(.bordered)
-                
+
                 Button("Next") {
-                    if currentIndex + 1 < questions.count {
-                        currentIndex += 1
+                    if self.currentIndex + 1 < self.questions.count {
+                        self.currentIndex += 1
                     } else {
-                        currentIndex = 0
+                        self.currentIndex = 0
                     }
                 }
                 .buttonStyle(.borderedProminent)

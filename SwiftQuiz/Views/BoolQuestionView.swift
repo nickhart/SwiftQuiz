@@ -9,34 +9,36 @@ import SwiftUI
 
 struct BoolQuestionView: View {
     let question: Question?
-    @State private var selectedAnswer: String? = nil
-    
+    @State private var selectedAnswer: String?
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            if let question = question {
+            if let question {
                 Text(question.question ?? "")
                     .font(.headline)
-                
+
                 HStack(spacing: 20) {
                     ForEach(["True", "False"], id: \.self) { option in
                         Button(action: {
-                            selectedAnswer = option
-                        }) {
+                            self.selectedAnswer = option
+                        }, label: {
                             Text(option)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .background(selectedAnswer == option ? Color.blue.opacity(0.2) : Color.gray.opacity(0.1))
+                                .background(self.selectedAnswer == option ? Color.blue.opacity(0.2) : Color.gray
+                                    .opacity(0.1)
+                                )
                                 .cornerRadius(8)
-                        }
+                        })
                     }
                 }
-                
+
                 if let selected = selectedAnswer, let correct = question.answer {
                     Text(selected == correct ? "✅ Correct!" : "❌ Incorrect. Correct answer: \(correct)")
                         .foregroundColor(selected == correct ? .green : .red)
                         .padding(.top)
                 }
-                
+
                 if let explanation = question.explanation {
                     Text(explanation)
                         .font(.footnote)

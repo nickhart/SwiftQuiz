@@ -10,23 +10,23 @@ import SwiftUI
 struct QuestionCardView: View {
     var question: Question
     private var viewModel: QuestionCardViewModel
-    
+
     init(question: Question) {
         self.question = question
         self.viewModel = QuestionCardViewModel(question: question)
     }
-    
+
     var body: some View {
         Group {
-            switch viewModel.question?.questionTypeEnum {
+            switch self.viewModel.question?.questionTypeEnum {
             case .bool:
-                BoolQuestionView(question: viewModel.question)
+                BoolQuestionView(question: self.viewModel.question)
             case .multipleChoice:
-                MultipleChoiceQuestionView(question: viewModel.question)
+                MultipleChoiceQuestionView(question: self.viewModel.question)
             case .shortAnswer:
-                ShortAnswerQuestionView(question: viewModel.question)
+                ShortAnswerQuestionView(question: self.viewModel.question)
             case .freeform:
-                FreeformQuestionView(question: viewModel.question)
+                FreeformQuestionView(question: self.viewModel.question)
             case .none:
                 Text("No question available.")
             }

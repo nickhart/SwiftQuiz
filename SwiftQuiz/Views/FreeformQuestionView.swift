@@ -14,22 +14,22 @@ struct FreeformQuestionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            if let question = question {
+            if let question {
                 Text(question.question ?? "")
                     .font(.headline)
 
-                TextEditor(text: $userInput)
+                TextEditor(text: self.$userInput)
                     .frame(height: 120)
                     .padding(4)
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(8)
 
                 Button("Submit") {
-                    isSubmitted = true
+                    self.isSubmitted = true
                 }
                 .buttonStyle(.borderedProminent)
 
-                if isSubmitted {
+                if self.isSubmitted {
                     if let answer = question.answer {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("💡 Example Answer:")

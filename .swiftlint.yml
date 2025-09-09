@@ -3,9 +3,9 @@ reporter: "xcode"
 
 # Include all Swift files
 included:
-  - TimeTracker/
-  - TimeTrackerTests/
-  - TimeTrackerUITests/
+  - SwiftQuiz/
+  - SwiftQuizTests/
+  - SwiftQuizUITests/
 
 # Exclude generated and dependency files
 excluded:

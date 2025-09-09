@@ -5,8 +5,8 @@
 //  Created by Nick Hart on 9/9/25.
 //
 
-import SwiftUI
 import CoreData
+import SwiftUI
 
 struct ShortAnswerQuestionView: View {
     let question: Question?
@@ -15,23 +15,24 @@ struct ShortAnswerQuestionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            if let question = question {
+            if let question {
                 Text(question.question ?? "")
                     .font(.headline)
 
-                TextField("Your answer", text: $userInput, onCommit: {
-                    isSubmitted = true
+                TextField("Your answer", text: self.$userInput, onCommit: {
+                    self.isSubmitted = true
                 })
                 .textFieldStyle(RoundedBorderTextFieldStyle())
 
-                if isSubmitted, let correct = question.answer {
-                    let isCorrect = userInput.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == correct.lowercased()
+                if self.isSubmitted, let correct = question.answer {
+                    let isCorrect = self.userInput.trimmingCharacters(in: .whitespacesAndNewlines)
+                        .lowercased() == correct.lowercased()
                     Text(isCorrect ? "✅ Correct!" : "❌ Incorrect. Correct answer: \(correct)")
                         .foregroundColor(isCorrect ? .green : .red)
                         .padding(.top)
                 }
 
-                if isSubmitted, let explanation = question.explanation {
+                if self.isSubmitted, let explanation = question.explanation {
                     Text(explanation)
                         .font(.footnote)
                         .foregroundColor(.secondary)
@@ -54,5 +55,6 @@ struct ShortAnswerQuestionView: View {
     let result = try? context.fetch(request)
     let question = result?.first
     return ShortAnswerQuestionView(
-        question: question)
+        question: question
+    )
 }
