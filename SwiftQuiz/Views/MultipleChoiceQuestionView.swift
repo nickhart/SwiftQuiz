@@ -35,13 +35,12 @@ struct MultipleChoiceQuestionView: View {
                     Text(selected == correct ? "✅ Correct!" : "❌ Incorrect. Correct answer: \(correct)")
                         .foregroundColor(selected == correct ? .green : .red)
                         .padding(.top)
-                }
-
-                if let explanation = question.explanation {
-                    Text(explanation)
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                        .padding(.top)
+                    if let explanation = question.explanation {
+                        Text(explanation)
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+                            .padding(.top)
+                    }
                 }
             } else {
                 Text("No question available.")

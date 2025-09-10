@@ -52,7 +52,7 @@
   },
   {
     "id": "swift-004",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Bool' a Swift feature?",
     "choices": [
       "Yes",
@@ -89,7 +89,7 @@
   },
   {
     "id": "swift-006",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Type Inference' a Swift feature?",
     "choices": [
       "Yes",
@@ -143,7 +143,7 @@
   },
   {
     "id": "swift-009",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Trailing Closure' a Swift feature?",
     "choices": [
       "Yes",
@@ -214,7 +214,7 @@
   },
   {
     "id": "swift-013",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Default Args' a Swift feature?",
     "choices": [
       "Yes",
@@ -285,7 +285,7 @@
   },
   {
     "id": "swift-017",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Type Constraints' a Swift feature?",
     "choices": [
       "Yes",
@@ -305,7 +305,7 @@
   },
   {
     "id": "swift-018",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Definition' a Swift feature?",
     "choices": [
       "Yes",
@@ -495,7 +495,7 @@
   },
   {
     "id": "swift-029",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Set' a Swift feature?",
     "choices": [
       "Yes",
@@ -566,7 +566,7 @@
   },
   {
     "id": "swift-033",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'reduce' a Swift feature?",
     "choices": [
       "Yes",
@@ -620,7 +620,7 @@
   },
   {
     "id": "swift-036",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'switch' a Swift feature?",
     "choices": [
       "Yes",
@@ -708,7 +708,7 @@
   },
   {
     "id": "swift-041",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'break' a Swift feature?",
     "choices": [
       "Yes",
@@ -728,7 +728,7 @@
   },
   {
     "id": "swift-042",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'continue' a Swift feature?",
     "choices": [
       "Yes",
@@ -782,7 +782,7 @@
   },
   {
     "id": "swift-045",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Optional Binding' a Swift feature?",
     "choices": [
       "Yes",
@@ -853,7 +853,7 @@
   },
   {
     "id": "swift-049",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Logical Operators' a Swift feature?",
     "choices": [
       "Yes",
@@ -907,7 +907,7 @@
   },
   {
     "id": "swift-052",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'try!' a Swift feature?",
     "choices": [
       "Yes",
@@ -927,7 +927,7 @@
   },
   {
     "id": "swift-053",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'do-catch' a Swift feature?",
     "choices": [
       "Yes",
@@ -964,7 +964,7 @@
   },
   {
     "id": "swift-055",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'String' a Swift feature?",
     "choices": [
       "Yes",
@@ -1001,7 +1001,7 @@
   },
   {
     "id": "swift-057",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Double' a Swift feature?",
     "choices": [
       "Yes",
@@ -1055,7 +1055,7 @@
   },
   {
     "id": "swift-060",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Type Inference' a Swift feature?",
     "choices": [
       "Yes",
@@ -1092,7 +1092,7 @@
   },
   {
     "id": "swift-062",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Capture Lists' a Swift feature?",
     "choices": [
       "Yes",
@@ -1112,7 +1112,7 @@
   },
   {
     "id": "swift-063",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Trailing Closure' a Swift feature?",
     "choices": [
       "Yes",
@@ -1132,7 +1132,7 @@
   },
   {
     "id": "swift-064",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Escaping' a Swift feature?",
     "choices": [
       "Yes",
@@ -1186,7 +1186,7 @@
   },
   {
     "id": "swift-067",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Default Args' a Swift feature?",
     "choices": [
       "Yes",
@@ -1206,7 +1206,7 @@
   },
   {
     "id": "swift-068",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Inout' a Swift feature?",
     "choices": [
       "Yes",
@@ -1277,7 +1277,7 @@
   },
   {
     "id": "swift-072",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Definition' a Swift feature?",
     "choices": [
       "Yes",
@@ -1297,7 +1297,7 @@
   },
   {
     "id": "swift-073",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Conformance' a Swift feature?",
     "choices": [
       "Yes",
@@ -1317,7 +1317,7 @@
   },
   {
     "id": "swift-074",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Associated Types' a Swift feature?",
     "choices": [
       "Yes",
@@ -1439,7 +1439,7 @@
   },
   {
     "id": "swift-081",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Array' a Swift feature?",
     "choices": [
       "Yes",
@@ -1714,7 +1714,7 @@
   },
   {
     "id": "swift-097",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Optional Chaining' a Swift feature?",
     "choices": [
       "Yes",
@@ -1904,7 +1904,7 @@
   },
   {
     "id": "swift-108",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'throw' a Swift feature?",
     "choices": [
       "Yes",
@@ -1924,7 +1924,7 @@
   },
   {
     "id": "swift-109",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'String' a Swift feature?",
     "choices": [
       "Yes",
@@ -1944,7 +1944,7 @@
   },
   {
     "id": "swift-110",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Int' a Swift feature?",
     "choices": [
       "Yes",
@@ -2049,7 +2049,7 @@
   },
   {
     "id": "swift-116",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Capture Lists' a Swift feature?",
     "choices": [
       "Yes",
@@ -2154,7 +2154,7 @@
   },
   {
     "id": "swift-122",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Inout' a Swift feature?",
     "choices": [
       "Yes",
@@ -2174,7 +2174,7 @@
   },
   {
     "id": "swift-123",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Generic Functions' a Swift feature?",
     "choices": [
       "Yes",
@@ -2364,7 +2364,7 @@
   },
   {
     "id": "swift-134",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'mutating' a Swift feature?",
     "choices": [
       "Yes",
@@ -2401,7 +2401,7 @@
   },
   {
     "id": "swift-136",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Dictionary' a Swift feature?",
     "choices": [
       "Yes",
@@ -2540,7 +2540,7 @@
   },
   {
     "id": "swift-144",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'switch' a Swift feature?",
     "choices": [
       "Yes",
@@ -2611,7 +2611,7 @@
   },
   {
     "id": "swift-148",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'guard' a Swift feature?",
     "choices": [
       "Yes",
@@ -2631,7 +2631,7 @@
   },
   {
     "id": "swift-149",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'break' a Swift feature?",
     "choices": [
       "Yes",
@@ -2719,7 +2719,7 @@
   },
   {
     "id": "swift-154",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Force Unwrap' a Swift feature?",
     "choices": [
       "Yes",
@@ -2756,7 +2756,7 @@
   },
   {
     "id": "swift-156",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Nil-Coalescing' a Swift feature?",
     "choices": [
       "Yes",
@@ -2878,7 +2878,7 @@
   },
   {
     "id": "swift-163",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'String' a Swift feature?",
     "choices": [
       "Yes",
@@ -2898,7 +2898,7 @@
   },
   {
     "id": "swift-164",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Int' a Swift feature?",
     "choices": [
       "Yes",
@@ -2918,7 +2918,7 @@
   },
   {
     "id": "swift-165",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Double' a Swift feature?",
     "choices": [
       "Yes",
@@ -3057,7 +3057,7 @@
   },
   {
     "id": "swift-173",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Parameters' a Swift feature?",
     "choices": [
       "Yes",
@@ -3094,7 +3094,7 @@
   },
   {
     "id": "swift-175",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Default Args' a Swift feature?",
     "choices": [
       "Yes",
@@ -3182,7 +3182,7 @@
   },
   {
     "id": "swift-180",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Definition' a Swift feature?",
     "choices": [
       "Yes",
@@ -3236,7 +3236,7 @@
   },
   {
     "id": "swift-183",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Extensions' a Swift feature?",
     "choices": [
       "Yes",
@@ -3273,7 +3273,7 @@
   },
   {
     "id": "swift-185",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Some' a Swift feature?",
     "choices": [
       "Yes",
@@ -3378,7 +3378,7 @@
   },
   {
     "id": "swift-191",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'Set' a Swift feature?",
     "choices": [
       "Yes",
@@ -3415,7 +3415,7 @@
   },
   {
     "id": "swift-193",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'flatMap' a Swift feature?",
     "choices": [
       "Yes",
@@ -3435,7 +3435,7 @@
   },
   {
     "id": "swift-194",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'filter' a Swift feature?",
     "choices": [
       "Yes",
@@ -3472,7 +3472,7 @@
   },
   {
     "id": "swift-196",
-    "type": "bool",
+    "type": "multipleChoice",
     "question": "Is 'compactMap' a Swift feature?",
     "choices": [
       "Yes",

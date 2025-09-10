@@ -8,7 +8,6 @@
 import Foundation
 
 enum QuestionType: String, Codable {
-    case bool
     case multipleChoice
     case shortAnswer
     case freeform

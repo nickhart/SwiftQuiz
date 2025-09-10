@@ -1,0 +1,63 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "✅ Correct!" : {
+
+    },
+    "❌ Incorrect. Correct answer: %@" : {
+
+    },
+    "💡 Example Answer:" : {
+
+    },
+    "1 day" : {
+
+    },
+    "1 hour" : {
+
+    },
+    "2 hours" : {
+
+    },
+    "4 hours" : {
+
+    },
+    "8 hours" : {
+
+    },
+    "Confusing" : {
+
+    },
+    "Error loading questions: %@" : {
+
+    },
+    "Incorrect" : {
+
+    },
+    "Loading questions..." : {
+
+    },
+    "No question available." : {
+
+    },
+    "No questions available." : {
+
+    },
+    "Retry" : {
+
+    },
+    "Submit" : {
+
+    },
+    "Typo" : {
+
+    },
+    "Verify" : {
+
+    },
+    "Your answer" : {
+
+    }
+  },
+  "version" : "1.0"
+}

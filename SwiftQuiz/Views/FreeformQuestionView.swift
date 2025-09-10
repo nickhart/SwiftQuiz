@@ -24,10 +24,12 @@ struct FreeformQuestionView: View {
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(8)
 
-                Button("Submit") {
-                    self.isSubmitted = true
+                if !self.isSubmitted, !self.userInput.trimmingCharacters(in: .whitespaces).isEmpty {
+                    Button("Submit") {
+                        self.isSubmitted = true
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
-                .buttonStyle(.borderedProminent)
 
                 if self.isSubmitted {
                     if let answer = question.answer {

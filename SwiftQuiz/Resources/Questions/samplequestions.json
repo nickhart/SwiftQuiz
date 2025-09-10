@@ -15,7 +15,7 @@
     },
     {
         "id": "swiftui-001",
-        "type": "bool",
+        "type": "multipleChoice",
         "question": "SwiftUI views must always be structs.",
         "choices": ["True", "False"],
         "answer": "True",

@@ -35,7 +35,6 @@ struct ContentView: View {
                     ProgressView("Loading questions...")
                         .progressViewStyle(CircularProgressViewStyle())
                 }
-
             case let .error(message):
                 VStack {
                     Text("Error loading questions: \(message)")
@@ -44,40 +43,8 @@ struct ContentView: View {
                         self.viewModel.importQuestionsIfNeeded()
                     }
                 }
-
             case .loaded:
-                VStack(spacing: 20) {
-                    if self.questions.indices.contains(self.currentIndex) {
-                        QuestionCardView(question: self.questions[self.currentIndex])
-                    } else {
-                        Text("No questions available.")
-                    }
-
-                    HStack {
-                        Button("Dismiss") {
-                            // implement dismiss logic
-                        }
-                        .buttonStyle(.bordered)
-
-                        Menu("Snooze") {
-                            Button("1 hour") { /* snooze 1 hour */ }
-                            Button("2 hours") { /* snooze 2 hours */ }
-                            Button("4 hours") { /* snooze 4 hours */ }
-                            Button("8 hours") { /* snooze 8 hours */ }
-                            Button("1 day") { /* snooze 24 hours */ }
-                        }
-                        .buttonStyle(.bordered)
-
-                        Button("Next") {
-                            if self.currentIndex + 1 < self.questions.count {
-                                self.currentIndex += 1
-                            } else {
-                                self.currentIndex = 0
-                            }
-                        }
-                        .buttonStyle(.borderedProminent)
-                    }
-                }
+                QuizSessionView(questions: self.questions, currentIndex: self.$currentIndex)
             }
         }
         .padding()

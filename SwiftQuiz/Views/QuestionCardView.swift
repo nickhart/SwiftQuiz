@@ -19,8 +19,6 @@ struct QuestionCardView: View {
     var body: some View {
         Group {
             switch self.viewModel.question?.questionTypeEnum {
-            case .bool:
-                BoolQuestionView(question: self.viewModel.question)
             case .multipleChoice:
                 MultipleChoiceQuestionView(question: self.viewModel.question)
             case .shortAnswer:

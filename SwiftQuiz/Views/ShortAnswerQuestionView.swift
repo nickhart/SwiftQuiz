@@ -19,10 +19,15 @@ struct ShortAnswerQuestionView: View {
                 Text(question.question ?? "")
                     .font(.headline)
 
-                TextField("Your answer", text: self.$userInput, onCommit: {
-                    self.isSubmitted = true
-                })
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                TextField("Your answer", text: self.$userInput)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                if !self.isSubmitted, !self.userInput.trimmingCharacters(in: .whitespaces).isEmpty {
+                    Button("Submit") {
+                        self.isSubmitted = true
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
 
                 if self.isSubmitted, let correct = question.answer {
                     let isCorrect = self.userInput.trimmingCharacters(in: .whitespacesAndNewlines)
