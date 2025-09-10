@@ -5,26 +5,21 @@
 //  Created by Nick Hart on 9/9/25.
 //
 
+import CoreData
 import SwiftUI
 
 struct QuestionCardView: View {
-    var question: Question
-    private var viewModel: QuestionCardViewModel
-
-    init(question: Question) {
-        self.question = question
-        self.viewModel = QuestionCardViewModel(question: question)
-    }
+    @ObservedObject var viewModel: QuizSessionViewModel
 
     var body: some View {
         Group {
-            switch self.viewModel.question?.questionTypeEnum {
+            switch self.viewModel.currentQuestion?.questionTypeEnum {
             case .multipleChoice:
-                MultipleChoiceQuestionView(question: self.viewModel.question)
+                MultipleChoiceQuestionView(viewModel: self.viewModel)
             case .shortAnswer:
-                ShortAnswerQuestionView(question: self.viewModel.question)
+                ShortAnswerQuestionView(viewModel: self.viewModel)
             case .freeform:
-                FreeformQuestionView(question: self.viewModel.question)
+                FreeformQuestionView(viewModel: self.viewModel)
             case .none:
                 Text("No question available.")
             }
@@ -35,7 +30,18 @@ struct QuestionCardView: View {
 }
 
 #Preview {
-    let context = PersistenceController.preview.container.viewContext
-    let placeholderQuestion = Question(context: context)
-    QuestionCardView(question: placeholderQuestion)
+    @Previewable @State var viewModel: QuizSessionViewModel = {
+        let context = PersistenceController.preview.container.viewContext
+        let fetchRequest: NSFetchRequest<Question> = Question.fetchRequest()
+        fetchRequest.fetchLimit = 1
+        let previewQuestions = (try? context.fetch(fetchRequest)) ?? []
+
+        let vm = QuizSessionViewModel()
+        vm.setup(with: context)
+        vm.questions = previewQuestions
+        vm.currentIndex = 0
+        return vm
+    }()
+
+    QuestionCardView(viewModel: viewModel)
 }

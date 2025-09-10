@@ -11,13 +11,13 @@
         <attribute name="sourceURL" optional="YES" attributeType="String"/>
         <attribute name="tags" optional="YES" attributeType="Transformable"/>
         <attribute name="type" optional="YES" attributeType="String"/>
-        <relationship name="userAnswers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserAnswer" inverseName="question" inverseEntity="UserAnswer"/>
+        <relationship name="userAnswer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserAnswer" inverseName="question" inverseEntity="UserAnswer"/>
     </entity>
     <entity name="UserAnswer" representedClassName="UserAnswer" syncable="YES" codeGenerationType="class">
         <attribute name="answer" optional="YES" attributeType="String"/>
         <attribute name="isCorrect" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="questionID" optional="YES" attributeType="String"/>
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="question" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Question" inverseName="userAnswers" inverseEntity="Question"/>
+        <relationship name="question" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Question" inverseName="userAnswer" inverseEntity="Question"/>
     </entity>
 </model>

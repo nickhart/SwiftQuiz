@@ -11,7 +11,9 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
-    @StateObject private var viewModel: MainViewModel
+    @StateObject private var viewModel = MainViewModel()
+    @StateObject private var sessionViewModel = QuizSessionViewModel()
+
     @FetchRequest(
         entity: Question.entity(),
         sortDescriptors: [],
@@ -19,13 +21,6 @@ struct ContentView: View {
         animation: .default
     )
     private var questions: FetchedResults<Question>
-
-    @State private var currentIndex = 0
-
-    init() {
-        _viewModel =
-            StateObject(wrappedValue: MainViewModel(context: PersistenceController.shared.container.viewContext))
-    }
 
     var body: some View {
         Group {
@@ -40,20 +35,26 @@ struct ContentView: View {
                     Text("Error loading questions: \(message)")
                         .foregroundColor(.red)
                     Button("Retry") {
-                        self.viewModel.importQuestionsIfNeeded()
+                        self.viewModel
+                            .importQuestionsIfNeeded(using: self.viewContext)
                     }
                 }
             case .loaded:
-                QuizSessionView(questions: self.questions, currentIndex: self.$currentIndex)
+                QuizSessionView()
+                    .environmentObject(self.sessionViewModel)
             }
         }
         .padding()
         .onAppear {
-            self.viewModel.importQuestionsIfNeeded()
+            self.viewModel.importQuestionsIfNeeded(using: self.viewContext)
+            if self.sessionViewModel.context == nil {
+                self.sessionViewModel.setup(with: self.viewContext)
+            }
         }
     }
 }
 
 #Preview {
-    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    ContentView()
+        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }

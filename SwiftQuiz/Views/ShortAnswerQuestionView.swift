@@ -9,7 +9,14 @@ import CoreData
 import SwiftUI
 
 struct ShortAnswerQuestionView: View {
-    let question: Question?
+    @Environment(\.managedObjectContext) private var viewContext
+
+    @ObservedObject var viewModel: QuizSessionViewModel
+
+    var question: Question? {
+        self.viewModel.currentQuestion
+    }
+
     @State private var userInput: String = ""
     @State private var isSubmitted: Bool = false
 
@@ -52,14 +59,20 @@ struct ShortAnswerQuestionView: View {
 }
 
 #Preview {
-    let context = PersistenceController.preview.container.viewContext
-    let request = Question.fetchRequest()
-    request.predicate = NSPredicate(format: "type == %@", "shortAnswer")
-    request.fetchLimit = 1
+    @Previewable @State var viewModel: QuizSessionViewModel = {
+        let context = PersistenceController.preview.container.viewContext
+        let request = Question.fetchRequest()
+        request.predicate = NSPredicate(format: "type == %@", "shortAnswer")
+        request.fetchLimit = 1
 
-    let result = try? context.fetch(request)
-    let question = result?.first
-    return ShortAnswerQuestionView(
-        question: question
-    )
+        let result = try? context.fetch(request)
+        let question = result?.first
+        let vm = QuizSessionViewModel()
+        vm.setup(with: context)
+        vm.questions = [question].compactMap { $0 }
+        vm.currentIndex = 0
+        return vm
+    }()
+
+    ShortAnswerQuestionView(viewModel: viewModel)
 }

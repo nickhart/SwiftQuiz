@@ -18,19 +18,14 @@ enum QuestionLoadingState {
 class MainViewModel: ObservableObject {
     @Published var loadingState: QuestionLoadingState = .idle
 
-    private let viewContext: NSManagedObjectContext
-
-    init(context: NSManagedObjectContext) {
-        self.viewContext = context
-    }
-
-    func importQuestionsIfNeeded() {
+    func importQuestionsIfNeeded(using context: NSManagedObjectContext) {
         guard case .idle = self.loadingState else { return }
 
         self.loadingState = .loading
 
+        assert(context.persistentStoreCoordinator != nil)
         DispatchQueue.global(qos: .userInitiated).async {
-            let importer = QuestionImportService(context: self.viewContext)
+            let importer = QuestionImportService(context: context)
             guard let url = Bundle.main.url(forResource: "swift_questions", withExtension: "json") else {
                 DispatchQueue.main.async {
                     self.loadingState = .error("Missing swift_questions.json")

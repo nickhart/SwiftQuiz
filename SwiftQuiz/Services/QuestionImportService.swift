@@ -47,6 +47,7 @@ final class QuestionImportService {
                 fetchRequest.fetchLimit = 1
 
                 let existing = (try? self.context.fetch(fetchRequest))?.first
+                assert(self.context.persistentStoreCoordinator != nil)
                 let question = existing ?? Question(context: self.context)
 
                 question.id = codable.id

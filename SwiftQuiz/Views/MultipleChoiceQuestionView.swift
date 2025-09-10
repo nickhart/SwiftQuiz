@@ -8,12 +8,15 @@
 import SwiftUI
 
 struct MultipleChoiceQuestionView: View {
-    let question: Question?
+    @Environment(\.managedObjectContext) private var viewContext
+
+    @ObservedObject var viewModel: QuizSessionViewModel
+
     @State private var selectedAnswer: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            if let question {
+            if let question = viewModel.currentQuestion {
                 Text(question.question ?? "")
                     .font(.headline)
 
@@ -51,12 +54,20 @@ struct MultipleChoiceQuestionView: View {
 }
 
 #Preview {
-    let context = PersistenceController.preview.container.viewContext
-    let request = Question.fetchRequest()
-    request.predicate = NSPredicate(format: "type == %@", "multipleChoice")
-    request.fetchLimit = 1
+    @Previewable @State var viewModel: QuizSessionViewModel = {
+        let context = PersistenceController.preview.container.viewContext
+        let request = Question.fetchRequest()
+        request.predicate = NSPredicate(format: "type == %@", "multipleChoice")
+        request.fetchLimit = 1
 
-    let result = try? context.fetch(request)
-    let question = result?.first
-    return MultipleChoiceQuestionView(question: question)
+        let result = try? context.fetch(request)
+        let question = result?.first
+        let vm = QuizSessionViewModel()
+        vm.setup(with: context)
+        vm.questions = [question].compactMap { $0 }
+        vm.currentIndex = 0
+        return vm
+    }()
+
+    MultipleChoiceQuestionView(viewModel: viewModel)
 }

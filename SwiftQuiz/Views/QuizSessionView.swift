@@ -5,16 +5,19 @@
 //  Created by Nick Hart on 9/9/25.
 //
 
+import CoreData
 import SwiftUI
 
 struct QuizSessionView: View {
-    let questions: FetchedResults<Question>
-    @Binding var currentIndex: Int
+    @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject private var sessionViewModel: QuizSessionViewModel
+
+    @State private var showCopiedConfirmation = false
 
     var body: some View {
         VStack(spacing: 20) {
-            if self.questions.indices.contains(self.currentIndex) {
-                QuestionCardView(question: self.questions[self.currentIndex])
+            if self.sessionViewModel.currentQuestion != nil {
+                QuestionCardView(viewModel: self.sessionViewModel)
             } else {
                 Text("No questions available.")
             }
@@ -29,18 +32,35 @@ struct QuizSessionView: View {
 
                 SnoozeMenuButton()
 
-                FeedbackMenuButton(questionID: self.questions[self.currentIndex].id ?? "unknown")
+                FeedbackMenuButton(questionID: self.sessionViewModel.currentQuestion?.id ?? "unknown")
 
                 Button(action: {
-                    if self.currentIndex + 1 < self.questions.count {
-                        self.currentIndex += 1
-                    } else {
-                        self.currentIndex = 0
-                    }
+                    self.sessionViewModel.advanceToNextUnanswered()
                 }, label: {
                     Image(systemName: "arrow.right.circle")
                 })
                 .buttonStyle(.borderedProminent)
+
+                Button(action: {
+                    if let question = sessionViewModel.currentQuestion,
+                       let userAnswer = sessionViewModel.userAnswer {
+                        let prompt = EvaluationPrompt(
+                            question: question,
+                            userAnswer: userAnswer,
+                            agent: .manualCopyPaste
+                        ).renderPromptText()
+
+                        ClipboardService.copy(prompt)
+
+                        self.showCopiedConfirmation = true
+                    }
+                }, label: {
+                    Image(systemName: "brain")
+                })
+                .buttonStyle(.bordered)
+                .alert("Copied AI prompt to clipboard", isPresented: self.$showCopiedConfirmation) {
+                    Button("OK", role: .cancel) {}
+                }
             }
         }
     }

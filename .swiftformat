@@ -38,6 +38,7 @@
 --semicolons never
 --operatorfunc spaced
 --ranges no-space                     # Prefer 0..<n (no spaces)
+--trailingcommas always              # Add trailing commas to multiline collections
 
 # === Hygiene ===
 --stripunusedargs closure-only

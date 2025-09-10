@@ -26,6 +26,10 @@ extension Question {
         set { tags = newValue as NSObject }
     }
 
+    var primaryTag: String? {
+        self.tagList.first
+    }
+
     // Enum conversion for `type`
     var questionTypeEnum: QuestionType? {
         guard let raw = type else { return nil }

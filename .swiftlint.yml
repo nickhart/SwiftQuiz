@@ -36,6 +36,7 @@ opt_in_rules:
   - redundant_nil_coalescing # Flag `foo ?? nil`
   - sorted_first_last # Prefer `.min()`/`.max()` over sorting and taking first/last
   - toggle_bool # Prefer `.toggle()` on Bool
+  - trailing_comma # Enforce trailing commas in multiline collections/parameters
   - closure_end_indentation # Ensure the closing brace aligns with opening context
   - collection_alignment # Align elements/keys in multi-line collections
   - computed_accessors_order # Keep `get` before `set` in computed properties
@@ -48,9 +49,9 @@ opt_in_rules:
   - nimble_operator # Prefer newer Nimble syntax over deprecated operators in tests
   - pattern_matching_keywords # Encourage `where` and expressive pattern matching
   - private_action # Limit @IBAction visibility where appropriate
-  - private_outlet # IBOutlets shouldn’t be public; prefer private(set) if needed
+  - private_outlet # IBOutlets shouldn't be public; prefer private(set) if needed
   - redundant_type_annotation # Remove needless `: Type` where inference is obvious
-  - return_value_from_void_function # Don’t return values from functions declared as Void-returning
+  - return_value_from_void_function # Don't return values from functions declared as Void-returning
   - unavailable_function # Specify @available annotations correctly
   - unowned_variable_capture # Prefer `[weak self]` unless lifetime is guaranteed
   - yoda_condition # Prefer `variable == constant` over `constant == variable`
@@ -116,6 +117,10 @@ file_name:
     - "CoreDataTestHelpers.swift" # Test helper files exempt from file_name validation
 
 # Custom rules for learning best practices
+# Trailing comma configuration
+trailing_comma:
+  mandatory_comma: true  # Enforce trailing commas on multiline collections
+
 custom_rules:
   todo_with_context:
     name: "TODO with Context"
