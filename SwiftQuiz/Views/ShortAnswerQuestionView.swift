@@ -23,17 +23,26 @@ struct ShortAnswerQuestionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if let question {
-                Text(question.question ?? "")
-                    .font(.headline)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(question.id ?? "unknown")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                    Text(question.question ?? "")
+                        .font(.headline)
+                }
 
                 TextField("Your answer", text: self.$userInput)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .onChange(of: self.userInput) { _, newValue in
+                        self.viewModel.currentUserInput = newValue
+                    }
 
-                if !self.isSubmitted, !self.userInput.trimmingCharacters(in: .whitespaces).isEmpty {
+                if !self.isSubmitted {
                     Button("Submit") {
                         self.isSubmitted = true
                     }
                     .buttonStyle(.borderedProminent)
+                    .disabled(self.userInput.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
 
                 if self.isSubmitted, let correct = question.answer {
@@ -55,6 +64,15 @@ struct ShortAnswerQuestionView: View {
             }
         }
         .padding()
+        .onAppear {
+            // Sync with view model when view appears (e.g., question changes)
+            self.userInput = self.viewModel.currentUserInput
+        }
+        .onChange(of: self.viewModel.currentQuestion?.id) { _, _ in
+            // Clear local input when question changes
+            self.userInput = ""
+            self.isSubmitted = false
+        }
     }
 }
 

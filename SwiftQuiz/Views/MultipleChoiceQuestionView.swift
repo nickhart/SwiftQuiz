@@ -17,14 +17,22 @@ struct MultipleChoiceQuestionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if let question = viewModel.currentQuestion {
-                Text(question.question ?? "")
-                    .font(.headline)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(question.id ?? "unknown")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                    Text(question.question ?? "")
+                        .font(.headline)
+                }
 
                 ForEach(question.choiceList, id: \.self) { choice in
                     Button(action: {
                         self.selectedAnswer = choice
                     }, label: {
                         Text(choice)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.8)
+                            .multilineTextAlignment(.leading)
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(self.selectedAnswer == choice ? Color.blue.opacity(0.2) : Color.gray
@@ -50,6 +58,11 @@ struct MultipleChoiceQuestionView: View {
             }
         }
         .padding()
+        .id(self.viewModel.currentQuestion?.id) // Fix animation delay for multiple choice selections
+        .onChange(of: self.viewModel.currentQuestion?.id) { _, _ in
+            // Clear selection when question changes
+            self.selectedAnswer = nil
+        }
     }
 }
 

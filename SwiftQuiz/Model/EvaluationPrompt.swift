@@ -38,10 +38,16 @@ struct EvaluationPrompt {
         }
 
         lines.append("")
-        lines.append("Evaluate the user answer and reply with:")
-        lines.append("- Score (Complete & Correct, Partial, Incomplete or Incorrect)")
-        lines.append("- Explanation of your evaluation")
-        lines.append("- How you would improve or rewrite the answer (if needed)")
+        lines.append("Evaluate the user answer and respond with valid JSON in this exact format:")
+        lines.append("")
+        lines.append("{")
+        lines.append("  \"score\": \"Complete & Correct\" | \"Partial\" | \"Incomplete\" | \"Incorrect\",")
+        lines.append("  \"explanation\": \"Your detailed explanation of why you gave this score\",")
+        lines.append("  \"improvements\": \"Specific suggestions for how to improve the answer\",")
+        lines.append("  \"correct_answer\": \"What a complete, correct answer should include\"")
+        lines.append("}")
+        lines.append("")
+        lines.append("Important: Respond ONLY with valid JSON. Do not include any text before or after the JSON.")
 
         return lines.joined(separator: "\n")
     }

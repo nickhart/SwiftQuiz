@@ -19,20 +19,29 @@ struct FreeformQuestionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if let question = viewModel.currentQuestion {
-                Text(question.question ?? "")
-                    .font(.headline)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(question.id ?? "unknown")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                    Text(question.question ?? "")
+                        .font(.headline)
+                }
 
                 TextEditor(text: self.$userInput)
                     .frame(height: 120)
                     .padding(4)
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(8)
+                    .onChange(of: self.userInput) { _, newValue in
+                        self.viewModel.currentUserInput = newValue
+                    }
 
-                if !self.isSubmitted, !self.userInput.trimmingCharacters(in: .whitespaces).isEmpty {
+                if !self.isSubmitted {
                     Button("Submit") {
                         self.isSubmitted = true
                     }
                     .buttonStyle(.borderedProminent)
+                    .disabled(self.userInput.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
 
                 if self.isSubmitted {
@@ -60,6 +69,15 @@ struct FreeformQuestionView: View {
             }
         }
         .padding()
+        .onAppear {
+            // Sync with view model when view appears (e.g., question changes)
+            self.userInput = self.viewModel.currentUserInput
+        }
+        .onChange(of: self.viewModel.currentQuestion?.id) { _, _ in
+            // Clear local input when question changes
+            self.userInput = ""
+            self.isSubmitted = false
+        }
     }
 }
 

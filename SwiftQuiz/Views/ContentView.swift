@@ -48,7 +48,7 @@ struct ContentView: View {
         .onAppear {
             self.viewModel.importQuestionsIfNeeded(using: self.viewContext)
             if self.sessionViewModel.context == nil {
-                self.sessionViewModel.setup(with: self.viewContext)
+                self.sessionViewModel.setup(with: self.viewContext, mainViewModel: self.viewModel)
             }
         }
     }

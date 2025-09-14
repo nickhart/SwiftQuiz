@@ -9,6 +9,7 @@ settings:
   base:
     SWIFT_VERSION: 5.10
     IPHONEOS_DEPLOYMENT_TARGET: 17.0
+    MACOSX_DEPLOYMENT_TARGET: 14.0
     MARKETING_VERSION: 1.0
     CURRENT_PROJECT_VERSION: 1
 
@@ -55,6 +56,34 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
 
+  SwiftQuizMac:
+    type: application
+    platform: macOS
+    sources:
+      - SwiftQuiz/App/
+      - SwiftQuiz/Model/
+      - SwiftQuiz/Services/
+      - SwiftQuiz/Views/
+      - SwiftQuiz/ViewModels/
+      - SwiftQuiz/Resources
+    info:
+      path: SwiftQuiz/Resources/Info.plist
+      properties:
+        CFBundleName: SwiftQuiz
+        CFBundleDisplayName: SwiftQuiz
+        CFBundleIdentifier: com.nickhart.SwiftQuizMac
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        LSMinimumSystemVersion: "14.0"
+    entitlements:
+      path: SwiftQuiz/Resources/SwiftQuizMac.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nickhart.SwiftQuizMac
+        ENABLE_PREVIEWS: true
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+
   SwiftQuizTests:
     type: bundle.unit-test
     platform: iOS
@@ -96,5 +125,14 @@ schemes:
       targets:
         - SwiftQuizTests
         - SwiftQuizUITests
+    archive:
+      config: Release
+
+  SwiftQuizMac:
+    build:
+      targets:
+        SwiftQuizMac: all
+    run:
+      config: Debug
     archive:
       config: Release

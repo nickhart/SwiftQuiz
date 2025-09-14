@@ -5,6 +5,7 @@
 //  Created by Nick Hart on 9/9/25.
 //
 
+import Combine
 import CoreData
 import SwiftUI
 
@@ -12,34 +13,45 @@ class QuizSessionViewModel: ObservableObject {
     @Published var questions: [Question] = []
     @Published var currentIndex: Int = 0
     @Published var userAnswer: UserAnswer?
+    @Published var currentQuestion: Question?
+    @Published var currentUserInput: String = ""
 
     var context: NSManagedObjectContext?
+    private var cancellables = Set<AnyCancellable>()
 
-    var currentQuestion: Question? {
-        get {
-            guard self.questions.indices.contains(self.currentIndex) else { return nil }
-            return self.questions[self.currentIndex]
-        }
-        set {
-            if let newQuestion = newValue,
-               let index = questions.firstIndex(of: newQuestion) {
-                self.currentIndex = index
-            }
-        }
-    }
+    // Configurable retry threshold for incorrect answers (in hours)
+    private let retryThresholdHours: TimeInterval = 48
 
     var hasRemainingQuestions: Bool {
-        self.currentQuestion != nil
+        !self.getAvailableQuestions().isEmpty
     }
 
     init() {
         // Context will be injected later
     }
 
+    func setup(with context: NSManagedObjectContext, mainViewModel: MainViewModel) {
+        self.context = context
+        self.fetchQuestions()
+        self.selectNextQuestion()
+
+        // Observe loading state changes to refetch questions when import completes
+        mainViewModel.$loadingState
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] loadingState in
+                if case .loaded = loadingState {
+                    self?.refetchQuestionsAfterImport()
+                }
+            }
+            .store(in: &self.cancellables)
+    }
+
+    // Backward compatibility method
     func setup(with context: NSManagedObjectContext) {
         self.context = context
         self.fetchQuestions()
-        self.advanceToNextUnanswered()
+        self.selectNextQuestion()
+        print("Warning: Using setup without MainViewModel - loading state observation disabled")
     }
 
     func fetchQuestions() {
@@ -71,16 +83,74 @@ class QuizSessionViewModel: ObservableObject {
             print("Failed to save answer: \(error)")
         }
 
-        self.advanceToNextUnanswered()
+        self.selectNextQuestion()
+    }
+
+    private func getAvailableQuestions() -> [Question] {
+        guard let context else { return [] }
+
+        // Primary pool: questions never answered
+        let unansweredRequest: NSFetchRequest<Question> = Question.fetchRequest()
+        unansweredRequest.predicate = NSPredicate(format: "userAnswer == nil")
+
+        do {
+            let unansweredQuestions = try context.fetch(unansweredRequest)
+            if !unansweredQuestions.isEmpty {
+                return unansweredQuestions
+            }
+        } catch {
+            print("Error fetching unanswered questions: \(error)")
+        }
+
+        // Secondary pool: questions answered incorrectly more than retryThresholdHours ago
+        let retryThreshold = Date().addingTimeInterval(-self.retryThresholdHours * 3600)
+        let retryRequest: NSFetchRequest<Question> = Question.fetchRequest()
+        retryRequest.predicate = NSPredicate(
+            format: "userAnswer.isCorrect == NO AND userAnswer.timestamp < %@",
+            retryThreshold as NSDate
+        )
+
+        do {
+            let retryQuestions = try context.fetch(retryRequest)
+            return retryQuestions
+        } catch {
+            print("Error fetching retry questions: \(error)")
+            return []
+        }
+    }
+
+    func selectNextQuestion() {
+        let availableQuestions = self.getAvailableQuestions()
+
+        guard !availableQuestions.isEmpty else {
+            print("No questions available")
+            self.currentQuestion = nil
+            self.userAnswer = nil
+            self.currentUserInput = ""
+            return
+        }
+
+        // Randomly select from available questions
+        let selectedQuestion = availableQuestions.randomElement()
+        self.currentQuestion = selectedQuestion
+        self.userAnswer = nil
+        self.currentUserInput = "" // Clear input when changing questions
+
+        // Update the questions array and currentIndex for compatibility with existing UI
+        if let selected = selectedQuestion,
+           let index = self.questions.firstIndex(of: selected) {
+            self.currentIndex = index
+        }
     }
 
     func advanceToNextUnanswered() {
-        let nextIndex = self.questions.firstIndex(where: { $0.userAnswer == nil })
-        if let index = nextIndex {
-            self.currentIndex = index
-            self.userAnswer = nil
-        } else {
-            print("No more unanswered questions")
-        }
+        self.selectNextQuestion()
+    }
+
+    private func refetchQuestionsAfterImport() {
+        print("Refetching questions after import completion...")
+        self.fetchQuestions()
+        self.selectNextQuestion()
+        print("Questions refetched: \(self.questions.count) available")
     }
 }

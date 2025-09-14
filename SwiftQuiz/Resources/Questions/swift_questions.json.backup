@@ -35,7 +35,7 @@
   },
   {
     "id": "swift-003",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Double in Swift?",
     "choices": null,
     "answer": null,
@@ -72,7 +72,7 @@
   },
   {
     "id": "swift-005",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Tuples in Swift?",
     "choices": null,
     "answer": null,
@@ -268,7 +268,7 @@
   },
   {
     "id": "swift-016",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Generic Types in Swift?",
     "choices": null,
     "answer": null,
@@ -359,7 +359,7 @@
   },
   {
     "id": "swift-021",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Extensions in Swift?",
     "choices": null,
     "answer": null,
@@ -393,7 +393,7 @@
   },
   {
     "id": "swift-023",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Some in Swift?",
     "choices": null,
     "answer": null,
@@ -427,7 +427,7 @@
   },
   {
     "id": "swift-025",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of static in Swift?",
     "choices": null,
     "answer": null,
@@ -444,7 +444,7 @@
   },
   {
     "id": "swift-026",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of mutating in Swift?",
     "choices": null,
     "answer": null,
@@ -478,7 +478,7 @@
   },
   {
     "id": "swift-028",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Dictionary in Swift?",
     "choices": null,
     "answer": null,
@@ -515,7 +515,7 @@
   },
   {
     "id": "swift-030",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of map in Swift?",
     "choices": null,
     "answer": null,
@@ -532,7 +532,7 @@
   },
   {
     "id": "swift-031",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of flatMap in Swift?",
     "choices": null,
     "answer": null,
@@ -586,7 +586,7 @@
   },
   {
     "id": "swift-034",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of compactMap in Swift?",
     "choices": null,
     "answer": null,
@@ -691,7 +691,7 @@
   },
   {
     "id": "swift-040",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of guard in Swift?",
     "choices": null,
     "answer": null,
@@ -873,7 +873,7 @@
   },
   {
     "id": "swift-050",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of try in Swift?",
     "choices": null,
     "answer": null,
@@ -1169,7 +1169,7 @@
   },
   {
     "id": "swift-066",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Return Types in Swift?",
     "choices": null,
     "answer": null,
@@ -1337,7 +1337,7 @@
   },
   {
     "id": "swift-075",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Extensions in Swift?",
     "choices": null,
     "answer": null,
@@ -1354,7 +1354,7 @@
   },
   {
     "id": "swift-076",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Any in Swift?",
     "choices": null,
     "answer": null,
@@ -1405,7 +1405,7 @@
   },
   {
     "id": "swift-079",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of static in Swift?",
     "choices": null,
     "answer": null,
@@ -1510,7 +1510,7 @@
   },
   {
     "id": "swift-085",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of flatMap in Swift?",
     "choices": null,
     "answer": null,
@@ -1527,7 +1527,7 @@
   },
   {
     "id": "swift-086",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of filter in Swift?",
     "choices": null,
     "answer": null,
@@ -1561,7 +1561,7 @@
   },
   {
     "id": "swift-088",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of compactMap in Swift?",
     "choices": null,
     "answer": null,
@@ -1595,7 +1595,7 @@
   },
   {
     "id": "swift-090",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of switch in Swift?",
     "choices": null,
     "answer": null,
@@ -1819,7 +1819,7 @@
   },
   {
     "id": "swift-103",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Logical Operators in Swift?",
     "choices": null,
     "answer": null,
@@ -1836,7 +1836,7 @@
   },
   {
     "id": "swift-104",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of try in Swift?",
     "choices": null,
     "answer": null,
@@ -1964,7 +1964,7 @@
   },
   {
     "id": "swift-111",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Double in Swift?",
     "choices": null,
     "answer": null,
@@ -2120,7 +2120,7 @@
   },
   {
     "id": "swift-120",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Return Types in Swift?",
     "choices": null,
     "answer": null,
@@ -2137,7 +2137,7 @@
   },
   {
     "id": "swift-121",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Default Args in Swift?",
     "choices": null,
     "answer": null,
@@ -2194,7 +2194,7 @@
   },
   {
     "id": "swift-124",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Generic Types in Swift?",
     "choices": null,
     "answer": null,
@@ -2211,7 +2211,7 @@
   },
   {
     "id": "swift-125",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Type Constraints in Swift?",
     "choices": null,
     "answer": null,
@@ -2245,7 +2245,7 @@
   },
   {
     "id": "swift-127",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Conformance in Swift?",
     "choices": null,
     "answer": null,
@@ -2262,7 +2262,7 @@
   },
   {
     "id": "swift-128",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Associated Types in Swift?",
     "choices": null,
     "answer": null,
@@ -2296,7 +2296,7 @@
   },
   {
     "id": "swift-130",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Any in Swift?",
     "choices": null,
     "answer": null,
@@ -2421,7 +2421,7 @@
   },
   {
     "id": "swift-137",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Set in Swift?",
     "choices": null,
     "answer": null,
@@ -2438,7 +2438,7 @@
   },
   {
     "id": "swift-138",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of map in Swift?",
     "choices": null,
     "answer": null,
@@ -2472,7 +2472,7 @@
   },
   {
     "id": "swift-140",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of filter in Swift?",
     "choices": null,
     "answer": null,
@@ -2523,7 +2523,7 @@
   },
   {
     "id": "swift-143",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of if in Swift?",
     "choices": null,
     "answer": null,
@@ -2668,7 +2668,7 @@
   },
   {
     "id": "swift-151",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Optional Chaining in Swift?",
     "choices": null,
     "answer": null,
@@ -2685,7 +2685,7 @@
   },
   {
     "id": "swift-152",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Nil Coalescing in Swift?",
     "choices": null,
     "answer": null,
@@ -2702,7 +2702,7 @@
   },
   {
     "id": "swift-153",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Optional Binding in Swift?",
     "choices": null,
     "answer": null,
@@ -2776,7 +2776,7 @@
   },
   {
     "id": "swift-157",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Logical Operators in Swift?",
     "choices": null,
     "answer": null,
@@ -2793,7 +2793,7 @@
   },
   {
     "id": "swift-158",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of try in Swift?",
     "choices": null,
     "answer": null,
@@ -2810,7 +2810,7 @@
   },
   {
     "id": "swift-159",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of try? in Swift?",
     "choices": null,
     "answer": null,
@@ -2955,7 +2955,7 @@
   },
   {
     "id": "swift-167",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Tuples in Swift?",
     "choices": null,
     "answer": null,
@@ -3006,7 +3006,7 @@
   },
   {
     "id": "swift-170",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Capture Lists in Swift?",
     "choices": null,
     "answer": null,
@@ -3023,7 +3023,7 @@
   },
   {
     "id": "swift-171",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Trailing Closure in Swift?",
     "choices": null,
     "answer": null,
@@ -3077,7 +3077,7 @@
   },
   {
     "id": "swift-174",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Return Types in Swift?",
     "choices": null,
     "answer": null,
@@ -3114,7 +3114,7 @@
   },
   {
     "id": "swift-176",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of Inout in Swift?",
     "choices": null,
     "answer": null,
@@ -3509,7 +3509,7 @@
   },
   {
     "id": "swift-198",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of switch in Swift?",
     "choices": null,
     "answer": null,
@@ -3526,7 +3526,7 @@
   },
   {
     "id": "swift-199",
-    "type": "freeform",
+    "type": "multipleChoice",
     "question": "What is the purpose of for-in in Swift?",
     "choices": null,
     "answer": null,

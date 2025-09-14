@@ -3,6 +3,7 @@
     <entity name="Question" representedClassName="Question" syncable="YES" codeGenerationType="class">
         <attribute name="answer" optional="YES" attributeType="String"/>
         <attribute name="choices" optional="YES" attributeType="Transformable"/>
+        <attribute name="contentHash" optional="YES" attributeType="String"/>
         <attribute name="difficulty" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="explanation" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>
