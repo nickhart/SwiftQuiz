@@ -25,7 +25,7 @@ struct QuestionCardView: View {
             }
         }
         .padding()
-        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemBackground)).shadow(radius: 4))
+        .background(RoundedRectangle(cornerRadius: 12).fill(.background).shadow(radius: 4))
     }
 }
 

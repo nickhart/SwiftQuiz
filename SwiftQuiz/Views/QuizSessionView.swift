@@ -91,7 +91,7 @@ struct QuizSessionView: View {
                 .padding(.horizontal)
             }
             .padding(.vertical, 12)
-            .background(Color(.systemBackground))
+            .background(.background)
         }
     }
 }

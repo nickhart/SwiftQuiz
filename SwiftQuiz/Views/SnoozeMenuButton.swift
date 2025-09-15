@@ -8,16 +8,48 @@
 import SwiftUI
 
 struct SnoozeMenuButton: View {
+    @State private var showSnoozePopover = false
+
     var body: some View {
-        Menu {
-            Button("1 hour") { /* snooze 1 hour */ }
-            Button("2 hours") { /* snooze 2 hours */ }
-            Button("4 hours") { /* snooze 4 hours */ }
-            Button("8 hours") { /* snooze 8 hours */ }
-            Button("1 day") { /* snooze 24 hours */ }
-        } label: {
+        Button(action: {
+            self.showSnoozePopover = true
+        }, label: {
             Image(systemName: "alarm")
-        }
+        })
         .buttonStyle(.bordered)
+        .popover(isPresented: self.$showSnoozePopover) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Snooze Options")
+                    .font(.headline)
+                    .padding(.bottom, 4)
+
+                Button("1 hour") {
+                    self.showSnoozePopover = false
+                    // snooze 1 hour
+                }
+
+                Button("2 hours") {
+                    self.showSnoozePopover = false
+                    // snooze 2 hours
+                }
+
+                Button("4 hours") {
+                    self.showSnoozePopover = false
+                    // snooze 4 hours
+                }
+
+                Button("8 hours") {
+                    self.showSnoozePopover = false
+                    // snooze 8 hours
+                }
+
+                Button("1 day") {
+                    self.showSnoozePopover = false
+                    // snooze 24 hours
+                }
+            }
+            .padding()
+            .frame(minWidth: 120)
+        }
     }
 }

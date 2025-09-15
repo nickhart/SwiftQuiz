@@ -29,6 +29,7 @@ struct ShortAnswerQuestionView: View {
                         .foregroundColor(.secondary)
                     Text(question.question ?? "")
                         .font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 TextField("Your answer", text: self.$userInput)

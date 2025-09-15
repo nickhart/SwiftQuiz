@@ -8,7 +8,7 @@
 import CoreData
 import SwiftUI
 
-enum QuestionLoadingState {
+enum QuestionLoadingState: Equatable {
     case idle
     case loading
     case loaded

@@ -23,6 +23,7 @@ struct MultipleChoiceQuestionView: View {
                         .foregroundColor(.secondary)
                     Text(question.question ?? "")
                         .font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 ForEach(question.choiceList, id: \.self) { choice in

@@ -4,6 +4,21 @@
     "💡 Example Answer:" : {
 
     },
+    "1.0" : {
+
+    },
+    "200 Swift Questions" : {
+
+    },
+    "About" : {
+
+    },
+    "App Version" : {
+
+    },
+    "Daily Reminder" : {
+
+    },
     "Error loading questions: %@" : {
 
     },
@@ -11,6 +26,18 @@
 
     },
     "No questions available." : {
+
+    },
+    "Notifications Not Authorized" : {
+
+    },
+    "Questions" : {
+
+    },
+    "Report Issue" : {
+
+    },
+    "Snooze Options" : {
 
     }
   },

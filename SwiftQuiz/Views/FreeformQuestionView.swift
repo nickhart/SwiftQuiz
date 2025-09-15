@@ -25,6 +25,7 @@ struct FreeformQuestionView: View {
                         .foregroundColor(.secondary)
                     Text(question.question ?? "")
                         .font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 TextEditor(text: self.$userInput)
