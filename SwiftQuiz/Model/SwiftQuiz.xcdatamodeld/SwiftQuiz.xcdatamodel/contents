@@ -21,4 +21,11 @@
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="question" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Question" inverseName="userAnswer" inverseEntity="Question"/>
     </entity>
+    <entity name="Settings" representedClassName="Settings" syncable="YES" codeGenerationType="class">
+        <attribute name="aiProvider" optional="YES" attributeType="String" defaultValueString="None"/>
+        <attribute name="claudeAPIKeyRef" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="NO" attributeType="String" defaultValueString="user_settings"/>
+        <attribute name="lastModified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="openAIAPIKeyRef" optional="YES" attributeType="String"/>
+    </entity>
 </model>

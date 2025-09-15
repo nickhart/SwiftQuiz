@@ -77,12 +77,16 @@ struct SwiftQuizApp: App {
 
     let persistenceController = PersistenceController.shared
     @StateObject private var notificationService = NotificationService.shared
+    @StateObject private var settingsService = SettingsService.shared
+    @StateObject private var aiService = AIService.shared
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, self.persistenceController.container.viewContext)
                 .environmentObject(self.notificationService)
+                .environmentObject(self.settingsService)
+                .environmentObject(self.aiService)
                 .task {
                     await self.notificationService.checkAuthorizationStatus()
                 }

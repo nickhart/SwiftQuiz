@@ -11,10 +11,12 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var notificationService: NotificationService
+    @EnvironmentObject private var aiService: AIService
 
     @StateObject private var viewModel = MainViewModel()
     @StateObject private var sessionViewModel = QuizSessionViewModel()
     @State private var showSettings = false
+    @State private var showOnboarding = !UserDefaults.standard.bool(forKey: "has_completed_onboarding")
 
     @FetchRequest(
         entity: Question.entity(),
@@ -67,7 +69,20 @@ struct ContentView: View {
                 .sheet(isPresented: self.$showSettings) {
                     SettingsView()
                         .environmentObject(self.notificationService)
+                        .environmentObject(self.aiService)
                 }
+            #if os(iOS)
+                .fullScreenCover(isPresented: self.$showOnboarding) {
+                    OnboardingView()
+                        .environmentObject(self.aiService)
+                }
+            #elseif os(macOS)
+                .sheet(isPresented: self.$showOnboarding) {
+                    OnboardingView()
+                        .environmentObject(self.aiService)
+                        .frame(minWidth: 600, minHeight: 700)
+                }
+            #endif
                 .onAppear {
                     self.viewModel.importQuestionsIfNeeded(using: self.viewContext)
                     if self.sessionViewModel.context == nil {

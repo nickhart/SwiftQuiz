@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "•" : {
+
+    },
     "💡 Example Answer:" : {
 
     },
@@ -13,13 +16,58 @@
     "About" : {
 
     },
+    "Active" : {
+
+    },
+    "AI Assistant" : {
+
+    },
+    "AI Provider" : {
+
+    },
+    "AI-Powered Quiz Feedback" : {
+
+    },
+    "API Key" : {
+
+    },
+    "API Key Setup" : {
+
+    },
     "App Version" : {
+
+    },
+    "Choose Claude or OpenAI above to enable AI-powered feedback on your quiz answers." : {
+
+    },
+    "Choose Your AI Assistant" : {
+
+    },
+    "Claude API Key" : {
 
     },
     "Daily Reminder" : {
 
     },
+    "Enter your %@ API key to enable AI feedback" : {
+
+    },
     "Error loading questions: %@" : {
+
+    },
+    "Help & Support" : {
+
+    },
+    "How to get your API key:" : {
+
+    },
+    "iCloud Sync" : {
+
+    },
+    "Learn Swift with AI-powered feedback" : {
+
+    },
+    "No AI Provider Selected" : {
 
     },
     "No question available." : {
@@ -31,13 +79,43 @@
     "Notifications Not Authorized" : {
 
     },
+    "OpenAI API Key" : {
+
+    },
+    "Please provide your Claude API key to use AI feedback. Get your API key from console.anthropic.com" : {
+
+    },
+    "Please provide your OpenAI API key to use AI feedback. Get your API key from platform.openai.com" : {
+
+    },
     "Questions" : {
 
     },
     "Report Issue" : {
 
     },
+    "Select an AI provider for personalized feedback" : {
+
+    },
+    "Setup Complete!" : {
+
+    },
     "Snooze Options" : {
+
+    },
+    "Stored securely in Keychain and synced via iCloud" : {
+
+    },
+    "SwiftQuiz can provide intelligent feedback on your answers using AI. Please provide your API key below to enable this feature." : {
+
+    },
+    "This will reset all your preferences including AI settings, notifications, and onboarding status. This action cannot be undone." : {
+
+    },
+    "Welcome to SwiftQuiz" : {
+
+    },
+    "You're ready to start learning Swift with AI-powered feedback" : {
 
     }
   },
