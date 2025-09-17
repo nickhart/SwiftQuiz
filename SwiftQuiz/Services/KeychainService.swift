@@ -31,12 +31,21 @@ final class KeychainService {
         // First, try to delete any existing item
         try? self.delete(key)
 
+        let accessibility: CFString
+        #if os(macOS)
+            // On macOS, use less restrictive access to avoid password prompts during development
+            accessibility = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        #else
+            // On iOS, use more secure access
+            accessibility = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+        #endif
+
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: self.serviceName,
             kSecAttrAccount as String: key,
             kSecValueData as String: data,
-            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+            kSecAttrAccessible as String: accessibility,
         ]
 
         let status = SecItemAdd(query as CFDictionary, nil)

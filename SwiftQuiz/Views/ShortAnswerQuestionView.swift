@@ -38,12 +38,20 @@ struct ShortAnswerQuestionView: View {
                         self.viewModel.currentUserInput = newValue
                     }
 
-                if !self.isSubmitted {
-                    Button("Submit") {
-                        self.isSubmitted = true
+                HStack(spacing: 12) {
+                    if !self.isSubmitted {
+                        Button("Submit") {
+                            self.viewModel.submitAnswer(self.userInput)
+                            self.isSubmitted = true
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(self.userInput.trimmingCharacters(in: .whitespaces).isEmpty)
+                    } else {
+                        Button("Next Question") {
+                            self.viewModel.selectNextQuestion()
+                        }
+                        .buttonStyle(.borderedProminent)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(self.userInput.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
 
                 if self.isSubmitted, let correct = question.answer {

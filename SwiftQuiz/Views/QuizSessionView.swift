@@ -7,6 +7,12 @@
 
 import CoreData
 import SwiftUI
+#if canImport(UIKit)
+    import UIKit
+#endif
+#if canImport(AppKit)
+    import AppKit
+#endif
 
 // swiftlint:disable file_types_order
 
@@ -40,25 +46,16 @@ struct QuizSessionView: View {
                 Divider()
 
                 HStack(spacing: 16) {
-                    Button(action: {
-                        // implement dismiss logic
-                    }, label: {
-                        Image(systemName: "xmark.circle")
-                    })
-                    .buttonStyle(.bordered)
-
-                    SnoozeMenuButton()
-
                     FeedbackMenuButton(questionID: self.sessionViewModel.currentQuestion?.id ?? "unknown")
 
                     Button(action: {
                         withAnimation(.easeInOut(duration: 0.3)) {
-                            self.sessionViewModel.advanceToNextUnanswered()
+                            self.sessionViewModel.skipCurrentQuestion()
                         }
                     }, label: {
-                        Image(systemName: "arrow.right.circle")
+                        Label("Skip", systemImage: "arrow.right.circle")
                     })
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
 
                     Button(action: {
                         self.handleAIButtonTap()
@@ -67,7 +64,7 @@ struct QuizSessionView: View {
                             ProgressView()
                                 .scaleEffect(0.8)
                         } else {
-                            Image(systemName: "brain")
+                            Label("AI Help", systemImage: "brain")
                         }
                     })
                     .buttonStyle(.bordered)
@@ -172,6 +169,7 @@ struct QuizSessionView: View {
         // Set the answer text and timestamp
         userAnswer.answer = userAnswerText
         userAnswer.timestamp = Date()
+        userAnswer.interactionTypeEnum = .answered
 
         // Determine if the answer is correct by analyzing AI result
         // We'll look for positive indicators in the AI response
@@ -221,27 +219,165 @@ struct QuizSessionView: View {
 struct AIEvaluationSheet: View {
     let result: String
     @Environment(\.dismiss) private var dismiss
+    @State private var copyButtonText = "Copy"
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text(self.result)
+                    // Clean feedback text
+                    Text(self.cleanedResult)
+                        .font(.body)
+                        .lineSpacing(4)
                         .padding()
+                        .background(Color.secondary.opacity(0.1))
+                        .cornerRadius(12)
+                        .textSelection(.enabled) // Make text selectable
+
+                    // Copy and share buttons for easy sharing
+                    HStack(spacing: 12) {
+                        Spacer()
+
+                        // Share button as alternative
+                        Button(action: {
+                            self.shareText(self.cleanedResult)
+                        }, label: {
+                            Label("Share", systemImage: "square.and.arrow.up")
+                        })
+                        .buttonStyle(.bordered)
+
+                        // Direct copy button
+                        Button(action: {
+                            guard self.copyButtonText == "Copy" else { return }
+
+                            print("🎯 Copy button tapped")
+                            self.copyToClipboard(self.cleanedResult)
+
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                self.copyButtonText = "Copied!"
+                            }
+
+                            // Reset button text after 2 seconds
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    self.copyButtonText = "Copy"
+                                }
+                            }
+                        }, label: {
+                            Label(self.copyButtonText, systemImage: "doc.on.doc")
+                        })
+                        .buttonStyle(.bordered)
+                        .disabled(self.copyButtonText == "Copied!")
+                    }
                 }
+                .padding()
             }
-            .navigationTitle("AI Evaluation")
+            .navigationTitle("AI Feedback")
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
             #endif
                 .toolbar {
-                    ToolbarItem(placement: .automatic) {
+                    ToolbarItem(placement: .confirmationAction) {
                         Button("Done") {
                             self.dismiss()
                         }
                     }
                 }
         }
+    }
+
+    // Clean up the AI response by removing any prompt artifacts
+    private var cleanedResult: String {
+        var cleaned = self.result
+
+        // Remove common prompt artifacts
+        let artifactsToRemove = [
+            "Here is my evaluation of the student's answer:",
+            "**Evaluation:**",
+            "Evaluation:",
+            "**Response:**",
+            "Response:",
+            "**Feedback:**",
+            "Feedback:",
+            "Here's my feedback:",
+            "My evaluation:",
+        ]
+
+        for artifact in artifactsToRemove {
+            cleaned = cleaned.replacingOccurrences(of: artifact, with: "")
+        }
+
+        // Clean up extra whitespace and formatting
+        cleaned = cleaned.trimmingCharacters(in: .whitespacesAndNewlines)
+        cleaned = cleaned.replacingOccurrences(of: "\\n\\n+", with: "\\n\\n", options: .regularExpression)
+
+        // Check for broken interpolation (literal \(variable) patterns)
+        if cleaned.contains("\\(userAnswer)") || cleaned.contains("\\(correctAnswer)") || cleaned
+            .contains("\\(question)") {
+            return "The AI response had technical issues. Please try asking for feedback again."
+        }
+
+        // If the response looks like a template, show a fallback message
+        if cleaned.contains("placeholder") || cleaned.contains("template") {
+            return "The AI response contained template formatting. Please try asking for feedback again."
+        }
+
+        return cleaned.isEmpty ? self.result : cleaned
+    }
+
+    private func copyToClipboard(_ text: String) {
+        let preview = text.prefix(50)
+        print("🔗 Attempting to copy text: \\(preview)...")
+
+        #if os(iOS)
+            UIPasteboard.general.string = text
+            print("📋 iOS: Text copied to clipboard")
+        #elseif os(macOS)
+            let pasteboard = NSPasteboard.general
+            pasteboard.clearContents()
+            let success = pasteboard.setString(text, forType: .string)
+            print("📋 macOS: Copy success = \\(success)")
+        #endif
+
+        // Verify the copy worked
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            #if os(iOS)
+                let copiedText = UIPasteboard.general.string
+                let preview = copiedText?.prefix(50) ?? "nil"
+                print("✅ Verification - iOS clipboard contains: \\(preview)")
+            #elseif os(macOS)
+                let copiedText = NSPasteboard.general.string(forType: .string)
+                let preview = copiedText?.prefix(50) ?? "nil"
+                print("✅ Verification - macOS clipboard contains: \\(preview)")
+            #endif
+        }
+    }
+
+    private func shareText(_ text: String) {
+        #if os(iOS)
+            let activityVC = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first,
+               let rootViewController = window.rootViewController {
+                // For iPad, set popover presentation
+                if let popover = activityVC.popoverPresentationController {
+                    popover.sourceView = rootViewController.view
+                    popover.sourceRect = CGRect(
+                        x: rootViewController.view.bounds.midX,
+                        y: rootViewController.view.bounds.midY,
+                        width: 0,
+                        height: 0
+                    )
+                    popover.permittedArrowDirections = []
+                }
+
+                rootViewController.present(activityVC, animated: true)
+            }
+        #elseif os(macOS)
+            // On macOS, just copy to clipboard as sharing is more complex
+            self.copyToClipboard(text)
+        #endif
     }
 }
 

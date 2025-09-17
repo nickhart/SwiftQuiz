@@ -70,10 +70,37 @@ class QuizSessionViewModel: ObservableObject {
         guard let question = currentQuestion,
               let context else { return }
 
-        let answer = UserAnswer(context: context)
+        // Create or update UserAnswer
+        let answer: UserAnswer
+        if let existingAnswer = question.userAnswer {
+            answer = existingAnswer
+        } else {
+            answer = UserAnswer(context: context)
+            answer.question = question
+            answer.questionID = question.id
+        }
+
         answer.answer = text
         answer.timestamp = Date()
-        answer.question = question
+        answer.interactionTypeEnum = .answered
+
+        // Auto-evaluate correctness for multiple choice and short answer questions
+        if let questionType = question.questionTypeEnum,
+           let correctAnswer = question.answer {
+            switch questionType {
+            case .multipleChoice:
+                answer.isCorrect = (text == correctAnswer)
+            case .shortAnswer:
+                let userText = text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                let correctText = correctAnswer.lowercased()
+                answer.isCorrect = (userText == correctText)
+            case .freeform:
+                // For freeform questions, default to false until AI evaluation
+                answer.isCorrect = false
+            }
+        } else {
+            answer.isCorrect = false
+        }
 
         self.userAnswer = answer
 
@@ -89,32 +116,23 @@ class QuizSessionViewModel: ObservableObject {
     private func getAvailableQuestions() -> [Question] {
         guard let context else { return [] }
 
-        // Primary pool: questions never answered
-        let unansweredRequest: NSFetchRequest<Question> = Question.fetchRequest()
-        unansweredRequest.predicate = NSPredicate(format: "userAnswer == nil")
+        // Fetch all questions
+        let allQuestionsRequest: NSFetchRequest<Question> = Question.fetchRequest()
 
         do {
-            let unansweredQuestions = try context.fetch(unansweredRequest)
-            if !unansweredQuestions.isEmpty {
-                return unansweredQuestions
+            let allQuestions = try context.fetch(allQuestionsRequest)
+            let availableQuestions = allQuestions.filter { question in
+                // Never interacted with - always available
+                guard let userAnswer = question.userAnswer else { return true }
+
+                // Use the UserAnswer extension to check if should retry
+                return userAnswer.shouldRetry(thresholdHours: self.retryThresholdHours)
             }
-        } catch {
-            print("Error fetching unanswered questions: \(error)")
-        }
 
-        // Secondary pool: questions answered incorrectly more than retryThresholdHours ago
-        let retryThreshold = Date().addingTimeInterval(-self.retryThresholdHours * 3600)
-        let retryRequest: NSFetchRequest<Question> = Question.fetchRequest()
-        retryRequest.predicate = NSPredicate(
-            format: "userAnswer.isCorrect == NO AND userAnswer.timestamp < %@",
-            retryThreshold as NSDate
-        )
-
-        do {
-            let retryQuestions = try context.fetch(retryRequest)
-            return retryQuestions
+            print("📊 Question availability: \\(availableQuestions.count)/\\(allQuestions.count) available")
+            return availableQuestions
         } catch {
-            print("Error fetching retry questions: \(error)")
+            print("Error fetching questions: \\(error)")
             return []
         }
     }
@@ -144,6 +162,37 @@ class QuizSessionViewModel: ObservableObject {
     }
 
     func advanceToNextUnanswered() {
+        self.selectNextQuestion()
+    }
+
+    func skipCurrentQuestion() {
+        guard let question = currentQuestion,
+              let context else { return }
+
+        // Create or update UserAnswer to record the skip
+        let userAnswer: UserAnswer
+        if let existingAnswer = question.userAnswer {
+            userAnswer = existingAnswer
+        } else {
+            userAnswer = UserAnswer(context: context)
+            userAnswer.question = question
+            userAnswer.questionID = question.id
+        }
+
+        // Mark as skipped
+        userAnswer.interactionTypeEnum = .skipped
+        userAnswer.timestamp = Date()
+        userAnswer.answer = nil // No answer for skipped questions
+        userAnswer.isCorrect = false // Skipped questions are not correct
+
+        do {
+            try context.save()
+            print("✅ Question skipped and saved")
+        } catch {
+            print("❌ Failed to save skipped question: \\(error)")
+        }
+
+        // Move to next question
         self.selectNextQuestion()
     }
 

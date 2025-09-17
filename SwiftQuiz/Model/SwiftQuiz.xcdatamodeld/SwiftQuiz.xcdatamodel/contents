@@ -16,6 +16,7 @@
     </entity>
     <entity name="UserAnswer" representedClassName="UserAnswer" syncable="YES" codeGenerationType="class">
         <attribute name="answer" optional="YES" attributeType="String"/>
+        <attribute name="interactionType" optional="YES" attributeType="String" defaultValueString="answered"/>
         <attribute name="isCorrect" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="questionID" optional="YES" attributeType="String"/>
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>

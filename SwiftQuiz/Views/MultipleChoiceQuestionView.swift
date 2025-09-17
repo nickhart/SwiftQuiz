@@ -13,6 +13,7 @@ struct MultipleChoiceQuestionView: View {
     @ObservedObject var viewModel: QuizSessionViewModel
 
     @State private var selectedAnswer: String?
+    @State private var isSubmitted: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -28,7 +29,9 @@ struct MultipleChoiceQuestionView: View {
 
                 ForEach(question.choiceList, id: \.self) { choice in
                     Button(action: {
-                        self.selectedAnswer = choice
+                        if !self.isSubmitted {
+                            self.selectedAnswer = choice
+                        }
                     }, label: {
                         Text(choice)
                             .lineLimit(2)
@@ -41,9 +44,25 @@ struct MultipleChoiceQuestionView: View {
                             )
                             .cornerRadius(8)
                     })
+                    .disabled(self.isSubmitted)
                 }
 
-                if let selected = selectedAnswer, let correct = question.answer {
+                HStack(spacing: 12) {
+                    if let selectedAnswer, !self.isSubmitted {
+                        Button("Submit") {
+                            self.viewModel.submitAnswer(selectedAnswer)
+                            self.isSubmitted = true
+                        }
+                        .buttonStyle(.borderedProminent)
+                    } else if self.isSubmitted {
+                        Button("Next Question") {
+                            self.viewModel.selectNextQuestion()
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                }
+
+                if self.isSubmitted, let selected = selectedAnswer, let correct = question.answer {
                     Text(selected == correct ? "✅ Correct!" : "❌ Incorrect. Correct answer: \(correct)")
                         .foregroundColor(selected == correct ? .green : .red)
                         .padding(.top)
@@ -61,8 +80,9 @@ struct MultipleChoiceQuestionView: View {
         .padding()
         .id(self.viewModel.currentQuestion?.id) // Fix animation delay for multiple choice selections
         .onChange(of: self.viewModel.currentQuestion?.id) { _, _ in
-            // Clear selection when question changes
+            // Clear selection and submission state when question changes
             self.selectedAnswer = nil
+            self.isSubmitted = false
         }
     }
 }
