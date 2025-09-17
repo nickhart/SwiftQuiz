@@ -35,4 +35,8 @@ extension Question {
         guard let raw = type else { return nil }
         return QuestionType(rawValue: raw)
     }
+
+    var isMultipleChoice: Bool {
+        self.questionTypeEnum == .multipleChoice
+    }
 }

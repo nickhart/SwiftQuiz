@@ -327,7 +327,7 @@ struct AIEvaluationSheet: View {
 
     private func copyToClipboard(_ text: String) {
         let preview = text.prefix(50)
-        print("🔗 Attempting to copy text: \\(preview)...")
+        print("🔗 Attempting to copy text: \(preview)...")
 
         #if os(iOS)
             UIPasteboard.general.string = text
@@ -336,7 +336,7 @@ struct AIEvaluationSheet: View {
             let pasteboard = NSPasteboard.general
             pasteboard.clearContents()
             let success = pasteboard.setString(text, forType: .string)
-            print("📋 macOS: Copy success = \\(success)")
+            print("📋 macOS: Copy success = \(success)")
         #endif
 
         // Verify the copy worked
@@ -344,11 +344,11 @@ struct AIEvaluationSheet: View {
             #if os(iOS)
                 let copiedText = UIPasteboard.general.string
                 let preview = copiedText?.prefix(50) ?? "nil"
-                print("✅ Verification - iOS clipboard contains: \\(preview)")
+                print("✅ Verification - iOS clipboard contains: \(preview)")
             #elseif os(macOS)
                 let copiedText = NSPasteboard.general.string(forType: .string)
                 let preview = copiedText?.prefix(50) ?? "nil"
-                print("✅ Verification - macOS clipboard contains: \\(preview)")
+                print("✅ Verification - macOS clipboard contains: \(preview)")
             #endif
         }
     }

@@ -105,6 +105,29 @@ class AIService: ObservableObject {
         }
     }
 
+    func evaluateQuizSession(_ session: QuizSession) async throws -> QuizEvaluationResult {
+        print("🤖 AIService: Starting quiz session evaluation with provider: \(self.currentProvider)")
+        print("🤖 AIService: Session contains \(session.questions.count) questions")
+
+        switch self.currentProvider {
+        case .claude:
+            guard !self.claudeAPIKey.isEmpty else {
+                throw AIError.missingAPIKey
+            }
+            let config = AIProviderConfig.claudeQuizEvaluation(apiKey: self.claudeAPIKey)
+            return try await self.evaluateQuizWithProvider(config: config, session: session)
+        case .openai:
+            guard !self.openAIAPIKey.isEmpty else {
+                throw AIError.missingAPIKey
+            }
+            let config = AIProviderConfig.openAIQuizEvaluation(apiKey: self.openAIAPIKey)
+            return try await self.evaluateQuizWithProvider(config: config, session: session)
+        case .disabled:
+            print("🤖 AIService: AI evaluation is disabled")
+            throw AIError.missingAPIKey
+        }
+    }
+
     private func evaluateWithProvider(config: AIProviderConfig, question: String, userAnswer: String,
                                       correctAnswer: String) async throws -> String {
         print("🤖 AIService: Evaluating with \(config.name) API")
@@ -130,6 +153,79 @@ class AIService: ObservableObject {
 
         print("🤖 AIService: Sending request to \(config.name) API...")
         return try await self.performRequestWithRetry(request: request, config: config)
+    }
+
+    private func evaluateQuizWithProvider(config: AIProviderConfig,
+                                          session: QuizSession) async throws -> QuizEvaluationResult {
+        print("🤖 AIService: Evaluating quiz session with \(config.name) API")
+
+        let quizData = QuizSessionData(session: session)
+
+        var request = URLRequest(url: URL(string: config.baseURL)!)
+        request.httpMethod = "POST"
+
+        // Set headers from config
+        let headers = config.headers("")
+        for (key, value) in headers {
+            request.addValue(value, forHTTPHeaderField: key)
+        }
+
+        // Encode request body using config
+        request.httpBody = try config.requestEncoder(quizData)
+
+        print("🤖 AIService: Sending quiz evaluation request to \(config.name) API...")
+        return try await self.performQuizRequestWithRetry(request: request, config: config, session: session)
+    }
+
+    private func performQuizRequestWithRetry(request: URLRequest, config: AIProviderConfig, session: QuizSession,
+                                             retryCount: Int = 0) async throws -> QuizEvaluationResult {
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("❌ AIService: Invalid HTTP response")
+                throw AIError.networkError
+            }
+
+            print("🤖 AIService: \(config.name) API response status: \(httpResponse.statusCode)")
+
+            guard httpResponse.statusCode == 200 else {
+                throw self.handleHTTPError(httpResponse, data: data, config: config)
+            }
+
+            do {
+                let result = try config.quizResponseDecoder!(data, session)
+                print("✅ AIService: \(config.name) quiz evaluation completed")
+                return result
+            } catch {
+                print("❌ AIService: Failed to decode \(config.name) quiz response: \(error)")
+                throw AIError.decodingError(underlying: error)
+            }
+        } catch let error as AIError {
+            if error.isRetryable, retryCount < 2 {
+                print("🔄 AIService: \(config.name) quiz request failed (attempt \(retryCount + 1)/3), retrying...")
+                try await Task.sleep(nanoseconds: UInt64(pow(2.0, Double(retryCount)) * 1_000_000_000))
+                return try await performQuizRequestWithRetry(
+                    request: request,
+                    config: config,
+                    session: session,
+                    retryCount: retryCount + 1
+                )
+            }
+            throw error
+        } catch {
+            if retryCount < 2 {
+                print("🔄 AIService: \(config.name) quiz request failed (attempt \(retryCount + 1)/3), retrying...")
+                try await Task.sleep(nanoseconds: UInt64(pow(2.0, Double(retryCount)) * 1_000_000_000))
+                return try await self.performQuizRequestWithRetry(
+                    request: request,
+                    config: config,
+                    session: session,
+                    retryCount: retryCount + 1
+                )
+            }
+            throw AIError.networkError
+        }
     }
 
     private func performRequestWithRetry(request: URLRequest, config: AIProviderConfig,
