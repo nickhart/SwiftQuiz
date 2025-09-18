@@ -79,6 +79,8 @@ struct SwiftQuizApp: App {
     @StateObject private var notificationService = NotificationService.shared
     @StateObject private var settingsService = SettingsService.shared
     @StateObject private var aiService = AIService.shared
+    @StateObject private var navigationCoordinator = NavigationCoordinator()
+    @StateObject private var mainViewModel = MainViewModel()
 
     var body: some Scene {
         WindowGroup {
@@ -87,6 +89,8 @@ struct SwiftQuizApp: App {
                 .environmentObject(self.notificationService)
                 .environmentObject(self.settingsService)
                 .environmentObject(self.aiService)
+                .environmentObject(self.navigationCoordinator)
+                .environmentObject(self.mainViewModel)
                 .task {
                     await self.notificationService.checkAuthorizationStatus()
                 }

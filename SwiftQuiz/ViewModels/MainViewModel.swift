@@ -15,6 +15,7 @@ enum QuestionLoadingState: Equatable {
     case error(String)
 }
 
+@MainActor
 class MainViewModel: ObservableObject {
     @Published var loadingState: QuestionLoadingState = .idle
 

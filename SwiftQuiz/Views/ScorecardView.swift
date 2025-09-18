@@ -16,22 +16,23 @@ struct ScorecardView: View {
     @State private var showDetailedResults = false
 
     var body: some View {
-        VStack(spacing: 24) {
-            self.header
+        ScrollView {
+            VStack(spacing: 24) {
+                self.header
 
-            if let result = evaluationResult {
-                self.scoreSection(result: result)
-                self.insightsSection(result: result)
-                self.detailedResultsButton
-            } else {
-                self.basicScoreSection
+                if let result = evaluationResult {
+                    self.scoreSection(result: result)
+                    self.insightsSection(result: result)
+                    self.detailedResultsButton
+                } else {
+                    self.basicScoreSection
+                }
+
+                self.actionButtons
+                    .padding(.top, 32)
             }
-
-            Spacer()
-
-            self.actionButtons
+            .padding()
         }
-        .padding()
         .onAppear {
             withAnimation(.easeOut(duration: 1.0).delay(0.3)) {
                 self.animateScore = true
