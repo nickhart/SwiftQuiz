@@ -153,6 +153,25 @@ private func createQuizEvaluationPrompt(session: QuizSession) -> String {
     return prompt
 }
 
+// Temporary structs for parsing AI response (missing sessionId, totalQuestions, userAnswer, correctAnswer)
+private struct AIQuestionEvaluationResult: Codable {
+    let questionIndex: Int
+    let isCorrect: Bool
+    let isSkipped: Bool
+    let feedback: String
+}
+
+private struct AIQuizEvaluationResponse: Codable {
+    let overallScore: Double
+    let correctAnswers: Int
+    let skippedQuestions: Int
+    let individualResults: [AIQuestionEvaluationResult]
+    let insights: [String]
+    let recommendations: [String]
+    let strengths: [String]
+    let areasForImprovement: [String]
+}
+
 private func parseQuizEvaluationResponse(_ responseText: String, session: QuizSession) throws -> QuizEvaluationResult {
     // Clean the response to extract JSON
     let cleanedResponse = responseText
@@ -167,20 +186,37 @@ private func parseQuizEvaluationResponse(_ responseText: String, session: QuizSe
 
     do {
         let decoder = JSONDecoder()
-        var result = try decoder.decode(QuizEvaluationResult.self, from: jsonData)
+        let aiResult = try decoder.decode(AIQuizEvaluationResponse.self, from: jsonData)
 
-        // Set the session ID and timestamp
-        result = QuizEvaluationResult(
+        // Convert AI individual results to full QuestionEvaluationResult format
+        let fullIndividualResults = aiResult.individualResults.map { aiIndividualResult in
+            let questionIndex = aiIndividualResult.questionIndex
+            let userAnswer = questionIndex < session.userAnswers.count ? session.userAnswers[questionIndex].answer : nil
+            let correctAnswer = questionIndex < session.questions
+                .count ? (session.questions[questionIndex].answer ?? "Unknown") : "Unknown"
+
+            return QuestionEvaluationResult(
+                questionIndex: aiIndividualResult.questionIndex,
+                isCorrect: aiIndividualResult.isCorrect,
+                isSkipped: aiIndividualResult.isSkipped,
+                feedback: aiIndividualResult.feedback,
+                userAnswer: userAnswer,
+                correctAnswer: correctAnswer
+            )
+        }
+
+        // Convert to full QuizEvaluationResult with session info
+        let result = QuizEvaluationResult(
             sessionId: session.id,
-            overallScore: result.overallScore,
+            overallScore: aiResult.overallScore,
             totalQuestions: session.questions.count,
-            correctAnswers: result.correctAnswers,
-            skippedQuestions: result.skippedQuestions,
-            individualResults: result.individualResults,
-            insights: result.insights,
-            recommendations: result.recommendations,
-            strengths: result.strengths,
-            areasForImprovement: result.areasForImprovement,
+            correctAnswers: aiResult.correctAnswers,
+            skippedQuestions: aiResult.skippedQuestions,
+            individualResults: fullIndividualResults,
+            insights: aiResult.insights,
+            recommendations: aiResult.recommendations,
+            strengths: aiResult.strengths,
+            areasForImprovement: aiResult.areasForImprovement,
             evaluationTimestamp: Date()
         )
 
