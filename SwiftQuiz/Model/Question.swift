@@ -40,3 +40,19 @@ extension Question {
         self.questionTypeEnum == .multipleChoice
     }
 }
+
+// Extension for Question to provide type description
+extension Question {
+    var typeDescription: String {
+        switch self.type {
+        case "multipleChoice", "multiple_choice":
+            "Multiple Choice"
+        case "shortAnswer", "short_answer":
+            "Short Answer"
+        case "freeform":
+            "Long Form"
+        default:
+            "Unknown"
+        }
+    }
+}

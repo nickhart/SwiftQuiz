@@ -61,6 +61,28 @@ struct QuizEvaluationResult: Codable {
     let strengths: [String]
     let areasForImprovement: [String]
     let evaluationTimestamp: Date
+    let categoriesInSession: [String]
+    let categoryPerformance: [String: CategoryPerformance]
+
+    init(sessionId: UUID, overallScore: Double, totalQuestions: Int, correctAnswers: Int,
+         skippedQuestions: Int, individualResults: [QuestionEvaluationResult], insights: [String],
+         recommendations: [String], strengths: [String], areasForImprovement: [String],
+         evaluationTimestamp: Date, categoriesInSession: [String] = [],
+         categoryPerformance: [String: CategoryPerformance] = [:]) {
+        self.sessionId = sessionId
+        self.overallScore = overallScore
+        self.totalQuestions = totalQuestions
+        self.correctAnswers = correctAnswers
+        self.skippedQuestions = skippedQuestions
+        self.individualResults = individualResults
+        self.insights = insights
+        self.recommendations = recommendations
+        self.strengths = strengths
+        self.areasForImprovement = areasForImprovement
+        self.evaluationTimestamp = evaluationTimestamp
+        self.categoriesInSession = categoriesInSession
+        self.categoryPerformance = categoryPerformance
+    }
 
     var scorePercentage: Int {
         Int(self.overallScore * 100)
@@ -78,6 +100,27 @@ struct QuizEvaluationResult: Codable {
             .needsImprovement
         default:
             .poor
+        }
+    }
+}
+
+struct CategoryPerformance: Codable {
+    let category: String
+    let totalQuestions: Int
+    let correctAnswers: Int
+    let score: Double // 0.0 to 1.0
+
+    var scorePercentage: Int {
+        Int(self.score * 100)
+    }
+
+    var performanceLevel: PerformanceLevel {
+        switch self.score {
+        case 0.9...1.0: .excellent
+        case 0.8..<0.9: .good
+        case 0.6..<0.8: .fair
+        case 0.4..<0.6: .needsImprovement
+        default: .poor
         }
     }
 }
@@ -133,6 +176,20 @@ struct QuizSession: Identifiable {
         self.startTime = Date()
         self.userAnswers = []
         self.status = .inProgress
+    }
+
+    // Analytics properties
+    var categoriesInSession: [String] {
+        Array(Set(self.questions.compactMap(\.category))).sorted()
+    }
+
+    var categoryBreakdown: [String: Int] {
+        var breakdown: [String: Int] = [:]
+        for question in self.questions {
+            let category = question.category ?? "Unknown"
+            breakdown[category, default: 0] += 1
+        }
+        return breakdown
     }
 
     var duration: TimeInterval? {

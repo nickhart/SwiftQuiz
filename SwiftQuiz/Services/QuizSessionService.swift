@@ -29,14 +29,16 @@ enum QuizSessionError: Error, LocalizedError {
 class QuizSessionService: ObservableObject {
     private let context: NSManagedObjectContext
     private let aiService: AIService
+    private let settingsService: SettingsService
 
     @Published var currentSession: QuizSession?
     @Published var lastEvaluationResult: QuizEvaluationResult?
     @Published var isEvaluating = false
 
-    init(context: NSManagedObjectContext, aiService: AIService = .shared) {
+    init(context: NSManagedObjectContext, aiService: AIService = .shared, settingsService: SettingsService = .shared) {
         self.context = context
         self.aiService = aiService
+        self.settingsService = settingsService
     }
 
     func startQuizSession(config: QuizSessionConfig = QuizSessionConfig()) throws -> QuizSession {
@@ -79,9 +81,21 @@ class QuizSessionService: ObservableObject {
     private func selectQuestionsForQuiz(config: QuizSessionConfig) throws -> [Question] {
         let request: NSFetchRequest<Question> = Question.fetchRequest()
 
-        // Apply category filter if specified
-        if let categories = config.categories, !categories.isEmpty {
-            request.predicate = NSPredicate(format: "primaryTag IN %@", categories)
+        // Determine which categories to use
+        let categoriesToUse: [String] = if let configCategories = config.categories, !configCategories.isEmpty {
+            // Use categories from config if provided
+            configCategories
+        } else {
+            // Use enabled categories from settings
+            Array(self.settingsService.enabledCategories)
+        }
+
+        // Apply category filter using the new category field
+        if !categoriesToUse.isEmpty {
+            request.predicate = NSPredicate(format: "category IN %@", categoriesToUse)
+            print("🎯 Quiz: Selecting questions from categories: \(categoriesToUse)")
+        } else {
+            print("⚠️ Quiz: No categories enabled - will select from all questions")
         }
 
         // Fetch all available questions
@@ -190,6 +204,12 @@ class QuizSessionService: ObservableObject {
             )
         }
 
+        // Calculate category performance
+        let categoryPerformance = self.calculateCategoryPerformance(
+            session: session,
+            individualResults: individualResults
+        )
+
         return QuizEvaluationResult(
             sessionId: session.id,
             overallScore: overallScore,
@@ -201,7 +221,39 @@ class QuizSessionService: ObservableObject {
             recommendations: ["Continue practicing to improve your Swift knowledge."],
             strengths: [],
             areasForImprovement: [],
-            evaluationTimestamp: Date()
+            evaluationTimestamp: Date(),
+            categoriesInSession: session.categoriesInSession,
+            categoryPerformance: categoryPerformance
         )
+    }
+
+    private func calculateCategoryPerformance(session: QuizSession,
+                                              individualResults: [QuestionEvaluationResult])
+        -> [String: CategoryPerformance] {
+        var categoryStats: [String: (total: Int, correct: Int)] = [:]
+
+        for (index, question) in session.questions.enumerated() {
+            let category = question.category ?? "Unknown"
+            let isCorrect = index < individualResults.count ? individualResults[index].isCorrect : false
+
+            let current = categoryStats[category, default: (total: 0, correct: 0)]
+            categoryStats[category] = (
+                total: current.total + 1,
+                correct: current.correct + (isCorrect ? 1 : 0)
+            )
+        }
+
+        var performance: [String: CategoryPerformance] = [:]
+        for (category, stats) in categoryStats {
+            let score = stats.total > 0 ? Double(stats.correct) / Double(stats.total) : 0.0
+            performance[category] = CategoryPerformance(
+                category: category,
+                totalQuestions: stats.total,
+                correctAnswers: stats.correct,
+                score: score
+            )
+        }
+
+        return performance
     }
 }

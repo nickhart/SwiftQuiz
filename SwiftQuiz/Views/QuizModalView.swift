@@ -10,13 +10,17 @@ import SwiftUI
 
 struct QuizModalView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var settingsService: SettingsService
     @StateObject private var quizSessionService: QuizSessionService
     @State private var currentAnswer: String = ""
     @State private var showingScorecard = false
     @State private var animateProgress = false
 
     init(context: NSManagedObjectContext) {
-        self._quizSessionService = StateObject(wrappedValue: QuizSessionService(context: context))
+        self._quizSessionService = StateObject(wrappedValue: QuizSessionService(
+            context: context,
+            settingsService: .shared
+        ))
     }
 
     var body: some View {
@@ -99,7 +103,7 @@ struct QuizModalView: View {
 
     private func questionCard(question: Question) -> some View {
         VStack(alignment: .leading, spacing: 16) {
-            if let category = question.primaryTag {
+            if let category = question.category {
                 HStack {
                     Text(category.uppercased())
                         .font(.caption)
