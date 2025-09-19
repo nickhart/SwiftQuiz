@@ -20,7 +20,7 @@ struct BadgeStatsHeader: View {
             // Progress Circle
             ZStack {
                 Circle()
-                    .stroke(Color(UIColor.systemGray5), lineWidth: 8)
+                    .stroke(Color.systemGray5, lineWidth: 8)
                     .frame(width: 120, height: 120)
 
                 Circle()
@@ -58,7 +58,7 @@ struct BadgeStatsHeader: View {
             }
         }
         .padding()
-        .background(Color(UIColor.systemBackground))
+        .background(Color.systemBackground)
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
     }

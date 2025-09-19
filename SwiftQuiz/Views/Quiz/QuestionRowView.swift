@@ -78,7 +78,7 @@ struct QuestionRowView: View {
                     .foregroundColor(.secondary)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(Color(.systemGray6))
+                    .background(Color.systemGray6)
                     .cornerRadius(4)
 
                 Spacer()

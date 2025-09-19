@@ -24,7 +24,7 @@ struct QuestionBrowserView: View {
     @State private var showingOnlyUnanswered: Bool = false
 
     private var availableCategories: [String] {
-        let allCategories = Set(questions.compactMap(\.category))
+        let allCategories = Set(self.questions.compactMap(\.category))
         return ["All"] + Array(allCategories).sorted()
     }
 
@@ -77,13 +77,13 @@ struct QuestionBrowserView: View {
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(Color(.systemGray6))
+                .background(Color.systemGray6)
                 .cornerRadius(8)
 
                 // Category Picker
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        ForEach(self.availableCategories, id: \.self) { category in
+                        ForEach(self.availableCategories, id: \.self) { (category: String) in
                             let count = category == "All" ? self.questions
                                 .count : (self.questionCountByCategory[category] ?? 0)
 
@@ -101,7 +101,7 @@ struct QuestionBrowserView: View {
                                 }
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
-                                .background(self.selectedCategory == category ? Color.blue : Color(.systemGray5))
+                                .background(self.selectedCategory == category ? Color.blue : Color.systemGray5)
                                 .foregroundColor(self.selectedCategory == category ? .white : .primary)
                                 .cornerRadius(16)
                             })
@@ -148,7 +148,7 @@ struct QuestionBrowserView: View {
                 }
             }
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.systemBackground)
 
             Divider()
 
@@ -177,10 +177,7 @@ struct QuestionBrowserView: View {
                 .listStyle(PlainListStyle())
             }
         }
-        .navigationTitle("Question Bank")
-        #if os(iOS)
-            .navigationBarTitleDisplayMode(.large)
-        #endif
+        .sqNavigationTitle("Question Bank", displayMode: SQNavigationBarDisplayMode.large)
     }
 }
 

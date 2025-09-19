@@ -70,13 +70,15 @@ struct PerformanceTrendsView: View {
             .padding(.bottom, 20)
         }
         .navigationTitle("Performance Trends")
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            self.loadPerformanceData()
-        }
-        .onChange(of: self.selectedTimeframe) { _ in
-            self.loadPerformanceData()
-        }
+        #if os(iOS)
+            .sqNavigationBarStyle(.inline)
+        #endif
+            .onAppear {
+                self.loadPerformanceData()
+            }
+            .onChange(of: self.selectedTimeframe) { _ in
+                self.loadPerformanceData()
+            }
     }
 
     private func loadPerformanceData() {

@@ -29,7 +29,7 @@ struct InsightFilterTabs: View {
                         .padding(.vertical, 8)
                         .background(
                             self.selectedFilter == filter ?
-                                Color.blue : Color(UIColor.secondarySystemBackground)
+                                Color.blue : Color.secondarySystemBackground
                         )
                         .foregroundColor(
                             self.selectedFilter == filter ? .white : .primary

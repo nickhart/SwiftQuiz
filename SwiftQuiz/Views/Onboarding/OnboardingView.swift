@@ -85,7 +85,9 @@ struct OnboardingView: View {
             }
             .navigationTitle(self.currentStep.title)
             #if os(iOS)
-                .navigationBarTitleDisplayMode(.inline)
+                #if os(iOS)
+                    .sqNavigationBarStyle(.inline)
+                #endif
             #endif
                 .toolbar {
                     ToolbarItem(placement: .automatic) {

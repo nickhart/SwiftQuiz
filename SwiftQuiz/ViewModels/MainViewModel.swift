@@ -28,13 +28,15 @@ class MainViewModel: ObservableObject {
         let importer = QuestionImportService(context: context)
 
         importer.importAllQuestionFiles { result in
-            switch result {
-            case let .success(count):
-                print("Imported \(count) questions across all categories")
-                self.loadingState = .loaded
-            case let .failure(error):
-                print("Failed to import questions: \(error)")
-                self.loadingState = .error("Failed to import: \(error.localizedDescription)")
+            Task { @MainActor in
+                switch result {
+                case let .success(count):
+                    print("Imported \(count) questions across all categories")
+                    self.loadingState = .loaded
+                case let .failure(error):
+                    print("Failed to import questions: \(error)")
+                    self.loadingState = .error("Failed to import: \(error.localizedDescription)")
+                }
             }
         }
     }

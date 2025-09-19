@@ -37,7 +37,7 @@ struct CategoryPerformanceChart: View {
                         GeometryReader { geometry in
                             ZStack(alignment: .leading) {
                                 RoundedRectangle(cornerRadius: 4)
-                                    .fill(Color(UIColor.systemGray5))
+                                    .fill(Color.systemGray5)
                                     .frame(height: 8)
 
                                 RoundedRectangle(cornerRadius: 4)
@@ -58,7 +58,7 @@ struct CategoryPerformanceChart: View {
             }
         }
         .padding()
-        .background(Color(UIColor.systemBackground))
+        .background(Color.systemBackground)
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
     }

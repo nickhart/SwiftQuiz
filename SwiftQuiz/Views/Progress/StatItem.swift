@@ -31,7 +31,7 @@ struct StatItem: View {
             }
         }
         .padding()
-        .background(Color(UIColor.secondarySystemBackground))
+        .background(Color.secondarySystemBackground)
         .cornerRadius(8)
     }
 }

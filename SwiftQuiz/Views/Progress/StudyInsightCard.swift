@@ -59,7 +59,7 @@ struct StudyInsightCard: View {
             }
         }
         .padding()
-        .background(Color(UIColor.systemBackground))
+        .background(Color.systemBackground)
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
     }

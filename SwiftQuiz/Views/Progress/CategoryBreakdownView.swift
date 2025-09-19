@@ -74,8 +74,7 @@ struct CategoryBreakdownView: View {
             }
             .padding(.bottom, 20)
         }
-        .navigationTitle("Categories")
-        .navigationBarTitleDisplayMode(.inline)
+        .sqNavigationTitle("Categories", displayMode: SQNavigationBarDisplayMode.inline)
         .onAppear {
             self.loadCategoryData()
         }

@@ -38,7 +38,7 @@ struct CategoryPerformanceItem: View {
             }
         }
         .padding(8)
-        .background(Color(UIColor.secondarySystemBackground))
+        .background(Color.secondarySystemBackground)
         .cornerRadius(8)
     }
 

@@ -33,7 +33,7 @@ struct StudyRecommendationRow: View {
                         .font(.caption)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(Color(UIColor.secondarySystemBackground))
+                        .background(Color.secondarySystemBackground)
                         .cornerRadius(8)
                 }
 

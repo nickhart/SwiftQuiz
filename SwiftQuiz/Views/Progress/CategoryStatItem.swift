@@ -27,7 +27,7 @@ struct CategoryStatItem: View {
                 .foregroundColor(.secondary)
         }
         .padding(.vertical, 8)
-        .background(Color(UIColor.tertiarySystemBackground))
+        .background(Color.tertiarySystemBackground)
         .cornerRadius(8)
     }
 }
