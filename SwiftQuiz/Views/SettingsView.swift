@@ -279,13 +279,6 @@ struct SettingsView: View {
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
             #endif
-                .toolbar {
-                    ToolbarItem(placement: .automatic) {
-                        Button("Done") {
-                            self.dismiss()
-                        }
-                    }
-                }
                 .sheet(isPresented: self.$showOnboarding) {
                     OnboardingView()
                         .environmentObject(self.aiService)

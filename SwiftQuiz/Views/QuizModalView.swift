@@ -14,12 +14,14 @@ struct QuizModalView: View {
     @StateObject private var quizSessionService: QuizSessionService
     @State private var currentAnswer: String = ""
     @State private var showingScorecard = false
-    @State private var animateProgress = false
+    @State private var isTransitioningToScorecard = false
+    @State private var lastDisplayedQuestion: Question?
 
     init(context: NSManagedObjectContext) {
         self._quizSessionService = StateObject(wrappedValue: QuizSessionService(
             context: context,
-            settingsService: .shared
+            settingsService: .shared,
+            dailyRegimenService: .shared
         ))
     }
 
@@ -27,7 +29,7 @@ struct QuizModalView: View {
         NavigationView {
             ZStack {
                 if let session = quizSessionService.currentSession {
-                    if session.isCompleted, !self.quizSessionService.isEvaluating {
+                    if self.showingScorecard {
                         ScorecardView(
                             session: session,
                             evaluationResult: self.quizSessionService.lastEvaluationResult,
@@ -67,10 +69,11 @@ struct QuizModalView: View {
         VStack(spacing: 20) {
             self.progressHeader(session: session)
 
-            if let currentQuestion = session.currentQuestion {
-                self.questionCard(question: currentQuestion)
+            // Show current question, or last displayed question during transitions
+            if let questionToShow = session.currentQuestion ?? lastDisplayedQuestion {
+                self.questionCard(question: questionToShow)
 
-                self.answerSection(question: currentQuestion)
+                self.answerSection(question: questionToShow)
 
                 self.actionButtons(session: session)
             }
@@ -78,6 +81,18 @@ struct QuizModalView: View {
             Spacer()
         }
         .padding()
+        .onAppear {
+            // Track the current question when view appears
+            if let currentQuestion = session.currentQuestion {
+                self.lastDisplayedQuestion = currentQuestion
+            }
+        }
+        .onChange(of: session.currentQuestion) { _, newValue in
+            // Update last displayed question when question changes (but not when it becomes nil)
+            if let newQuestion = newValue {
+                self.lastDisplayedQuestion = newQuestion
+            }
+        }
     }
 
     private func progressHeader(session: QuizSession) -> some View {
@@ -89,15 +104,14 @@ struct QuizModalView: View {
 
                 Spacer()
 
-                Text("\(session.currentQuestionIndex + 1) of \(session.questions.count)")
+                Text("\(min(session.currentQuestionIndex + 1, session.questions.count)) of \(session.questions.count)")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
 
             ProgressView(value: session.progress)
                 .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-                .scaleEffect(x: self.animateProgress ? 1.0 : 0.0, anchor: .leading)
-                .animation(.easeOut(duration: 0.5), value: self.animateProgress)
+                .animation(.easeInOut(duration: 0.8), value: session.progress)
         }
     }
 
@@ -170,18 +184,21 @@ struct QuizModalView: View {
     private func actionButtons(session: QuizSession) -> some View {
         HStack(spacing: 16) {
             Button("Skip") {
-                self.skipCurrentQuestion()
+                self.skipCurrentQuestion(session: session)
             }
             .buttonStyle(.bordered)
             .foregroundColor(.orange)
+            .disabled(self.isTransitioningToScorecard)
 
             Spacer()
 
             Button("Submit Answer") {
-                self.submitAnswer()
+                self.submitAnswer(session: session)
             }
             .buttonStyle(.borderedProminent)
-            .disabled(self.currentAnswer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            .disabled(self.currentAnswer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || self
+                .isTransitioningToScorecard
+            )
         }
     }
 
@@ -222,39 +239,58 @@ struct QuizModalView: View {
     private func startQuiz() {
         do {
             _ = try self.quizSessionService.startQuizSession()
-            withAnimation(.easeOut(duration: 0.8).delay(0.2)) {
-                self.animateProgress = true
-            }
         } catch {
             print("Failed to start quiz: \(error)")
             self.dismiss()
         }
     }
 
-    private func submitAnswer() {
+    private func submitAnswer(session: QuizSession) {
         guard !self.currentAnswer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
 
+        // Start transition state
+        self.isTransitioningToScorecard = true
+
+        // Submit the answer
         self.quizSessionService.submitAnswer(self.currentAnswer)
         self.currentAnswer = ""
 
-        self.updateProgressAnimation()
+        // Handle completion after animation
+        self.handleQuizProgression(session: session)
     }
 
-    private func skipCurrentQuestion() {
+    private func skipCurrentQuestion(session: QuizSession) {
+        // Start transition state
+        self.isTransitioningToScorecard = true
+
+        // Skip the question
         self.quizSessionService.skipCurrentQuestion()
         self.currentAnswer = ""
 
-        self.updateProgressAnimation()
+        // Handle completion after animation
+        self.handleQuizProgression(session: session)
     }
 
-    private func updateProgressAnimation() {
-        withAnimation(.easeOut(duration: 0.3)) {
-            self.animateProgress = false
-        }
+    private func handleQuizProgression(session: QuizSession) {
+        // Wait for progress animation to complete, then check if quiz is done
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            if let updatedSession = self.quizSessionService.currentSession {
+                if updatedSession.isCompleted {
+                    // Quiz is complete - transition to scorecard and start evaluation
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        self.showingScorecard = true
+                        // Clear the last displayed question when showing scorecard
+                        self.lastDisplayedQuestion = nil
+                    }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            withAnimation(.easeOut(duration: 0.5)) {
-                self.animateProgress = true
+                    // Start evaluation
+                    Task {
+                        self.quizSessionService.handleMaybeCompletedSession()
+                    }
+                } else {
+                    // More questions - reset transition state
+                    self.isTransitioningToScorecard = false
+                }
             }
         }
     }
