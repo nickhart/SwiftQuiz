@@ -12,6 +12,7 @@ struct ScorecardView: View {
     let evaluationResult: QuizEvaluationResult?
     let onDismiss: () -> Void
 
+    @EnvironmentObject private var coordinator: NavigationCoordinator
     @State private var animateScore = false
     @State private var showDetailedResults = false
 
@@ -72,10 +73,7 @@ struct ScorecardView: View {
                 Circle()
                     .trim(from: 0, to: self.animateScore ? result.overallScore : 0)
                     .stroke(
-                        result.performanceLevel.color == "green" ? .green :
-                            result.performanceLevel.color == "blue" ? .blue :
-                            result.performanceLevel.color == "orange" ? .orange :
-                            result.performanceLevel.color == "yellow" ? .yellow : .red,
+                        result.performanceLevel.color,
                         style: StrokeStyle(lineWidth: 8, lineCap: .round)
                     )
                     .frame(width: 120, height: 120)
@@ -203,6 +201,8 @@ struct ScorecardView: View {
     private var actionButtons: some View {
         VStack(spacing: 12) {
             Button("Continue to Progress") {
+                // Navigate to progress section then dismiss modal
+                self.coordinator.navigateTo(.analytics)
                 self.onDismiss()
             }
             .buttonStyle(.borderedProminent)

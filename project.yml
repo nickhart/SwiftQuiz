@@ -22,6 +22,7 @@ targets:
     platform: iOS
     sources:
       - SwiftQuiz/App/
+      - SwiftQuiz/Extensions/
       - SwiftQuiz/Model/
       - SwiftQuiz/Services/
       - SwiftQuiz/Views/
