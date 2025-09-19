@@ -49,8 +49,7 @@ struct StudyInsightsView: View {
             }
             .padding(.bottom, 20)
         }
-        .navigationTitle("Insights")
-        .navigationBarTitleDisplayMode(.inline)
+        .sqNavigationTitle("Insights", displayMode: SQNavigationBarDisplayMode.inline)
         .onAppear {
             self.loadInsights()
         }

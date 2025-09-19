@@ -29,7 +29,7 @@ struct BadgeCategoryFilter: View {
                         .padding(.vertical, 8)
                         .background(
                             self.selectedCategory == category ?
-                                Color.blue : Color(UIColor.secondarySystemBackground)
+                                Color.blue : Color.secondarySystemBackground
                         )
                         .foregroundColor(
                             self.selectedCategory == category ? .white : .primary

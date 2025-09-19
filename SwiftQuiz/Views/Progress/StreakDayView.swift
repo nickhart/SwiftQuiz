@@ -24,7 +24,7 @@ struct StreakDayView: View {
         if self.day.hasActivity {
             Color.green.opacity(0.8)
         } else {
-            Color(UIColor.tertiarySystemFill)
+            Color.tertiarySystemFill
         }
     }
 

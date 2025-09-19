@@ -104,7 +104,7 @@ struct ProgressOverviewView: View {
             }
             .padding(.bottom, 20)
         }
-        .navigationBarHidden(true)
+        .sqNavigationBarHidden(true)
         .refreshable {
             // Refresh analytics data
             await self.refreshAnalytics()

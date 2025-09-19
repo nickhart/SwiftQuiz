@@ -49,16 +49,18 @@ struct QuizModalView: View {
                 }
             }
             #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
+                #if os(iOS)
+                    .sqNavigationBarStyle(.inline)
+                #endif
             #endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        self.quizSessionService.abandonCurrentSession()
-                        self.dismiss()
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") {
+                            self.quizSessionService.abandonCurrentSession()
+                            self.dismiss()
+                        }
                     }
                 }
-            }
         }
         .onAppear {
             self.startQuiz()

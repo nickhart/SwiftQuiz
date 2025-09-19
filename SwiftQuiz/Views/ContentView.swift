@@ -12,9 +12,8 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var notificationService: NotificationService
     @EnvironmentObject private var aiService: AIService
-
-    @StateObject private var coordinator = NavigationCoordinator()
-    @StateObject private var viewModel = MainViewModel()
+    @EnvironmentObject private var coordinator: NavigationCoordinator
+    @EnvironmentObject private var viewModel: MainViewModel
     // TODO: move this into the viewModel
     @State private var showOnboarding = !UserDefaults.standard.bool(forKey: "has_completed_onboarding")
 
@@ -39,43 +38,38 @@ struct ContentView: View {
                 Label("Unhandled destination", systemImage: "questionmark")
             }
         }
-        .navigationTitle("Swift Quiz")
+        .sqNavigationTitle("Swift Quiz", displayMode: SQNavigationBarDisplayMode.inline)
         #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-        #endif
-        #if os(iOS)
-        .sheet(isPresented: self.$coordinator.showQuizModal) {
-            QuizModalView(context: self.viewContext) // Pass context directly
-        }
-        .environmentObject(self.coordinator)
-        .environmentObject(self.viewModel)
-        .fullScreenCover(isPresented: self.$showOnboarding) {
-            OnboardingView()
-                .environmentObject(self.aiService)
-        }
+            .sheet(isPresented: self.$coordinator.showQuizModal) {
+                QuizModalView(context: self.viewContext) // Pass context directly
+            }
+            .fullScreenCover(isPresented: self.$showOnboarding) {
+                OnboardingView()
+                    .environmentObject(self.aiService)
+            }
         #elseif os(macOS)
-        .sheet(isPresented: self.$showOnboarding) {
-            OnboardingView()
-                .environmentObject(self.aiService)
-                .frame(minWidth: 600, minHeight: 700)
-        }
+            .sheet(isPresented: self.$showOnboarding) {
+                OnboardingView()
+                    .environmentObject(self.aiService)
+                    .frame(minWidth: 600, minHeight: 700)
+            }
         #endif
-        .onAppear {
-            self.viewModel.importQuestionsIfNeeded(using: self.viewContext)
+            .onAppear {
+                self.viewModel.importQuestionsIfNeeded(using: self.viewContext)
 
-            // Request notification permission after app loads
-            if !self.notificationService.isAuthorized {
-                Task {
-                    await self.notificationService.requestPermission()
+                // Request notification permission after app loads
+                if !self.notificationService.isAuthorized {
+                    Task {
+                        await self.notificationService.requestPermission()
+                    }
                 }
             }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .openQuizFromNotification)) { _ in
-            // User tapped daily reminder notification - launch quiz modal
-            if self.viewModel.loadingState == .loaded {
-                self.coordinator.startQuizSession()
+            .onReceive(NotificationCenter.default.publisher(for: .openQuizFromNotification)) { _ in
+                // User tapped daily reminder notification - launch quiz modal
+                if self.viewModel.loadingState == .loaded {
+                    self.coordinator.startQuizSession()
+                }
             }
-        }
     }
 }
 

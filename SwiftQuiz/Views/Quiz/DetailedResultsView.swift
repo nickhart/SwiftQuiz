@@ -30,7 +30,9 @@ struct DetailedResultsView: View {
         }
         .navigationTitle("Detailed Results")
         #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
+            #if os(iOS)
+                .sqNavigationBarStyle(.inline)
+            #endif
         #endif
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

@@ -126,7 +126,7 @@ struct CategoryDetailCard: View {
                                     .font(.caption)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
-                                    .background(Color(UIColor.secondarySystemBackground))
+                                    .background(Color.secondarySystemBackground)
                                     .cornerRadius(8)
                             }
                         }
@@ -150,7 +150,7 @@ struct CategoryDetailCard: View {
             }
         }
         .padding()
-        .background(Color(UIColor.systemBackground))
+        .background(Color.systemBackground)
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
     }

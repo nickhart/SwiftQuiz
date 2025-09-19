@@ -76,6 +76,12 @@ struct SwiftQuizApp: App {
     #endif
 
     let persistenceController = PersistenceController.shared
+
+    init() {
+        // Register the secure transformer for Core Data arrays
+        SecureStringArrayTransformer.register()
+    }
+
     @StateObject private var notificationService = NotificationService.shared
     @StateObject private var settingsService = SettingsService.shared
     @StateObject private var aiService = AIService.shared

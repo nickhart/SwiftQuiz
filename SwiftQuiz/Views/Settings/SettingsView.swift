@@ -30,7 +30,9 @@ struct SettingsView: View {
             .formStyle(.grouped)
             .navigationTitle("Settings")
             #if os(iOS)
-                .navigationBarTitleDisplayMode(.inline)
+                #if os(iOS)
+                    .sqNavigationBarStyle(.inline)
+                #endif
             #endif
         }
     }

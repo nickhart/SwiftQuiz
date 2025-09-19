@@ -41,8 +41,7 @@ struct BadgeCollectionView: View {
             }
             .padding()
         }
-        .navigationTitle("Achievements")
-        .navigationBarTitleDisplayMode(.large)
+        .sqNavigationTitle("Achievements", displayMode: SQNavigationBarDisplayMode.large)
         .onAppear {
             self.loadBadges()
         }
