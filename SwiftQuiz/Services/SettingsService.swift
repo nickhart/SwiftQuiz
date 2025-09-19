@@ -169,6 +169,35 @@ final class SettingsService: ObservableObject {
         self.enabledCategories.contains(category)
     }
 
+    #if DEBUG
+        /// Get debug mode enabled state
+        var isDebugModeEnabled: Bool {
+            get {
+                self.settings?.isDebugModeEnabled ?? false
+            }
+            set {
+                self.settings?.isDebugModeEnabled = newValue
+                self.saveContext()
+            }
+        }
+
+        /// Get debug evaluation mode
+        var debugEvaluationMode: DebugEvaluationMode {
+            get {
+                self.settings?.debugEvaluationMode ?? .useAI
+            }
+            set {
+                self.settings?.debugEvaluationMode = newValue
+                self.saveContext()
+            }
+        }
+
+        /// Save settings (for debug settings that don't automatically trigger save)
+        func saveSettings() {
+            self.saveContext()
+        }
+    #endif
+
     // MARK: - Private Methods
 
     private func loadSettings() {
