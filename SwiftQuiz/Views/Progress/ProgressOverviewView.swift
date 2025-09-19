@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+enum AnalyticsDestination: Hashable {
+    case performanceTrends
+    case categoryBreakdown
+    case badgeCollection
+    case studyInsights
+}
+
 enum TimeframeFilter: String, CaseIterable {
     case week
     case month
@@ -75,28 +82,28 @@ struct ProgressOverviewView: View {
                     .padding(.horizontal)
 
                 // Performance Trends Chart
-                NavigationLink(destination: PerformanceTrendsView()) {
+                NavigationLink(value: AnalyticsDestination.performanceTrends) {
                     PerformanceTrendsSummary(timeframe: self.selectedTimeframe)
                 }
                 .buttonStyle(PlainButtonStyle())
                 .padding(.horizontal)
 
                 // Category Performance Grid
-                NavigationLink(destination: CategoryBreakdownView()) {
+                NavigationLink(value: AnalyticsDestination.categoryBreakdown) {
                     CategoryPerformanceGrid()
                 }
                 .buttonStyle(PlainButtonStyle())
                 .padding(.horizontal)
 
                 // Recent Badges
-                NavigationLink(destination: BadgeCollectionView()) {
+                NavigationLink(value: AnalyticsDestination.badgeCollection) {
                     RecentBadgesCard()
                 }
                 .buttonStyle(PlainButtonStyle())
                 .padding(.horizontal)
 
                 // Study Insights
-                NavigationLink(destination: StudyInsightsView()) {
+                NavigationLink(value: AnalyticsDestination.studyInsights) {
                     StudyInsightsSummary()
                 }
                 .buttonStyle(PlainButtonStyle())

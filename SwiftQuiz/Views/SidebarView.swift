@@ -11,14 +11,22 @@ struct SidebarView: View {
     @EnvironmentObject private var coordinator: NavigationCoordinator
 
     var body: some View {
-        List(selection: self.$coordinator.selectedDestination) {
-            ForEach(NavigationDestination.allCases, id: \.self) { destination in
-                NavigationLink(value: destination) {
-                    Label(destination.rawValue, systemImage: destination.systemImage)
-                }
+        List(
+            NavigationDestination.allCases,
+            id: \.self,
+            selection: self.$coordinator.selectedDestination
+        ) { destination in
+            NavigationLink(value: destination) {
+                Label(destination.rawValue, systemImage: destination.systemImage)
             }
+            .tag(destination)
         }
         .navigationTitle("Swift Quiz")
+        .onAppear {
+            if self.coordinator.selectedDestination == nil {
+                self.coordinator.selectedDestination = .todaysQuiz
+            }
+        }
     }
 }
 

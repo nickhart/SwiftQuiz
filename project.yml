@@ -67,6 +67,7 @@ targets:
     platform: macOS
     sources:
       - SwiftQuiz/App/
+      - SwiftQuiz/Extensions/
       - SwiftQuiz/Model/
       - SwiftQuiz/Services/
       - SwiftQuiz/Views/
