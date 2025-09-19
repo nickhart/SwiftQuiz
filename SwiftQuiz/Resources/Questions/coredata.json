@@ -1,0 +1,205 @@
+{
+  "category": "Core Data",
+  "questions": [
+    {
+      "id": "coredata-001",
+      "type": "multiple_choice",
+      "question": "What is NSManagedObjectContext?",
+      "choices": ["A scratchpad for Core Data operations", "A database connection", "A data model", "A persistent store"],
+      "answer": "A scratchpad for Core Data operations",
+      "explanation": "NSManagedObjectContext acts as a scratchpad where you create, fetch, and manipulate managed objects.",
+      "difficulty": 2,
+      "tags": ["NSManagedObjectContext", "Basics"]
+    },
+    {
+      "id": "coredata-002",
+      "type": "freeform",
+      "question": "What is the purpose of NSPersistentContainer?",
+      "choices": null,
+      "answer": null,
+      "explanation": "NSPersistentContainer encapsulates the Core Data stack and simplifies setup and management.",
+      "difficulty": 2,
+      "tags": ["NSPersistentContainer", "Core Data Stack"]
+    },
+    {
+      "id": "coredata-003",
+      "type": "multiple_choice",
+      "question": "When should you call save() on a context?",
+      "choices": ["After making changes you want to persist", "Before every fetch", "Only when app terminates", "Never, it's automatic"],
+      "answer": "After making changes you want to persist",
+      "explanation": "Changes to managed objects are only persisted when you explicitly call save() on the context.",
+      "difficulty": 1,
+      "tags": ["Saving", "Context Management"]
+    },
+    {
+      "id": "coredata-004",
+      "type": "multiple_choice",
+      "question": "What is a NSFetchRequest used for?",
+      "choices": ["Retrieving data from Core Data", "Saving data", "Creating relationships", "Deleting objects"],
+      "answer": "Retrieving data from Core Data",
+      "explanation": "NSFetchRequest defines the criteria for fetching objects from the persistent store.",
+      "difficulty": 1,
+      "tags": ["NSFetchRequest", "Fetching"]
+    },
+    {
+      "id": "coredata-005",
+      "type": "freeform",
+      "question": "What are Core Data relationships and why are they important?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Relationships model connections between entities, enabling normalized data storage and referential integrity.",
+      "difficulty": 2,
+      "tags": ["Relationships", "Data Modeling"]
+    },
+    {
+      "id": "coredata-006",
+      "type": "multiple_choice",
+      "question": "What is the difference between cascade and nullify delete rules?",
+      "choices": ["Cascade deletes related objects, nullify sets relationships to nil", "No difference", "Cascade is faster", "Nullify deletes everything"],
+      "answer": "Cascade deletes related objects, nullify sets relationships to nil",
+      "explanation": "Cascade delete rule removes related objects, while nullify simply sets the relationship to nil.",
+      "difficulty": 2,
+      "tags": ["Delete Rules", "Relationships"]
+    },
+    {
+      "id": "coredata-007",
+      "type": "multiple_choice",
+      "question": "What is NSManagedObject?",
+      "choices": ["Base class for Core Data model objects", "A context manager", "A fetch request", "A persistent store"],
+      "answer": "Base class for Core Data model objects",
+      "explanation": "NSManagedObject is the base class that provides the basic behavior for Core Data model objects.",
+      "difficulty": 1,
+      "tags": ["NSManagedObject", "Model Objects"]
+    },
+    {
+      "id": "coredata-008",
+      "type": "freeform",
+      "question": "Explain the purpose of @FetchRequest in SwiftUI.",
+      "choices": null,
+      "answer": null,
+      "explanation": "@FetchRequest automatically fetches and updates Core Data objects in SwiftUI views, providing reactive data binding.",
+      "difficulty": 2,
+      "tags": ["@FetchRequest", "SwiftUI"]
+    },
+    {
+      "id": "coredata-009",
+      "type": "multiple_choice",
+      "question": "What is a Core Data migration?",
+      "choices": ["Updating data model versions", "Moving data between apps", "Backing up data", "Optimizing performance"],
+      "answer": "Updating data model versions",
+      "explanation": "Migration updates existing data when the Core Data model changes between app versions.",
+      "difficulty": 3,
+      "tags": ["Migration", "Data Model"]
+    },
+    {
+      "id": "coredata-010",
+      "type": "multiple_choice",
+      "question": "What does NSFetchedResultsController provide?",
+      "choices": ["Efficient table view data source", "Network requests", "Image caching", "User authentication"],
+      "answer": "Efficient table view data source",
+      "explanation": "NSFetchedResultsController efficiently manages fetched results for table views with automatic updates.",
+      "difficulty": 2,
+      "tags": ["NSFetchedResultsController", "UITableView"]
+    },
+    {
+      "id": "coredata-011",
+      "type": "freeform",
+      "question": "What is the difference between lightweight and heavyweight migration?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Lightweight migration is automatic for simple schema changes, while heavyweight requires custom mapping models.",
+      "difficulty": 3,
+      "tags": ["Migration", "Schema Changes"]
+    },
+    {
+      "id": "coredata-012",
+      "type": "multiple_choice",
+      "question": "What is NSPredicate used for in Core Data?",
+      "choices": ["Filtering fetch requests", "Creating objects", "Saving data", "Defining relationships"],
+      "answer": "Filtering fetch requests",
+      "explanation": "NSPredicate defines logical conditions to filter which objects are returned by a fetch request.",
+      "difficulty": 2,
+      "tags": ["NSPredicate", "Filtering"]
+    },
+    {
+      "id": "coredata-013",
+      "type": "multiple_choice",
+      "question": "What happens if you don't save a context before the app terminates?",
+      "choices": ["Changes are lost", "Automatic save occurs", "App crashes", "Data corrupts"],
+      "answer": "Changes are lost",
+      "explanation": "Unsaved changes in a context are lost when the context is deallocated or the app terminates.",
+      "difficulty": 2,
+      "tags": ["Context Management", "Data Loss"]
+    },
+    {
+      "id": "coredata-014",
+      "type": "freeform",
+      "question": "What are Core Data faults and how do they work?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Faults are placeholder objects that load data on-demand, optimizing memory usage and performance.",
+      "difficulty": 3,
+      "tags": ["Faults", "Performance"]
+    },
+    {
+      "id": "coredata-015",
+      "type": "multiple_choice",
+      "question": "What is the purpose of NSSortDescriptor?",
+      "choices": ["Ordering fetch request results", "Filtering data", "Creating indexes", "Validating data"],
+      "answer": "Ordering fetch request results",
+      "explanation": "NSSortDescriptor specifies how to sort the results returned by a fetch request.",
+      "difficulty": 1,
+      "tags": ["NSSortDescriptor", "Sorting"]
+    },
+    {
+      "id": "coredata-016",
+      "type": "multiple_choice",
+      "question": "What is batch processing in Core Data?",
+      "choices": ["Operations on many objects without loading them", "Saving multiple contexts", "Parallel fetching", "Automatic migrations"],
+      "answer": "Operations on many objects without loading them",
+      "explanation": "Batch operations perform updates or deletes directly in the store without loading objects into memory.",
+      "difficulty": 3,
+      "tags": ["Batch Operations", "Performance"]
+    },
+    {
+      "id": "coredata-017",
+      "type": "freeform",
+      "question": "What is Core Data concurrency and how do you handle it?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Core Data supports concurrent access through different context types and proper thread confinement.",
+      "difficulty": 3,
+      "tags": ["Concurrency", "Threading"]
+    },
+    {
+      "id": "coredata-018",
+      "type": "multiple_choice",
+      "question": "What is the purpose of validation in Core Data?",
+      "choices": ["Ensuring data integrity", "Improving performance", "Handling errors", "Managing memory"],
+      "answer": "Ensuring data integrity",
+      "explanation": "Validation rules ensure that data conforms to specified constraints before being saved.",
+      "difficulty": 2,
+      "tags": ["Validation", "Data Integrity"]
+    },
+    {
+      "id": "coredata-019",
+      "type": "multiple_choice",
+      "question": "What is NSManagedObjectModel?",
+      "choices": ["Definition of entities and relationships", "A context for operations", "A persistent store", "A fetch request"],
+      "answer": "Definition of entities and relationships",
+      "explanation": "NSManagedObjectModel describes the structure of your data including entities, attributes, and relationships.",
+      "difficulty": 2,
+      "tags": ["NSManagedObjectModel", "Data Model"]
+    },
+    {
+      "id": "coredata-020",
+      "type": "freeform",
+      "question": "How do you handle Core Data errors and what are common causes?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Core Data errors include validation failures, merge conflicts, and disk space issues, handled through error objects and proper exception handling.",
+      "difficulty": 2,
+      "tags": ["Error Handling", "Debugging"]
+    }
+  ]
+}

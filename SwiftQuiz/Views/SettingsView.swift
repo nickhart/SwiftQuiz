@@ -212,6 +212,27 @@ struct SettingsView: View {
                     }
                 }
 
+                Section(header: Text("Quiz Categories")) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Choose which categories to include in your quizzes:")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    ForEach(self.settingsService.availableCategories, id: \.self) { category in
+                        Toggle(category, isOn: Binding(
+                            get: { self.settingsService.isCategoryEnabled(category) },
+                            set: { self.settingsService.toggleCategory(category, enabled: $0) }
+                        ))
+                    }
+
+                    if self.settingsService.enabledCategories.isEmpty {
+                        Text("At least one category must be enabled")
+                            .font(.caption)
+                            .foregroundColor(.orange)
+                    }
+                }
+
                 Section(header: Text("Help & Support")) {
                     Button("Show AI Setup Guide") {
                         self.showOnboarding = true
@@ -290,6 +311,10 @@ struct SettingsView: View {
         self.settingsService.updateProvider(.disabled)
         self.settingsService.updateClaudeAPIKey("")
         self.settingsService.updateOpenAIAPIKey("")
+
+        // Reset category settings
+        self.settingsService.enabledCategories = ["Swift"]
+        UserDefaults.standard.removeObject(forKey: "enabled_categories")
 
         // Reset notification settings
         self.notificationService.toggleReminder(false)

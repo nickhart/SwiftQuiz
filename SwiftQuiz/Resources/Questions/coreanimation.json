@@ -1,0 +1,205 @@
+{
+  "category": "Core Animation",
+  "questions": [
+    {
+      "id": "coreanimation-001",
+      "type": "multiple_choice",
+      "question": "What is CALayer?",
+      "choices": ["The fundamental class for animations and drawing", "A view controller", "A data model", "A gesture recognizer"],
+      "answer": "The fundamental class for animations and drawing",
+      "explanation": "CALayer is the base class that manages image-based content and coordinates animations.",
+      "difficulty": 2,
+      "tags": ["CALayer", "Basics"]
+    },
+    {
+      "id": "coreanimation-002",
+      "type": "freeform",
+      "question": "What is the difference between UIView animations and Core Animation?",
+      "choices": null,
+      "answer": null,
+      "explanation": "UIView animations are higher-level convenience methods built on top of Core Animation's lower-level layer animations.",
+      "difficulty": 2,
+      "tags": ["UIView", "Comparison"]
+    },
+    {
+      "id": "coreanimation-003",
+      "type": "multiple_choice",
+      "question": "What is CABasicAnimation used for?",
+      "choices": ["Animating single property changes", "Complex path animations", "Spring animations", "Group animations"],
+      "answer": "Animating single property changes",
+      "explanation": "CABasicAnimation animates a single property from one value to another over time.",
+      "difficulty": 1,
+      "tags": ["CABasicAnimation", "Property Animation"]
+    },
+    {
+      "id": "coreanimation-004",
+      "type": "multiple_choice",
+      "question": "What does the layer's presentation layer represent?",
+      "choices": ["Current animated values during animation", "Final animation values", "Initial animation values", "Static layer properties"],
+      "answer": "Current animated values during animation",
+      "explanation": "The presentation layer shows the current animated values while animations are running.",
+      "difficulty": 2,
+      "tags": ["Presentation Layer", "Animation State"]
+    },
+    {
+      "id": "coreanimation-005",
+      "type": "freeform",
+      "question": "What is CAKeyframeAnimation and when would you use it?",
+      "choices": null,
+      "answer": null,
+      "explanation": "CAKeyframeAnimation allows complex animations with multiple values or paths, useful for non-linear animations.",
+      "difficulty": 2,
+      "tags": ["CAKeyframeAnimation", "Complex Animation"]
+    },
+    {
+      "id": "coreanimation-006",
+      "type": "multiple_choice",
+      "question": "What is the purpose of CAAnimationGroup?",
+      "choices": ["Synchronize multiple animations", "Create spring animations", "Handle user interactions", "Manage layer hierarchy"],
+      "answer": "Synchronize multiple animations",
+      "explanation": "CAAnimationGroup allows multiple animations to run simultaneously with synchronized timing.",
+      "difficulty": 2,
+      "tags": ["CAAnimationGroup", "Multiple Animations"]
+    },
+    {
+      "id": "coreanimation-007",
+      "type": "multiple_choice",
+      "question": "What is implicit animation in Core Animation?",
+      "choices": ["Automatic animation of animatable properties", "Manual animation setup", "User-triggered animations", "Background animations"],
+      "answer": "Automatic animation of animatable properties",
+      "explanation": "Implicit animations automatically occur when you change animatable properties of a layer.",
+      "difficulty": 2,
+      "tags": ["Implicit Animation", "Automatic Animation"]
+    },
+    {
+      "id": "coreanimation-008",
+      "type": "freeform",
+      "question": "How do you disable implicit animations?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Use CATransaction.setDisableActions(true) or set the layer's actions dictionary to disable specific animations.",
+      "difficulty": 2,
+      "tags": ["CATransaction", "Disable Animation"]
+    },
+    {
+      "id": "coreanimation-009",
+      "type": "multiple_choice",
+      "question": "What is CADisplayLink used for?",
+      "choices": ["Synchronizing animations with screen refresh", "Creating layer content", "Handling touch events", "Managing memory"],
+      "answer": "Synchronizing animations with screen refresh",
+      "explanation": "CADisplayLink synchronizes animations with the display's refresh rate for smooth animation.",
+      "difficulty": 2,
+      "tags": ["CADisplayLink", "Refresh Rate"]
+    },
+    {
+      "id": "coreanimation-010",
+      "type": "multiple_choice",
+      "question": "What is the purpose of timing functions in animations?",
+      "choices": ["Control animation pacing and easing", "Set animation duration", "Define animation colors", "Handle animation completion"],
+      "answer": "Control animation pacing and easing",
+      "explanation": "Timing functions control how animation values change over time, providing easing effects.",
+      "difficulty": 2,
+      "tags": ["Timing Functions", "Easing"]
+    },
+    {
+      "id": "coreanimation-011",
+      "type": "freeform",
+      "question": "What is the difference between model layer and presentation layer?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Model layer holds final values, while presentation layer shows current animated values during animation.",
+      "difficulty": 3,
+      "tags": ["Model Layer", "Layer Architecture"]
+    },
+    {
+      "id": "coreanimation-012",
+      "type": "multiple_choice",
+      "question": "What does fillMode determine in animations?",
+      "choices": ["How animation values persist before/after animation", "Animation speed", "Animation direction", "Animation repetition"],
+      "answer": "How animation values persist before/after animation",
+      "explanation": "fillMode controls whether animation values are visible before the animation starts or after it ends.",
+      "difficulty": 2,
+      "tags": ["Fill Mode", "Animation Persistence"]
+    },
+    {
+      "id": "coreanimation-013",
+      "type": "multiple_choice",
+      "question": "What is CAShapeLayer particularly useful for?",
+      "choices": ["Drawing and animating vector paths", "Displaying images", "Creating text", "Handling gestures"],
+      "answer": "Drawing and animating vector paths",
+      "explanation": "CAShapeLayer efficiently draws and animates vector-based shapes using CGPath.",
+      "difficulty": 2,
+      "tags": ["CAShapeLayer", "Vector Graphics"]
+    },
+    {
+      "id": "coreanimation-014",
+      "type": "freeform",
+      "question": "What is CATransaction and how does it work?",
+      "choices": null,
+      "answer": null,
+      "explanation": "CATransaction groups layer changes and controls their animation behavior, providing batch updates and timing control.",
+      "difficulty": 3,
+      "tags": ["CATransaction", "Batch Updates"]
+    },
+    {
+      "id": "coreanimation-015",
+      "type": "multiple_choice",
+      "question": "What is the purpose of autoreverses in animations?",
+      "choices": ["Makes animation play backward after completion", "Reverses animation direction", "Undoes animation effects", "Creates mirror effects"],
+      "answer": "Makes animation play backward after completion",
+      "explanation": "autoreverses makes the animation play in reverse after reaching the end, creating a back-and-forth effect.",
+      "difficulty": 1,
+      "tags": ["autoreverses", "Animation Direction"]
+    },
+    {
+      "id": "coreanimation-016",
+      "type": "multiple_choice",
+      "question": "What is CAGradientLayer used for?",
+      "choices": ["Creating gradient backgrounds", "Animating colors", "Drawing shapes", "Managing transparency"],
+      "answer": "Creating gradient backgrounds",
+      "explanation": "CAGradientLayer efficiently renders color gradients with customizable colors and directions.",
+      "difficulty": 1,
+      "tags": ["CAGradientLayer", "Gradients"]
+    },
+    {
+      "id": "coreanimation-017",
+      "type": "freeform",
+      "question": "How do you create a spring animation in Core Animation?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Use CASpringAnimation or UIView spring animation methods to create animations with spring physics.",
+      "difficulty": 2,
+      "tags": ["CASpringAnimation", "Spring Physics"]
+    },
+    {
+      "id": "coreanimation-018",
+      "type": "multiple_choice",
+      "question": "What is the delegate property used for in CAAnimation?",
+      "choices": ["Receiving animation lifecycle callbacks", "Controlling animation speed", "Setting animation values", "Managing memory"],
+      "answer": "Receiving animation lifecycle callbacks",
+      "explanation": "The delegate receives callbacks when animations start, stop, or complete.",
+      "difficulty": 2,
+      "tags": ["CAAnimationDelegate", "Callbacks"]
+    },
+    {
+      "id": "coreanimation-019",
+      "type": "multiple_choice",
+      "question": "What does removedOnCompletion control?",
+      "choices": ["Whether animation is removed when finished", "Animation completion time", "Animation repetition", "Animation visibility"],
+      "answer": "Whether animation is removed when finished",
+      "explanation": "removedOnCompletion determines if the animation object is automatically removed when the animation completes.",
+      "difficulty": 2,
+      "tags": ["removedOnCompletion", "Animation Lifecycle"]
+    },
+    {
+      "id": "coreanimation-020",
+      "type": "freeform",
+      "question": "What are the performance considerations when using Core Animation?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Consider GPU capabilities, layer count, animation complexity, and memory usage to maintain smooth 60fps performance.",
+      "difficulty": 3,
+      "tags": ["Performance", "Optimization"]
+    }
+  ]
+}
