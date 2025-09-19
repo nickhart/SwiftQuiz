@@ -1,0 +1,205 @@
+{
+  "category": "Advanced Swift",
+  "questions": [
+    {
+      "id": "swift-adv-001",
+      "type": "multiple_choice",
+      "question": "What is the difference between escaping and non-escaping closures?",
+      "choices": ["Escaping closures outlive the function call", "Non-escaping closures run on background threads", "Escaping closures are faster", "There is no difference"],
+      "answer": "Escaping closures outlive the function call",
+      "explanation": "Escaping closures can be called after the function returns, while non-escaping closures must be called before the function returns.",
+      "difficulty": 3,
+      "tags": ["Closures", "Memory Management"]
+    },
+    {
+      "id": "swift-adv-002",
+      "type": "freeform",
+      "question": "Explain the difference between weak and unowned references.",
+      "choices": null,
+      "answer": null,
+      "explanation": "Weak references become nil when the referenced object is deallocated, while unowned references assume the object still exists.",
+      "difficulty": 3,
+      "tags": ["Memory Management", "ARC"]
+    },
+    {
+      "id": "swift-adv-003",
+      "type": "multiple_choice",
+      "question": "What is a protocol extension's primary purpose?",
+      "choices": ["To add default implementations", "To create new protocols", "To inherit from classes", "To override methods"],
+      "answer": "To add default implementations",
+      "explanation": "Protocol extensions provide default implementations for protocol methods and computed properties.",
+      "difficulty": 2,
+      "tags": ["Protocols", "Extensions"]
+    },
+    {
+      "id": "swift-adv-004",
+      "type": "freeform",
+      "question": "What are associated types in protocols?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Associated types define placeholder names for types that are used as part of the protocol.",
+      "difficulty": 3,
+      "tags": ["Protocols", "Generics"]
+    },
+    {
+      "id": "swift-adv-005",
+      "type": "multiple_choice",
+      "question": "What does the @autoclosure attribute do?",
+      "choices": ["Automatically wraps expressions in a closure", "Creates async closures", "Optimizes closure performance", "Makes closures escaping"],
+      "answer": "Automatically wraps expressions in a closure",
+      "explanation": "@autoclosure automatically wraps an expression in a closure, allowing delayed evaluation.",
+      "difficulty": 3,
+      "tags": ["Attributes", "Closures"]
+    },
+    {
+      "id": "swift-adv-006",
+      "type": "multiple_choice",
+      "question": "When would you use the 'defer' statement?",
+      "choices": ["To execute code before function returns", "To delay function execution", "To handle errors", "To create async operations"],
+      "answer": "To execute code before function returns",
+      "explanation": "defer ensures code executes just before the current scope exits, regardless of how it exits.",
+      "difficulty": 2,
+      "tags": ["Control Flow", "defer"]
+    },
+    {
+      "id": "swift-adv-007",
+      "type": "freeform",
+      "question": "What is type erasure and why is it useful?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Type erasure hides specific generic type information, allowing different generic types to be treated uniformly.",
+      "difficulty": 3,
+      "tags": ["Generics", "Type Erasure"]
+    },
+    {
+      "id": "swift-adv-008",
+      "type": "multiple_choice",
+      "question": "What is the purpose of 'inout' parameters?",
+      "choices": ["To modify parameter values", "To pass optional values", "To create async parameters", "To handle errors"],
+      "answer": "To modify parameter values",
+      "explanation": "inout parameters allow functions to modify the original value passed as an argument.",
+      "difficulty": 2,
+      "tags": ["Parameters", "inout"]
+    },
+    {
+      "id": "swift-adv-009",
+      "type": "multiple_choice",
+      "question": "What does the 'lazy' keyword do for stored properties?",
+      "choices": ["Delays initialization until first access", "Makes properties optional", "Creates computed properties", "Enables async access"],
+      "answer": "Delays initialization until first access",
+      "explanation": "lazy stored properties are not initialized until they are first accessed.",
+      "difficulty": 2,
+      "tags": ["Properties", "lazy"]
+    },
+    {
+      "id": "swift-adv-010",
+      "type": "freeform",
+      "question": "Explain the difference between 'throws' and 'rethrows'.",
+      "choices": null,
+      "answer": null,
+      "explanation": "'throws' indicates a function can throw errors, while 'rethrows' indicates it only throws if its closure parameter throws.",
+      "difficulty": 3,
+      "tags": ["Error Handling", "throws", "rethrows"]
+    },
+    {
+      "id": "swift-adv-011",
+      "type": "multiple_choice",
+      "question": "What is a phantom type?",
+      "choices": ["A generic type parameter that doesn't store values", "An optional type", "A protocol type", "An abstract class"],
+      "answer": "A generic type parameter that doesn't store values",
+      "explanation": "Phantom types are generic parameters used for type safety without storing actual values of that type.",
+      "difficulty": 3,
+      "tags": ["Generics", "Type Safety"]
+    },
+    {
+      "id": "swift-adv-012",
+      "type": "multiple_choice",
+      "question": "What does '@discardableResult' attribute do?",
+      "choices": ["Silences warnings about unused return values", "Makes functions async", "Caches function results", "Enables result optimization"],
+      "answer": "Silences warnings about unused return values",
+      "explanation": "@discardableResult suppresses compiler warnings when a function's return value is not used.",
+      "difficulty": 2,
+      "tags": ["Attributes", "Return Values"]
+    },
+    {
+      "id": "swift-adv-013",
+      "type": "freeform",
+      "question": "What are keypaths and how are they used?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Keypaths are references to properties that can be passed around and used to get/set values dynamically.",
+      "difficulty": 3,
+      "tags": ["Keypaths", "Dynamic Access"]
+    },
+    {
+      "id": "swift-adv-014",
+      "type": "multiple_choice",
+      "question": "What is the purpose of 'some' in return types?",
+      "choices": ["Enables opaque return types", "Creates optional returns", "Makes async returns", "Handles error returns"],
+      "answer": "Enables opaque return types",
+      "explanation": "'some' creates opaque return types, hiding the concrete type while preserving type relationships.",
+      "difficulty": 3,
+      "tags": ["Opaque Types", "some"]
+    },
+    {
+      "id": "swift-adv-015",
+      "type": "multiple_choice",
+      "question": "When should you use 'final' on a class?",
+      "choices": ["To prevent inheritance", "To mark the last property", "To optimize performance", "To enable protocols"],
+      "answer": "To prevent inheritance",
+      "explanation": "final prevents a class from being subclassed and its methods from being overridden.",
+      "difficulty": 2,
+      "tags": ["Classes", "final", "Inheritance"]
+    },
+    {
+      "id": "swift-adv-016",
+      "type": "freeform",
+      "question": "What is copy-on-write and how does Swift use it?",
+      "choices": null,
+      "answer": null,
+      "explanation": "Copy-on-write optimizes performance by sharing data until a modification occurs, then creating a copy.",
+      "difficulty": 3,
+      "tags": ["Performance", "Copy-on-Write"]
+    },
+    {
+      "id": "swift-adv-017",
+      "type": "multiple_choice",
+      "question": "What does '@propertyWrapper' enable?",
+      "choices": ["Custom property behavior", "Async properties", "Optional properties", "Static properties"],
+      "answer": "Custom property behavior",
+      "explanation": "@propertyWrapper allows encapsulating common property patterns and reusing them across types.",
+      "difficulty": 3,
+      "tags": ["Property Wrappers", "Attributes"]
+    },
+    {
+      "id": "swift-adv-018",
+      "type": "multiple_choice",
+      "question": "What is the difference between 'mutating' and non-mutating methods?",
+      "choices": ["mutating methods can modify value types", "mutating methods are async", "mutating methods handle errors", "No difference"],
+      "answer": "mutating methods can modify value types",
+      "explanation": "mutating methods can modify properties of value types like structs and enums.",
+      "difficulty": 2,
+      "tags": ["Value Types", "mutating"]
+    },
+    {
+      "id": "swift-adv-019",
+      "type": "freeform",
+      "question": "Explain the concept of existential types in Swift.",
+      "choices": null,
+      "answer": null,
+      "explanation": "Existential types allow using protocols as concrete types, enabling dynamic dispatch and type erasure.",
+      "difficulty": 3,
+      "tags": ["Protocols", "Existential Types"]
+    },
+    {
+      "id": "swift-adv-020",
+      "type": "multiple_choice",
+      "question": "What is the purpose of '@objc' attribute?",
+      "choices": ["Makes Swift code available to Objective-C", "Creates objects", "Enables protocols", "Optimizes performance"],
+      "answer": "Makes Swift code available to Objective-C",
+      "explanation": "@objc exposes Swift declarations to Objective-C runtime, enabling interoperability.",
+      "difficulty": 2,
+      "tags": ["Objective-C", "Interoperability", "Attributes"]
+    }
+  ]
+}

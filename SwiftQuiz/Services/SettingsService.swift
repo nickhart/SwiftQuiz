@@ -19,6 +19,7 @@ final class SettingsService: ObservableObject {
     @Published var claudeAPIKey: String = ""
     @Published var openAIAPIKey: String = ""
     @Published var isCloudKitSyncing: Bool = false
+    @Published var enabledCategories: Set<String> = ["Swift"]
 
     // MARK: - Private Properties
 
@@ -148,6 +149,26 @@ final class SettingsService: ObservableObject {
         return "⚠️ Unable to validate API key"
     }
 
+    /// Available question categories
+    var availableCategories: [String] {
+        ["Swift", "Advanced Swift", "Core Data", "Core Animation"]
+    }
+
+    /// Toggle a category on/off
+    func toggleCategory(_ category: String, enabled: Bool) {
+        if enabled {
+            self.enabledCategories.insert(category)
+        } else {
+            self.enabledCategories.remove(category)
+        }
+        self.saveCategoriesToUserDefaults()
+    }
+
+    /// Check if a category is enabled
+    func isCategoryEnabled(_ category: String) -> Bool {
+        self.enabledCategories.contains(category)
+    }
+
     // MARK: - Private Methods
 
     private func loadSettings() {
@@ -173,10 +194,14 @@ final class SettingsService: ObservableObject {
             self.openAIAPIKey = self.loadAPIKeyFromKeychain(reference: openAIRef) ?? ""
         }
 
+        // Load categories from UserDefaults
+        self.loadCategoriesFromUserDefaults()
+
         print(
             """
             ⚙️ Settings: Loaded settings - Provider: \(self.aiProvider), \
-            Claude key: \(!self.claudeAPIKey.isEmpty), OpenAI key: \(!self.openAIAPIKey.isEmpty)
+            Claude key: \(!self.claudeAPIKey.isEmpty), OpenAI key: \(!self.openAIAPIKey.isEmpty), \
+            Categories: \(self.enabledCategories)
             """
         )
     }
@@ -282,5 +307,16 @@ final class SettingsService: ObservableObject {
         self.userDefaults.removeObject(forKey: "openai_api_key")
 
         print("✅ Settings: Migration from UserDefaults completed")
+    }
+
+    private func loadCategoriesFromUserDefaults() {
+        let categoriesArray = self.userDefaults.stringArray(forKey: "enabled_categories") ?? ["Swift"]
+        self.enabledCategories = Set(categoriesArray)
+    }
+
+    private func saveCategoriesToUserDefaults() {
+        let categoriesArray = Array(enabledCategories)
+        self.userDefaults.set(categoriesArray, forKey: "enabled_categories")
+        self.userDefaults.synchronize()
     }
 }
