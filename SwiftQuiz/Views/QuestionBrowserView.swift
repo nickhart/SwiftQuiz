@@ -66,123 +66,121 @@ struct QuestionBrowserView: View {
     }
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: 0) {
-                // Search and Filter Section
-                VStack(spacing: 12) {
-                    // Search Bar
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.secondary)
-                        TextField("Search questions...", text: self.$searchText)
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(Color(.systemGray6))
-                    .cornerRadius(8)
-
-                    // Category Picker
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(self.availableCategories, id: \.self) { category in
-                                let count = category == "All" ? self.questions
-                                    .count : (self.questionCountByCategory[category] ?? 0)
-
-                                Button(action: {
-                                    self.selectedCategory = category
-                                }, label: {
-                                    HStack(spacing: 4) {
-                                        Text(category)
-                                            .font(.subheadline)
-                                            .fontWeight(.medium)
-
-                                        Text("(\(count))")
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
-                                    }
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 6)
-                                    .background(self.selectedCategory == category ? Color.blue : Color(.systemGray5))
-                                    .foregroundColor(self.selectedCategory == category ? .white : .primary)
-                                    .cornerRadius(16)
-                                })
-                            }
-                        }
-                        .padding(.horizontal)
-                    }
-
-                    // Filter Toggle Buttons
-                    HStack(spacing: 12) {
-                        Button(action: {
-                            self.showingOnlyAnswered.toggle()
-                            if self.showingOnlyAnswered {
-                                self.showingOnlyUnanswered = false
-                            }
-                        }, label: {
-                            HStack(spacing: 4) {
-                                Image(systemName: self.showingOnlyAnswered ? "checkmark.circle.fill" : "circle")
-                                Text("Answered")
-                                    .font(.caption)
-                            }
-                            .foregroundColor(self.showingOnlyAnswered ? .green : .secondary)
-                        })
-
-                        Button(action: {
-                            self.showingOnlyUnanswered.toggle()
-                            if self.showingOnlyUnanswered {
-                                self.showingOnlyAnswered = false
-                            }
-                        }, label: {
-                            HStack(spacing: 4) {
-                                Image(systemName: self.showingOnlyUnanswered ? "checkmark.circle.fill" : "circle")
-                                Text("Unanswered")
-                                    .font(.caption)
-                            }
-                            .foregroundColor(self.showingOnlyUnanswered ? .orange : .secondary)
-                        })
-
-                        Spacer()
-
-                        Text("\(self.filteredQuestions.count) questions")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+        VStack(spacing: 0) {
+            // Search and Filter Section
+            VStack(spacing: 12) {
+                // Search Bar
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.secondary)
+                    TextField("Search questions...", text: self.$searchText)
                 }
-                .padding()
-                .background(Color(.systemBackground))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
 
-                Divider()
+                // Category Picker
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(self.availableCategories, id: \.self) { category in
+                            let count = category == "All" ? self.questions
+                                .count : (self.questionCountByCategory[category] ?? 0)
 
-                // Questions List
-                if self.filteredQuestions.isEmpty {
-                    VStack(spacing: 16) {
-                        Image(systemName: "magnifyingglass")
-                            .font(.system(size: 48))
-                            .foregroundColor(.secondary)
+                            Button(action: {
+                                self.selectedCategory = category
+                            }, label: {
+                                HStack(spacing: 4) {
+                                    Text(category)
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
 
-                        Text("No questions found")
-                            .font(.title2)
-                            .fontWeight(.medium)
-
-                        Text("Try adjusting your search or filter criteria")
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
+                                    Text("(\(count))")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(self.selectedCategory == category ? Color.blue : Color(.systemGray5))
+                                .foregroundColor(self.selectedCategory == category ? .white : .primary)
+                                .cornerRadius(16)
+                            })
+                        }
                     }
-                    .padding()
+                    .padding(.horizontal)
+                }
+
+                // Filter Toggle Buttons
+                HStack(spacing: 12) {
+                    Button(action: {
+                        self.showingOnlyAnswered.toggle()
+                        if self.showingOnlyAnswered {
+                            self.showingOnlyUnanswered = false
+                        }
+                    }, label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: self.showingOnlyAnswered ? "checkmark.circle.fill" : "circle")
+                            Text("Answered")
+                                .font(.caption)
+                        }
+                        .foregroundColor(self.showingOnlyAnswered ? .green : .secondary)
+                    })
+
+                    Button(action: {
+                        self.showingOnlyUnanswered.toggle()
+                        if self.showingOnlyUnanswered {
+                            self.showingOnlyAnswered = false
+                        }
+                    }, label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: self.showingOnlyUnanswered ? "checkmark.circle.fill" : "circle")
+                            Text("Unanswered")
+                                .font(.caption)
+                        }
+                        .foregroundColor(self.showingOnlyUnanswered ? .orange : .secondary)
+                    })
+
                     Spacer()
-                } else {
-                    List(self.filteredQuestions, id: \.id) { question in
-                        QuestionRowView(question: question)
-                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                    }
-                    .listStyle(PlainListStyle())
+
+                    Text("\(self.filteredQuestions.count) questions")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
             }
-            .navigationTitle("Question Bank")
-            #if os(iOS)
-                .navigationBarTitleDisplayMode(.large)
-            #endif
+            .padding()
+            .background(Color(.systemBackground))
+
+            Divider()
+
+            // Questions List
+            if self.filteredQuestions.isEmpty {
+                VStack(spacing: 16) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 48))
+                        .foregroundColor(.secondary)
+
+                    Text("No questions found")
+                        .font(.title2)
+                        .fontWeight(.medium)
+
+                    Text("Try adjusting your search or filter criteria")
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding()
+                Spacer()
+            } else {
+                List(self.filteredQuestions, id: \.id) { question in
+                    QuestionRowView(question: question)
+                        .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                }
+                .listStyle(PlainListStyle())
+            }
         }
+        .navigationTitle("Question Bank")
+        #if os(iOS)
+            .navigationBarTitleDisplayMode(.large)
+        #endif
     }
 }
 
