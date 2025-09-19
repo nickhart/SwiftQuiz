@@ -30,15 +30,18 @@ class QuizSessionService: ObservableObject {
     private let context: NSManagedObjectContext
     private let aiService: AIService
     private let settingsService: SettingsService
+    private let dailyRegimenService: DailyRegimenService
 
     @Published var currentSession: QuizSession?
     @Published var lastEvaluationResult: QuizEvaluationResult?
     @Published var isEvaluating = false
 
-    init(context: NSManagedObjectContext, aiService: AIService = .shared, settingsService: SettingsService = .shared) {
+    init(context: NSManagedObjectContext, aiService: AIService = .shared, settingsService: SettingsService = .shared,
+         dailyRegimenService: DailyRegimenService = .shared) {
         self.context = context
         self.aiService = aiService
         self.settingsService = settingsService
+        self.dailyRegimenService = dailyRegimenService
     }
 
     func startQuizSession(config: QuizSessionConfig = QuizSessionConfig()) throws -> QuizSession {
@@ -52,9 +55,14 @@ class QuizSessionService: ObservableObject {
         guard var session = currentSession else { return }
         session.addAnswer(answer, for: session.currentQuestionIndex)
         self.currentSession = session
+    }
+
+    func handleMaybeCompletedSession(_ session: QuizSession? = nil) {
+        guard let session = session ?? currentSession else { return }
 
         if session.isCompleted {
             Task {
+                try? await Task.sleep(for: .seconds(1), tolerance: .seconds(1))
                 await self.evaluateCompletedSession()
             }
         }
@@ -64,12 +72,6 @@ class QuizSessionService: ObservableObject {
         guard var session = currentSession else { return }
         session.skipCurrentQuestion()
         self.currentSession = session
-
-        if session.isCompleted {
-            Task {
-                await self.evaluateCompletedSession()
-            }
-        }
     }
 
     func abandonCurrentSession() {
@@ -136,10 +138,17 @@ class QuizSessionService: ObservableObject {
             // Save individual results to Core Data
             await self.saveSessionResults(session: session, evaluation: result)
 
+            // Record progress in daily regimen
+            self.dailyRegimenService.recordProgress(from: session, evaluation: result)
+
         } catch {
             print("❌ Failed to evaluate quiz session: \(error)")
             // Create a basic evaluation result as fallback
-            self.lastEvaluationResult = self.createFallbackEvaluation(for: session)
+            let fallbackResult = self.createFallbackEvaluation(for: session)
+            self.lastEvaluationResult = fallbackResult
+
+            // Still record progress for daily regimen
+            self.dailyRegimenService.recordProgress(from: session, evaluation: fallbackResult)
         }
 
         self.isEvaluating = false
