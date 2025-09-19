@@ -43,7 +43,9 @@ struct BadgeCollectionView: View {
         }
         .sqNavigationTitle("Achievements", displayMode: SQNavigationBarDisplayMode.large)
         .onAppear {
-            self.loadBadges()
+            Task {
+                self.loadBadges()
+            }
         }
     }
 

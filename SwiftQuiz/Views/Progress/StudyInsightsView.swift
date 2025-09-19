@@ -51,7 +51,9 @@ struct StudyInsightsView: View {
         }
         .sqNavigationTitle("Insights", displayMode: SQNavigationBarDisplayMode.inline)
         .onAppear {
-            self.loadInsights()
+            Task {
+                self.loadInsights()
+            }
         }
     }
 

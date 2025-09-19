@@ -121,7 +121,10 @@ struct CategoryDetailCard: View {
                             GridItem(.flexible()),
                             GridItem(.flexible()),
                         ], spacing: 8) {
-                            ForEach(self.category.subcategories ?? [], id: \.self) { subcategory in
+                            ForEach(
+                                Array((self.category.subcategories ?? []).enumerated()),
+                                id: \.offset
+                            ) { _, subcategory in
                                 Text(subcategory)
                                     .font(.caption)
                                     .padding(.horizontal, 8)

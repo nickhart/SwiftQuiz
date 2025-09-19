@@ -76,7 +76,7 @@ struct PerformanceTrendsView: View {
             .onAppear {
                 self.loadPerformanceData()
             }
-            .onChange(of: self.selectedTimeframe) { _ in
+            .onChange(of: self.selectedTimeframe) {
                 self.loadPerformanceData()
             }
     }

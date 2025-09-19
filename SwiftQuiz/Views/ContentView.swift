@@ -29,13 +29,28 @@ struct ContentView: View {
         NavigationSplitView {
             SidebarView()
         } detail: {
-            switch self.coordinator.selectedDestination {
-            case .todaysQuiz: TodaysQuizView()
-            case .analytics: AnalyticsView()
-            case .questionBank: QuestionBrowserView()
-            case .settings: SettingsView()
-            case .none:
-                Label("Unhandled destination", systemImage: "questionmark")
+            NavigationStack {
+                switch self.coordinator.selectedDestination {
+                case .todaysQuiz: TodaysQuizView()
+                case .analytics: AnalyticsView()
+                    .navigationDestination(for: AnalyticsDestination.self) { destination in
+                        switch destination {
+                        case .performanceTrends:
+                            PerformanceTrendsView()
+                        case .categoryBreakdown:
+                            CategoryBreakdownView()
+                        case .badgeCollection:
+                            BadgeCollectionView()
+                        case .studyInsights:
+                            StudyInsightsView()
+                        }
+                    }
+                case .questionBank: QuestionBrowserView()
+                case .settings: SettingsView()
+                case .none:
+                    Label("Select an item from the sidebar", systemImage: "arrow.left")
+                        .foregroundColor(.secondary)
+                }
             }
         }
         .sqNavigationTitle("Swift Quiz", displayMode: SQNavigationBarDisplayMode.inline)
