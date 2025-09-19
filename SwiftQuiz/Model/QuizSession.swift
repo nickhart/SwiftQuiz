@@ -104,27 +104,6 @@ struct QuizEvaluationResult: Codable {
     }
 }
 
-struct CategoryPerformance: Codable {
-    let category: String
-    let totalQuestions: Int
-    let correctAnswers: Int
-    let score: Double // 0.0 to 1.0
-
-    var scorePercentage: Int {
-        Int(self.score * 100)
-    }
-
-    var performanceLevel: PerformanceLevel {
-        switch self.score {
-        case 0.9...1.0: .excellent
-        case 0.8..<0.9: .good
-        case 0.6..<0.8: .fair
-        case 0.4..<0.6: .needsImprovement
-        default: .poor
-        }
-    }
-}
-
 struct QuestionEvaluationResult: Identifiable, Codable {
     let id = UUID()
     let questionIndex: Int
@@ -133,34 +112,6 @@ struct QuestionEvaluationResult: Identifiable, Codable {
     let feedback: String
     let userAnswer: String?
     let correctAnswer: String
-}
-
-enum PerformanceLevel: String, Codable, CaseIterable {
-    case excellent = "Excellent"
-    case good = "Good"
-    case fair = "Fair"
-    case needsImprovement = "Needs Improvement"
-    case poor = "Poor"
-
-    var emoji: String {
-        switch self {
-        case .excellent: "🌟"
-        case .good: "👍"
-        case .fair: "👌"
-        case .needsImprovement: "📈"
-        case .poor: "📚"
-        }
-    }
-
-    var color: String {
-        switch self {
-        case .excellent: "green"
-        case .good: "blue"
-        case .fair: "orange"
-        case .needsImprovement: "yellow"
-        case .poor: "red"
-        }
-    }
 }
 
 struct QuizSession: Identifiable {

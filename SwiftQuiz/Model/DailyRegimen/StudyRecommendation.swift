@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct StudyRecommendation: Codable, Identifiable {
     let id: UUID
@@ -21,11 +22,19 @@ struct StudyRecommendation: Codable, Identifiable {
         case medium
         case low
 
-        var displayColor: String {
+        var color: Color {
             switch self {
-            case .high: "red"
-            case .medium: "orange"
-            case .low: "blue"
+            case .high: .red
+            case .medium: .orange
+            case .low: .green
+            }
+        }
+
+        var displayName: String {
+            switch self {
+            case .high: "High"
+            case .medium: "Medium"
+            case .low: "Low"
             }
         }
     }

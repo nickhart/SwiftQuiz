@@ -13,34 +13,32 @@ struct DetailedResultsView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 16) {
-                    self.headerSection
+        ScrollView {
+            VStack(spacing: 16) {
+                self.headerSection
 
-                    ForEach(Array(self.session.questions.enumerated()), id: \.offset) { index, question in
-                        self.questionResultCard(
-                            question: question,
-                            questionIndex: index,
-                            userAnswer: self.session.userAnswers[safe: index],
-                            evaluation: self.result.individualResults.first { $0.questionIndex == index }
-                        )
-                    }
+                ForEach(Array(self.session.questions.enumerated()), id: \.offset) { index, question in
+                    self.questionResultCard(
+                        question: question,
+                        questionIndex: index,
+                        userAnswer: self.session.userAnswers[safe: index],
+                        evaluation: self.result.individualResults.first { $0.questionIndex == index }
+                    )
                 }
-                .padding()
             }
-            .navigationTitle("Detailed Results")
-            #if os(iOS)
-                .navigationBarTitleDisplayMode(.inline)
-            #endif
-                .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("Done") {
-                            self.dismiss()
-                        }
+            .padding()
+        }
+        .navigationTitle("Detailed Results")
+        #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+        #endif
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
+                        self.dismiss()
                     }
                 }
-        }
+            }
     }
 
     private var headerSection: some View {
@@ -52,7 +50,7 @@ struct DetailedResultsView: View {
                 Text("\(self.result.scorePercentage)%")
                     .font(.headline)
                     .fontWeight(.bold)
-                    .foregroundColor(self.performanceColor)
+                    .foregroundColor(self.result.performanceLevel.color)
             }
 
             HStack {
@@ -63,7 +61,7 @@ struct DetailedResultsView: View {
                     Text(self.result.performanceLevel.emoji)
                     Text(self.result.performanceLevel.rawValue)
                         .fontWeight(.medium)
-                        .foregroundColor(self.performanceColor)
+                        .foregroundColor(self.result.performanceLevel.color)
                 }
             }
         }
@@ -196,17 +194,6 @@ struct DetailedResultsView: View {
                 .padding(8)
                 .background(Color.blue.opacity(0.1))
                 .cornerRadius(6)
-        }
-    }
-
-    private var performanceColor: Color {
-        switch self.result.performanceLevel.color {
-        case "green": .green
-        case "blue": .blue
-        case "orange": .orange
-        case "yellow": .yellow
-        case "red": .red
-        default: .gray
         }
     }
 }

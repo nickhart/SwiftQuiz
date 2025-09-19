@@ -7,6 +7,40 @@
 
 import Foundation
 
+struct ReminderSettings: Codable {
+    var isEnabled: Bool
+    var preferredTime: Date
+    var allowFollowUp: Bool
+    var streakRecoveryEnabled: Bool
+
+    init(isEnabled: Bool = true,
+         preferredTime: Date = Calendar.current.date(bySettingHour: 19, minute: 0, second: 0, of: Date()) ?? Date(),
+         allowFollowUp: Bool = true,
+         streakRecoveryEnabled: Bool = true) {
+        self.isEnabled = isEnabled
+        self.preferredTime = preferredTime
+        self.allowFollowUp = allowFollowUp
+        self.streakRecoveryEnabled = streakRecoveryEnabled
+    }
+}
+
+struct AdaptiveSettings: Codable {
+    var enableDifficultyProgression: Bool
+    var focusOnWeakAreas: Bool
+    var spacedRepetitionEnabled: Bool
+    var categoryBalancing: Bool
+
+    init(enableDifficultyProgression: Bool = true,
+         focusOnWeakAreas: Bool = true,
+         spacedRepetitionEnabled: Bool = true,
+         categoryBalancing: Bool = true) {
+        self.enableDifficultyProgression = enableDifficultyProgression
+        self.focusOnWeakAreas = focusOnWeakAreas
+        self.spacedRepetitionEnabled = spacedRepetitionEnabled
+        self.categoryBalancing = categoryBalancing
+    }
+}
+
 struct DailyRegimen: Codable, Identifiable {
     let id: UUID
     var isEnabled: Bool
