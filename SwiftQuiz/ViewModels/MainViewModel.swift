@@ -24,6 +24,14 @@ class MainViewModel: ObservableObject {
 
         self.loadingState = .loading
 
+        // Clear import metadata to force fresh import (DEBUG)
+        let questionFiles = ["swift", "swift_advanced", "coredata", "coreanimation"]
+        for filename in questionFiles {
+            let key = "lastImport_\(filename)"
+            UserDefaults.standard.removeObject(forKey: key)
+            print("🔄 DEBUG: Cleared import metadata for \(filename)")
+        }
+
         assert(context.persistentStoreCoordinator != nil)
         let importer = QuestionImportService(context: context)
 

@@ -1,14 +1,14 @@
 //
-//  QuizModalView.swift
+//  QuizContentView.swift
 //  SwiftQuiz
 //
-//  Created by Nick Hart on 9/17/25.
+//  Created by Nick Hart on 9/19/25.
 //
 
 import CoreData
 import SwiftUI
 
-struct QuizModalView: View {
+struct QuizContentView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var settingsService: SettingsService
     @StateObject private var quizSessionService: QuizSessionService
@@ -26,17 +26,6 @@ struct QuizModalView: View {
     }
 
     var body: some View {
-        #if os(iOS)
-            NavigationView {
-                self.quizContent
-                    .sqNavigationBarStyle(.inline)
-            }
-        #else
-            self.quizContent
-        #endif
-    }
-
-    private var quizContent: some View {
         ZStack {
             if let session = quizSessionService.currentSession {
                 if self.showingScorecard {
@@ -56,14 +45,6 @@ struct QuizModalView: View {
 
             if self.quizSessionService.isEvaluating {
                 self.evaluatingOverlay
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
-                    self.quizSessionService.abandonCurrentSession()
-                    self.dismiss()
-                }
             }
         }
         .onAppear {
@@ -303,5 +284,5 @@ struct QuizModalView: View {
 }
 
 #Preview {
-    QuizModalView(context: PersistenceController.preview.container.viewContext)
+    QuizContentView(context: PersistenceController.preview.container.viewContext)
 }
