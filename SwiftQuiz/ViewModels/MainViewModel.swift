@@ -24,27 +24,21 @@ class MainViewModel: ObservableObject {
 
         self.loadingState = .loading
 
-        // Clear import metadata to force fresh import (DEBUG)
-        let questionFiles = ["swift", "swift_advanced", "coredata", "coreanimation"]
-        for filename in questionFiles {
-            let key = "lastImport_\(filename)"
-            UserDefaults.standard.removeObject(forKey: key)
-            print("🔄 DEBUG: Cleared import metadata for \(filename)")
-        }
+        Task {
+            do {
+                let taxonomyImporter = TaxonomyImportService(context: context)
+                let questionImporter = EnhancedQuestionImportService(context: context)
 
-        assert(context.persistentStoreCoordinator != nil)
-        let importer = QuestionImportService(context: context)
+                try await taxonomyImporter.importTaxonomy(from: "swift_taxonomy")
+                print("✅ Taxonomy import completed")
 
-        importer.importAllQuestionFiles { result in
-            Task { @MainActor in
-                switch result {
-                case let .success(count):
-                    print("Imported \(count) questions across all categories")
-                    self.loadingState = .loaded
-                case let .failure(error):
-                    print("Failed to import questions: \(error)")
-                    self.loadingState = .error("Failed to import: \(error.localizedDescription)")
-                }
+                try await questionImporter.importQuestions(from: "swift_questions")
+                print("✅ Questions import completed")
+
+                self.loadingState = .loaded
+            } catch {
+                print("❌ Import failed: \(error)")
+                self.loadingState = .error("Failed to import: \(error.localizedDescription)")
             }
         }
     }

@@ -1,0 +1,324 @@
+{
+  "formatVersion": "1.0",
+  "subject": "swift",
+  "lastUpdated": "2024-12-20T10:30:00Z",
+  "questions": [
+    {
+      "id": "swift-variables-001",
+      "question": "Which keyword is used to define a constant in Swift?",
+      "answer": "let",
+      "explanation": "In Swift, 'let' is used to define a constant whose value cannot be changed after initialization. This provides immutability and helps prevent bugs.",
+      "type": "multiple_choice",
+      "category": "language-fundamentals",
+      "topics": ["variables-constants"],
+      "subjectVersion": "6.0",
+      "difficulty": 1,
+      "bloomsLevel": 1,
+      "estimatedTime": 20,
+      "choices": ["let", "const", "val", "final"],
+      "tags": ["syntax", "constants", "variables"],
+      "learningResources": ["swift-book-basics"],
+      "metadata": {
+        "codeExample": "let name = \"Swift\"",
+        "hasCodeSample": true
+      }
+    },
+    {
+      "id": "swift-optionals-001",
+      "question": "What is the purpose of optionals in Swift?",
+      "answer": "To safely handle values that might be nil",
+      "explanation": "Optionals allow you to represent the absence of a value in a type-safe way. They prevent runtime crashes by forcing you to explicitly handle nil cases.",
+      "type": "short_answer",
+      "category": "language-fundamentals",
+      "topics": ["optionals"],
+      "subjectVersion": "6.0",
+      "difficulty": 2,
+      "bloomsLevel": 2,
+      "estimatedTime": 30,
+      "choices": null,
+      "tags": ["optionals", "nil", "safety"],
+      "learningResources": ["swift-book-basics"],
+      "metadata": {
+        "codeExample": "var optionalString: String? = nil",
+        "hasCodeSample": true
+      }
+    },
+    {
+      "id": "swift-optional-binding-001",
+      "question": "What is the safest way to unwrap an optional in Swift?",
+      "answer": "Optional binding with if let or guard let",
+      "explanation": "Optional binding safely unwraps optionals by checking if they contain a value. If they do, the value is assigned to a constant/variable for use in that scope.",
+      "type": "multiple_choice",
+      "category": "language-fundamentals",
+      "topics": ["optional-binding", "optionals"],
+      "subjectVersion": "6.0",
+      "difficulty": 2,
+      "bloomsLevel": 2,
+      "estimatedTime": 35,
+      "choices": ["Force unwrapping with !", "Optional binding with if let", "Using ?? operator", "Using try?"],
+      "tags": ["optional-binding", "safety", "unwrapping"],
+      "learningResources": ["swift-book-basics"],
+      "metadata": {
+        "codeExample": "if let name = optionalName {\n    print(name)\n}",
+        "hasCodeSample": true,
+        "commonMistakes": ["Force unwrapping", "Not handling nil case"]
+      }
+    },
+    {
+      "id": "swift-collections-001",
+      "question": "What are the three main collection types in Swift?",
+      "answer": "Array, Dictionary, and Set",
+      "explanation": "Swift provides three primary collection types: Arrays for ordered lists, Dictionaries for key-value pairs, and Sets for unique unordered values.",
+      "type": "short_answer",
+      "category": "language-fundamentals",
+      "topics": ["collections"],
+      "subjectVersion": "6.0",
+      "difficulty": 2,
+      "bloomsLevel": 1,
+      "estimatedTime": 25,
+      "choices": null,
+      "tags": ["collections", "array", "dictionary", "set"],
+      "learningResources": ["swift-book-collection-types"],
+      "metadata": {
+        "codeExample": "let array = [1, 2, 3]\nlet dict = [\"key\": \"value\"]\nlet set: Set = [1, 2, 3]",
+        "hasCodeSample": true
+      }
+    },
+    {
+      "id": "swift-functions-001",
+      "question": "How do you define a function that returns a value in Swift?",
+      "answer": "func functionName() -> ReturnType { }",
+      "explanation": "Swift functions use the 'func' keyword, followed by the function name, parameters in parentheses, an arrow '->' for return type, and the body in braces.",
+      "type": "multiple_choice",
+      "category": "language-fundamentals",
+      "topics": ["functions"],
+      "subjectVersion": "6.0",
+      "difficulty": 2,
+      "bloomsLevel": 2,
+      "estimatedTime": 30,
+      "choices": [
+        "function functionName() -> ReturnType { }",
+        "func functionName() -> ReturnType { }",
+        "def functionName() -> ReturnType { }",
+        "fn functionName() -> ReturnType { }"
+      ],
+      "tags": ["functions", "syntax", "return-types"],
+      "learningResources": ["swift-book-functions"],
+      "metadata": {
+        "codeExample": "func greet(name: String) -> String {\n    return \"Hello, \\(name)!\"\n}",
+        "hasCodeSample": true
+      }
+    },
+    {
+      "id": "swift-structs-001",
+      "question": "What is the main difference between structs and classes in Swift?",
+      "answer": "Structs are value types, classes are reference types",
+      "explanation": "Structs are copied when assigned or passed around (value semantics), while classes are shared through references. This affects memory management and mutation behavior.",
+      "type": "short_answer",
+      "category": "object-oriented-programming",
+      "topics": ["structs", "classes"],
+      "subjectVersion": "6.0",
+      "difficulty": 3,
+      "bloomsLevel": 2,
+      "estimatedTime": 40,
+      "choices": null,
+      "tags": ["structs", "classes", "value-types", "reference-types"],
+      "learningResources": ["swift-book-classes-structures"],
+      "metadata": {
+        "codeExample": "struct Point { var x: Int; var y: Int }\nclass Person { var name: String; init(name: String) { self.name = name } }",
+        "hasCodeSample": true
+      }
+    },
+    {
+      "id": "swift-protocols-001",
+      "question": "What is a protocol in Swift?",
+      "answer": "A blueprint of methods, properties, and requirements that types can adopt",
+      "explanation": "Protocols define a contract that conforming types must implement. They enable polymorphism and protocol-oriented programming in Swift.",
+      "type": "short_answer",
+      "category": "object-oriented-programming",
+      "topics": ["protocols"],
+      "subjectVersion": "6.0",
+      "difficulty": 3,
+      "bloomsLevel": 2,
+      "estimatedTime": 35,
+      "choices": null,
+      "tags": ["protocols", "contracts", "polymorphism"],
+      "learningResources": ["swift-book-protocols"],
+      "metadata": {
+        "codeExample": "protocol Drawable {\n    func draw()\n}\n\nstruct Circle: Drawable {\n    func draw() { print(\"Drawing circle\") }\n}",
+        "hasCodeSample": true
+      }
+    },
+    {
+      "id": "swift-closures-001",
+      "question": "What is a closure in Swift?",
+      "answer": "A self-contained block of functionality that can capture and store references to variables from its surrounding context",
+      "explanation": "Closures are similar to lambdas or anonymous functions in other languages. They can capture values from their enclosing scope and are often used for callbacks and functional programming.",
+      "type": "freeform",
+      "category": "functional-programming",
+      "topics": ["closures"],
+      "subjectVersion": "6.0",
+      "difficulty": 3,
+      "bloomsLevel": 3,
+      "estimatedTime": 60,
+      "choices": null,
+      "tags": ["closures", "functional-programming", "capture"],
+      "learningResources": ["swift-book-closures"],
+      "metadata": {
+        "codeExample": "let numbers = [1, 2, 3, 4]\nlet doubled = numbers.map { $0 * 2 }",
+        "hasCodeSample": true,
+        "keyPoints": ["Capture semantics", "Trailing closure syntax", "Escaping vs non-escaping"]
+      }
+    },
+    {
+      "id": "swift-memory-001",
+      "question": "What are some common causes of retain cycles in Swift, and how can they be avoided?",
+      "answer": "Retain cycles occur when objects hold strong references to each other. Use weak or unowned references in closures and delegate patterns to break cycles.",
+      "explanation": "Common causes include: parent-child relationships with strong references both ways, closures capturing self strongly, and delegate patterns with strong references. Use [weak self] or [unowned self] in closures.",
+      "type": "freeform",
+      "category": "memory-management",
+      "topics": ["weak-references", "arc"],
+      "subjectVersion": "6.0",
+      "difficulty": 4,
+      "bloomsLevel": 4,
+      "estimatedTime": 90,
+      "choices": null,
+      "tags": ["memory-management", "arc", "retain-cycles", "weak", "unowned"],
+      "learningResources": ["swift-book-arc"],
+      "metadata": {
+        "codeExample": "class Parent {\n    var child: Child?\n}\nclass Child {\n    weak var parent: Parent?\n}",
+        "hasCodeSample": true,
+        "commonMistakes": ["Using strong references in closures", "Delegate patterns without weak"],
+        "keyPoints": ["Weak vs unowned", "Closure capture lists", "Delegate patterns"]
+      }
+    },
+    {
+      "id": "swift-error-handling-001",
+      "question": "How do you handle errors in Swift?",
+      "answer": "Using do-try-catch blocks for throwing functions",
+      "explanation": "Swift uses a structured error handling approach with throwing functions, do-try-catch blocks, and the Error protocol for defining custom errors.",
+      "type": "multiple_choice",
+      "category": "error-handling",
+      "topics": ["do-try-catch", "error-throwing"],
+      "subjectVersion": "6.0",
+      "difficulty": 3,
+      "bloomsLevel": 2,
+      "estimatedTime": 40,
+      "choices": [
+        "try-catch blocks",
+        "do-try-catch blocks",
+        "exception handling",
+        "error callbacks"
+      ],
+      "tags": ["error-handling", "exceptions", "do-try-catch"],
+      "learningResources": ["swift-book-error-handling"],
+      "metadata": {
+        "codeExample": "do {\n    let result = try riskyFunction()\n} catch {\n    print(\"Error: \\(error)\")\n}",
+        "hasCodeSample": true
+      }
+    },
+    {
+      "id": "swift-async-001",
+      "question": "What keywords are used for asynchronous programming in Swift?",
+      "answer": "async and await",
+      "explanation": "Swift 5.5 introduced structured concurrency with async functions and the await keyword for calling them. This provides a safer alternative to completion handlers.",
+      "type": "short_answer",
+      "category": "concurrency",
+      "topics": ["async-await"],
+      "subjectVersion": "6.0",
+      "difficulty": 4,
+      "bloomsLevel": 2,
+      "estimatedTime": 35,
+      "choices": null,
+      "tags": ["concurrency", "async", "await", "structured-concurrency"],
+      "learningResources": ["swift-book-concurrency", "wwdc-async-await"],
+      "metadata": {
+        "codeExample": "func fetchData() async throws -> Data {\n    let data = await URLSession.shared.data(from: url)\n    return data.0\n}",
+        "hasCodeSample": true
+      }
+    },
+    {
+      "id": "swift-actors-001",
+      "question": "What is an actor in Swift and why would you use one?",
+      "answer": "An actor is a reference type that protects its mutable state by ensuring only one task can access it at a time, preventing data races.",
+      "explanation": "Actors are part of Swift's concurrency model, providing isolation for mutable state. They automatically synchronize access to their properties and methods.",
+      "type": "freeform",
+      "category": "concurrency",
+      "topics": ["actors"],
+      "subjectVersion": "6.0",
+      "difficulty": 5,
+      "bloomsLevel": 3,
+      "estimatedTime": 75,
+      "choices": null,
+      "tags": ["actors", "concurrency", "data-races", "isolation"],
+      "learningResources": ["swift-book-concurrency", "wwdc-actors"],
+      "metadata": {
+        "codeExample": "actor Counter {\n    private var value = 0\n    \n    func increment() {\n        value += 1\n    }\n    \n    func getValue() -> Int {\n        value\n    }\n}",
+        "hasCodeSample": true,
+        "keyPoints": ["Data race prevention", "Automatic synchronization", "Actor isolation"]
+      }
+    },
+    {
+      "id": "swift-generics-001",
+      "question": "What are generics in Swift and what problem do they solve?",
+      "answer": "Generics allow you to write flexible, reusable code that works with any type while maintaining type safety.",
+      "explanation": "Generics solve the problem of code duplication when you need similar functionality for different types. They provide compile-time type safety while allowing code reuse.",
+      "type": "freeform",
+      "category": "generics",
+      "topics": ["generic-functions", "generic-types"],
+      "subjectVersion": "6.0",
+      "difficulty": 4,
+      "bloomsLevel": 3,
+      "estimatedTime": 60,
+      "choices": null,
+      "tags": ["generics", "type-safety", "reusability"],
+      "learningResources": ["swift-book-generics"],
+      "metadata": {
+        "codeExample": "func swap<T>(_ a: inout T, _ b: inout T) {\n    let temp = a\n    a = b\n    b = temp\n}",
+        "hasCodeSample": true,
+        "keyPoints": ["Type parameters", "Type constraints", "Code reuse"]
+      }
+    },
+    {
+      "id": "swiftui-views-001",
+      "question": "SwiftUI views must always be structs. True or False?",
+      "answer": "True",
+      "explanation": "SwiftUI views are typically defined as structs conforming to the View protocol. This provides value semantics, better performance, and aligns with SwiftUI's declarative nature.",
+      "type": "multiple_choice",
+      "category": "swift-ui",
+      "topics": ["swiftui-basics"],
+      "subjectVersion": "6.0",
+      "difficulty": 2,
+      "bloomsLevel": 1,
+      "estimatedTime": 25,
+      "choices": ["True", "False"],
+      "tags": ["swiftui", "views", "structs"],
+      "learningResources": [],
+      "metadata": {
+        "codeExample": "struct ContentView: View {\n    var body: some View {\n        Text(\"Hello, World!\")\n    }\n}",
+        "hasCodeSample": true
+      }
+    },
+    {
+      "id": "swiftui-state-001",
+      "question": "Explain the difference between @State and @Binding in SwiftUI, and when to use each.",
+      "answer": "@State is for owning local mutable state within a view. @Binding is for sharing state between parent and child views, allowing the child to read and modify the parent's state.",
+      "explanation": "@State creates a source of truth owned by the view. @Binding creates a two-way connection to state owned by another view, enabling child views to modify parent state.",
+      "type": "freeform",
+      "category": "swift-ui",
+      "topics": ["swiftui-state"],
+      "subjectVersion": "6.0",
+      "difficulty": 3,
+      "bloomsLevel": 4,
+      "estimatedTime": 80,
+      "choices": null,
+      "tags": ["swiftui", "state", "binding", "data-flow"],
+      "learningResources": [],
+      "metadata": {
+        "codeExample": "@State private var isOn = false\n@Binding var parentState: Bool",
+        "hasCodeSample": true,
+        "keyPoints": ["Source of truth", "Data flow", "Parent-child communication"]
+      }
+    }
+  ]
+}

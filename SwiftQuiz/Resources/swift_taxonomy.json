@@ -1,0 +1,529 @@
+{
+  "subject": {
+    "id": "swift",
+    "name": "Swift Programming",
+    "displayName": "Swift",
+    "description": "Apple's programming language for iOS, macOS, watchOS, and server development",
+    "iconName": "swift",
+    "color": "#FA7343",
+    "isActive": true,
+    "currentVersion": "6.0"
+  },
+  "versions": [
+    {
+      "id": "swift-6.0",
+      "version": "6.0",
+      "name": "Swift 6.0",
+      "releaseDate": "2024-09-16",
+      "isLatest": true,
+      "isSupported": true,
+      "changelog": "Introduced strict concurrency checking, data race safety, and improved performance"
+    },
+    {
+      "id": "swift-5.10",
+      "version": "5.10",
+      "name": "Swift 5.10",
+      "releaseDate": "2024-03-05",
+      "isLatest": false,
+      "isSupported": true,
+      "changelog": "Complete concurrency improvements and Swift Testing framework"
+    }
+  ],
+  "categories": [
+    {
+      "id": "language-fundamentals",
+      "name": "Language Fundamentals",
+      "description": "Core Swift syntax, basic types, variables, and control flow",
+      "sortOrder": 1,
+      "iconName": "textformat.abc",
+      "color": "#007AFF",
+      "isCore": true
+    },
+    {
+      "id": "object-oriented-programming",
+      "name": "Object-Oriented Programming",
+      "description": "Classes, inheritance, protocols, and object-oriented design patterns",
+      "sortOrder": 2,
+      "iconName": "building.columns",
+      "color": "#34C759",
+      "isCore": true
+    },
+    {
+      "id": "functional-programming",
+      "name": "Functional Programming",
+      "description": "Closures, higher-order functions, and functional programming concepts",
+      "sortOrder": 3,
+      "iconName": "function",
+      "color": "#AF52DE",
+      "isCore": true
+    },
+    {
+      "id": "memory-management",
+      "name": "Memory Management",
+      "description": "ARC, weak references, retain cycles, and memory safety",
+      "sortOrder": 4,
+      "iconName": "memorychip",
+      "color": "#FF9500",
+      "isCore": true
+    },
+    {
+      "id": "concurrency",
+      "name": "Concurrency",
+      "description": "Async/await, actors, tasks, and concurrent programming patterns",
+      "sortOrder": 5,
+      "iconName": "arrow.triangle.2.circlepath",
+      "color": "#FF2D92",
+      "isCore": false
+    },
+    {
+      "id": "error-handling",
+      "name": "Error Handling",
+      "description": "Throwing functions, do-try-catch, and error propagation",
+      "sortOrder": 6,
+      "iconName": "exclamationmark.triangle",
+      "color": "#FF3B30",
+      "isCore": true
+    },
+    {
+      "id": "generics",
+      "name": "Generics",
+      "description": "Generic types, functions, constraints, and type erasure",
+      "sortOrder": 7,
+      "iconName": "puzzlepiece",
+      "color": "#5856D6",
+      "isCore": false
+    },
+    {
+      "id": "swift-ui",
+      "name": "SwiftUI",
+      "description": "Declarative user interface framework",
+      "sortOrder": 8,
+      "iconName": "rectangle.3.group",
+      "color": "#32D74B",
+      "isCore": false
+    }
+  ],
+  "topics": [
+    {
+      "id": "variables-constants",
+      "name": "Variables and Constants",
+      "description": "Declaring variables with var and constants with let",
+      "categories": ["language-fundamentals"],
+      "difficulty": 1,
+      "estimatedTime": 10,
+      "isCore": true,
+      "prerequisites": [],
+      "sortOrder": 1
+    },
+    {
+      "id": "basic-types",
+      "name": "Basic Types",
+      "description": "Int, Double, String, Bool and type inference",
+      "categories": ["language-fundamentals"],
+      "difficulty": 1,
+      "estimatedTime": 15,
+      "isCore": true,
+      "prerequisites": ["variables-constants"],
+      "sortOrder": 2
+    },
+    {
+      "id": "optionals",
+      "name": "Optionals",
+      "description": "Handling nil values safely with optional types",
+      "categories": ["language-fundamentals"],
+      "difficulty": 2,
+      "estimatedTime": 20,
+      "isCore": true,
+      "prerequisites": ["basic-types"],
+      "sortOrder": 3
+    },
+    {
+      "id": "optional-binding",
+      "name": "Optional Binding",
+      "description": "Safely unwrapping optionals with if-let and guard-let",
+      "categories": ["language-fundamentals"],
+      "difficulty": 2,
+      "estimatedTime": 25,
+      "isCore": true,
+      "prerequisites": ["optionals"],
+      "sortOrder": 4
+    },
+    {
+      "id": "nil-coalescing",
+      "name": "Nil Coalescing",
+      "description": "Using ?? operator to provide default values",
+      "categories": ["language-fundamentals"],
+      "difficulty": 2,
+      "estimatedTime": 15,
+      "isCore": true,
+      "prerequisites": ["optionals"],
+      "sortOrder": 5
+    },
+    {
+      "id": "collections",
+      "name": "Collections",
+      "description": "Arrays, dictionaries, and sets",
+      "categories": ["language-fundamentals"],
+      "difficulty": 2,
+      "estimatedTime": 30,
+      "isCore": true,
+      "prerequisites": ["basic-types"],
+      "sortOrder": 6
+    },
+    {
+      "id": "control-flow",
+      "name": "Control Flow",
+      "description": "If statements, switch cases, and loops",
+      "categories": ["language-fundamentals"],
+      "difficulty": 2,
+      "estimatedTime": 25,
+      "isCore": true,
+      "prerequisites": ["basic-types"],
+      "sortOrder": 7
+    },
+    {
+      "id": "functions",
+      "name": "Functions",
+      "description": "Defining and calling functions with parameters and return values",
+      "categories": ["language-fundamentals"],
+      "difficulty": 2,
+      "estimatedTime": 30,
+      "isCore": true,
+      "prerequisites": ["basic-types"],
+      "sortOrder": 8
+    },
+    {
+      "id": "classes",
+      "name": "Classes",
+      "description": "Reference types, initialization, and methods",
+      "categories": ["object-oriented-programming"],
+      "difficulty": 3,
+      "estimatedTime": 40,
+      "isCore": true,
+      "prerequisites": ["functions"],
+      "sortOrder": 9
+    },
+    {
+      "id": "structs",
+      "name": "Structures",
+      "description": "Value types, memberwise initializers, and methods",
+      "categories": ["object-oriented-programming"],
+      "difficulty": 3,
+      "estimatedTime": 35,
+      "isCore": true,
+      "prerequisites": ["functions"],
+      "sortOrder": 10
+    },
+    {
+      "id": "enums",
+      "name": "Enumerations",
+      "description": "Defining enums with cases, associated values, and raw values",
+      "categories": ["object-oriented-programming"],
+      "difficulty": 3,
+      "estimatedTime": 30,
+      "isCore": true,
+      "prerequisites": ["functions"],
+      "sortOrder": 11
+    },
+    {
+      "id": "inheritance",
+      "name": "Inheritance",
+      "description": "Class inheritance, overriding, and super",
+      "categories": ["object-oriented-programming"],
+      "difficulty": 3,
+      "estimatedTime": 35,
+      "isCore": true,
+      "prerequisites": ["classes"],
+      "sortOrder": 12
+    },
+    {
+      "id": "protocols",
+      "name": "Protocols",
+      "description": "Defining and conforming to protocols",
+      "categories": ["object-oriented-programming"],
+      "difficulty": 3,
+      "estimatedTime": 40,
+      "isCore": true,
+      "prerequisites": ["classes", "structs"],
+      "sortOrder": 13
+    },
+    {
+      "id": "extensions",
+      "name": "Extensions",
+      "description": "Adding functionality to existing types",
+      "categories": ["object-oriented-programming"],
+      "difficulty": 3,
+      "estimatedTime": 25,
+      "isCore": true,
+      "prerequisites": ["protocols"],
+      "sortOrder": 14
+    },
+    {
+      "id": "closures",
+      "name": "Closures",
+      "description": "Anonymous functions and capturing values",
+      "categories": ["functional-programming"],
+      "difficulty": 3,
+      "estimatedTime": 45,
+      "isCore": true,
+      "prerequisites": ["functions"],
+      "sortOrder": 15
+    },
+    {
+      "id": "higher-order-functions",
+      "name": "Higher-Order Functions",
+      "description": "Map, filter, reduce, and other collection methods",
+      "categories": ["functional-programming"],
+      "difficulty": 4,
+      "estimatedTime": 50,
+      "isCore": true,
+      "prerequisites": ["closures", "collections"],
+      "sortOrder": 16
+    },
+    {
+      "id": "arc",
+      "name": "Automatic Reference Counting",
+      "description": "How ARC manages memory automatically",
+      "categories": ["memory-management"],
+      "difficulty": 4,
+      "estimatedTime": 40,
+      "isCore": true,
+      "prerequisites": ["classes"],
+      "sortOrder": 17
+    },
+    {
+      "id": "weak-references",
+      "name": "Weak References",
+      "description": "Breaking retain cycles with weak and unowned",
+      "categories": ["memory-management"],
+      "difficulty": 4,
+      "estimatedTime": 45,
+      "isCore": true,
+      "prerequisites": ["arc"],
+      "sortOrder": 18
+    },
+    {
+      "id": "error-throwing",
+      "name": "Throwing Functions",
+      "description": "Functions that can throw errors",
+      "categories": ["error-handling"],
+      "difficulty": 3,
+      "estimatedTime": 30,
+      "isCore": true,
+      "prerequisites": ["functions"],
+      "sortOrder": 19
+    },
+    {
+      "id": "do-try-catch",
+      "name": "Do-Try-Catch",
+      "description": "Handling errors with do-try-catch blocks",
+      "categories": ["error-handling"],
+      "difficulty": 3,
+      "estimatedTime": 35,
+      "isCore": true,
+      "prerequisites": ["error-throwing"],
+      "sortOrder": 20
+    },
+    {
+      "id": "async-await",
+      "name": "Async/Await",
+      "description": "Asynchronous programming with async and await",
+      "categories": ["concurrency"],
+      "difficulty": 4,
+      "estimatedTime": 50,
+      "isCore": false,
+      "prerequisites": ["functions", "error-handling"],
+      "sortOrder": 21
+    },
+    {
+      "id": "actors",
+      "name": "Actors",
+      "description": "Actor types for data race safety",
+      "categories": ["concurrency"],
+      "difficulty": 5,
+      "estimatedTime": 60,
+      "isCore": false,
+      "prerequisites": ["async-await", "classes"],
+      "sortOrder": 22
+    },
+    {
+      "id": "generic-types",
+      "name": "Generic Types",
+      "description": "Creating generic structs, classes, and enums",
+      "categories": ["generics"],
+      "difficulty": 4,
+      "estimatedTime": 45,
+      "isCore": false,
+      "prerequisites": ["structs", "classes", "enums"],
+      "sortOrder": 23
+    },
+    {
+      "id": "generic-functions",
+      "name": "Generic Functions",
+      "description": "Functions that work with any type",
+      "categories": ["generics"],
+      "difficulty": 4,
+      "estimatedTime": 40,
+      "isCore": false,
+      "prerequisites": ["functions"],
+      "sortOrder": 24
+    },
+    {
+      "id": "type-constraints",
+      "name": "Type Constraints",
+      "description": "Constraining generic types with protocols",
+      "categories": ["generics"],
+      "difficulty": 5,
+      "estimatedTime": 50,
+      "isCore": false,
+      "prerequisites": ["generic-types", "protocols"],
+      "sortOrder": 25
+    }
+  ],
+  "learningResources": [
+    {
+      "id": "swift-book-basics",
+      "title": "The Swift Programming Language - The Basics",
+      "description": "Official Swift documentation covering fundamental concepts",
+      "url": "https://docs.swift.org/swift-book/LanguageGuide/TheBasics.html",
+      "type": "documentation",
+      "difficulty": 2,
+      "estimatedTime": 30,
+      "isOfficial": true,
+      "language": "en",
+      "topics": ["variables-constants", "basic-types", "optionals"]
+    },
+    {
+      "id": "swift-book-collection-types",
+      "title": "The Swift Programming Language - Collection Types",
+      "description": "Official documentation on arrays, sets, and dictionaries",
+      "url": "https://docs.swift.org/swift-book/LanguageGuide/CollectionTypes.html",
+      "type": "documentation",
+      "difficulty": 2,
+      "estimatedTime": 25,
+      "isOfficial": true,
+      "language": "en",
+      "topics": ["collections"]
+    },
+    {
+      "id": "swift-book-functions",
+      "title": "The Swift Programming Language - Functions",
+      "description": "Comprehensive guide to Swift functions",
+      "url": "https://docs.swift.org/swift-book/LanguageGuide/Functions.html",
+      "type": "documentation",
+      "difficulty": 2,
+      "estimatedTime": 35,
+      "isOfficial": true,
+      "language": "en",
+      "topics": ["functions"]
+    },
+    {
+      "id": "swift-book-closures",
+      "title": "The Swift Programming Language - Closures",
+      "description": "Official guide to closures and functional programming",
+      "url": "https://docs.swift.org/swift-book/LanguageGuide/Closures.html",
+      "type": "documentation",
+      "difficulty": 3,
+      "estimatedTime": 40,
+      "isOfficial": true,
+      "language": "en",
+      "topics": ["closures", "higher-order-functions"]
+    },
+    {
+      "id": "swift-book-classes-structures",
+      "title": "The Swift Programming Language - Classes and Structures",
+      "description": "Official documentation on classes and structs",
+      "url": "https://docs.swift.org/swift-book/LanguageGuide/ClassesAndStructures.html",
+      "type": "documentation",
+      "difficulty": 3,
+      "estimatedTime": 45,
+      "isOfficial": true,
+      "language": "en",
+      "topics": ["classes", "structs"]
+    },
+    {
+      "id": "swift-book-protocols",
+      "title": "The Swift Programming Language - Protocols",
+      "description": "Comprehensive guide to protocols and protocol-oriented programming",
+      "url": "https://docs.swift.org/swift-book/LanguageGuide/Protocols.html",
+      "type": "documentation",
+      "difficulty": 3,
+      "estimatedTime": 50,
+      "isOfficial": true,
+      "language": "en",
+      "topics": ["protocols", "extensions"]
+    },
+    {
+      "id": "swift-book-arc",
+      "title": "The Swift Programming Language - Automatic Reference Counting",
+      "description": "Official guide to memory management and ARC",
+      "url": "https://docs.swift.org/swift-book/LanguageGuide/AutomaticReferenceCounting.html",
+      "type": "documentation",
+      "difficulty": 4,
+      "estimatedTime": 40,
+      "isOfficial": true,
+      "language": "en",
+      "topics": ["arc", "weak-references"]
+    },
+    {
+      "id": "swift-book-error-handling",
+      "title": "The Swift Programming Language - Error Handling",
+      "description": "Official documentation on error handling patterns",
+      "url": "https://docs.swift.org/swift-book/LanguageGuide/ErrorHandling.html",
+      "type": "documentation",
+      "difficulty": 3,
+      "estimatedTime": 30,
+      "isOfficial": true,
+      "language": "en",
+      "topics": ["error-throwing", "do-try-catch"]
+    },
+    {
+      "id": "swift-book-concurrency",
+      "title": "The Swift Programming Language - Concurrency",
+      "description": "Official guide to async/await and structured concurrency",
+      "url": "https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html",
+      "type": "documentation",
+      "difficulty": 4,
+      "estimatedTime": 60,
+      "isOfficial": true,
+      "language": "en",
+      "topics": ["async-await", "actors"]
+    },
+    {
+      "id": "swift-book-generics",
+      "title": "The Swift Programming Language - Generics",
+      "description": "Comprehensive guide to generic programming in Swift",
+      "url": "https://docs.swift.org/swift-book/LanguageGuide/Generics.html",
+      "type": "documentation",
+      "difficulty": 4,
+      "estimatedTime": 55,
+      "isOfficial": true,
+      "language": "en",
+      "topics": ["generic-types", "generic-functions", "type-constraints"]
+    },
+    {
+      "id": "wwdc-async-await",
+      "title": "WWDC21: Meet async/await in Swift",
+      "description": "Apple's introduction to structured concurrency",
+      "url": "https://developer.apple.com/videos/play/wwdc2021/10132/",
+      "type": "video",
+      "difficulty": 4,
+      "estimatedTime": 30,
+      "isOfficial": true,
+      "language": "en",
+      "topics": ["async-await"]
+    },
+    {
+      "id": "wwdc-actors",
+      "title": "WWDC21: Protect mutable state with Swift actors",
+      "description": "Deep dive into actor types and data race safety",
+      "url": "https://developer.apple.com/videos/play/wwdc2021/10133/",
+      "type": "video",
+      "difficulty": 5,
+      "estimatedTime": 35,
+      "isOfficial": true,
+      "language": "en",
+      "topics": ["actors"]
+    }
+  ]
+}

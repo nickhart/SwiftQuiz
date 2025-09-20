@@ -27,7 +27,7 @@ targets:
       - SwiftQuiz/Services/
       - SwiftQuiz/Views/
       - SwiftQuiz/ViewModels/
-      - SwiftQuiz/Resources
+      - SwiftQuiz/Resources/
     info:
       path: SwiftQuiz/Resources/Info.plist
       properties:
@@ -72,7 +72,7 @@ targets:
       - SwiftQuiz/Services/
       - SwiftQuiz/Views/
       - SwiftQuiz/ViewModels/
-      - SwiftQuiz/Resources
+      - SwiftQuiz/Resources/
     info:
       path: SwiftQuiz/Resources/Info.plist
       properties:
