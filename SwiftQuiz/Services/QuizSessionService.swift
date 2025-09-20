@@ -102,6 +102,17 @@ class QuizSessionService: ObservableObject {
 
         // Fetch all available questions
         let allQuestions = try context.fetch(request)
+        print("🔍 DEBUG: Total questions fetched: \(allQuestions.count)")
+
+        if allQuestions.isEmpty {
+            // If no questions found, let's check what's in the database
+            let allQuestionsRequest: NSFetchRequest<Question> = Question.fetchRequest()
+            let totalQuestions = try context.fetch(allQuestionsRequest)
+            print("🔍 DEBUG: Total questions in database: \(totalQuestions.count)")
+            let categoryCounts = Dictionary(grouping: totalQuestions, by: { $0.category ?? "nil" })
+                .mapValues { $0.count }
+            print("🔍 DEBUG: Questions by category: \(categoryCounts)")
+        }
 
         // Filter to available questions (not answered recently or answered incorrectly)
         let availableQuestions = allQuestions.filter { question in

@@ -63,6 +63,10 @@ struct ContentView: View {
                     .environmentObject(self.aiService)
             }
         #elseif os(macOS)
+            .sheet(isPresented: self.$coordinator.showQuizModal) {
+                QuizModalView(context: self.viewContext)
+                    .frame(minWidth: 600, minHeight: 700)
+            }
             .sheet(isPresented: self.$showOnboarding) {
                 OnboardingView()
                     .environmentObject(self.aiService)

@@ -142,10 +142,17 @@ final class QuestionImportService {
         if let questionFile = try? decoder.decode(CodableQuestionFile.self, from: data) {
             codableQuestions = questionFile.questions
             category = questionFile.category
+            print("🔍 IMPORT DEBUG: New format detected, category = '\(category)', questions = \(codableQuestions.count)"
+            )
         } else {
             // Fallback to old format (array of questions without category)
             codableQuestions = try decoder.decode([CodableQuestion].self, from: data)
             category = "Swift" // Default category for legacy files
+            print(
+                """
+                🔍 IMPORT DEBUG: Legacy format detected, category = '\(category)', questions = \(codableQuestions.count)
+                """
+            )
         }
 
         var importedCount = 0
@@ -167,10 +174,22 @@ final class QuestionImportService {
                 let existing = (try? self.context.fetch(fetchRequest))?.first
                 let newContentHash = self.calculateContentHash(for: codable)
 
-                // Skip if content hasn't changed
+                // Skip if content hasn't changed AND category matches
                 if let existingQuestion = existing,
-                   existingQuestion.contentHash == newContentHash {
+                   existingQuestion.contentHash == newContentHash,
+                   existingQuestion.category == category {
+                    print("🔍 IMPORT DEBUG: Skipping \(codable.id) - no changes needed")
                     continue
+                }
+
+                if let existingQuestion = existing {
+                    print(
+                        """
+                        🔍 IMPORT DEBUG: Will update \(codable.id) - category: '\(existingQuestion
+                            .category ?? "nil"
+                        )' -> '\(category)'
+                        """
+                    )
                 }
 
                 assert(self.context.persistentStoreCoordinator != nil)
@@ -190,9 +209,12 @@ final class QuestionImportService {
                 question.sourceURL = codable.source?.url
                 question.contentHash = newContentHash
 
+                print("🔍 IMPORT DEBUG: Setting question \(codable.id) category to '\(category)'")
                 if existing == nil {
+                    print("🔍 IMPORT DEBUG: Creating new question \(codable.id)")
                     importedCount += 1
                 } else {
+                    print("🔍 IMPORT DEBUG: Updating existing question \(codable.id)")
                     updatedCount += 1
                 }
             }
