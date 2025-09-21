@@ -283,8 +283,7 @@ final class DailyRegimenService: ObservableObject {
     }
 
     private func checkGoalCompletion() {
-        guard let _ = currentRegimen,
-              var session = todaysSession else { return }
+        guard var session = todaysSession else { return }
 
         let wasGoalAchieved = session.goalAchieved
         let isGoalAchieved = self.isTodaysGoalAchieved()
