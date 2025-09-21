@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CategoryPerformance: Identifiable, Codable {
-    let id = UUID()
+    let id: UUID
     let name: String
     let icon: String?
     let totalQuestions: Int
@@ -21,6 +21,7 @@ struct CategoryPerformance: Identifiable, Codable {
 
     // Convenience initializer for quiz session results (simpler)
     init(category: String, totalQuestions: Int, correctAnswers: Int, score: Double) {
+        self.id = UUID()
         self.name = category
         self.icon = nil
         self.totalQuestions = totalQuestions
@@ -36,6 +37,7 @@ struct CategoryPerformance: Identifiable, Codable {
     init(name: String, icon: String, totalQuestions: Int, correctAnswers: Int,
          score: Double, timeSpent: TimeInterval, lastStudied: Date,
          difficulty: Difficulty, subcategories: [String]) {
+        self.id = UUID()
         self.name = name
         self.icon = icon
         self.totalQuestions = totalQuestions

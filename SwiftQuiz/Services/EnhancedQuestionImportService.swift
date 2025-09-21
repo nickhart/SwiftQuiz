@@ -5,6 +5,7 @@
 //  Created by Claude on 12/20/24.
 //
 
+import CommonCrypto
 import CoreData
 import Foundation
 
@@ -84,8 +85,7 @@ struct AnyCodable: Codable {
     }
 }
 
-@MainActor
-final class EnhancedQuestionImportService: ObservableObject {
+final class EnhancedQuestionImportService: ObservableObject, @unchecked Sendable {
     enum ImportError: LocalizedError {
         case fileNotFound(String)
         case invalidFormat(String)
@@ -191,10 +191,10 @@ final class EnhancedQuestionImportService: ObservableObject {
         question.subject = subject
 
         if let choices = questionData.choices {
-            question.choices = choices as NSObject
+            question.choices = choices
         }
 
-        question.tags = questionData.tags as NSObject
+        question.tags = questionData.tags
 
         if let category = try fetchCategory(id: questionData.category) {
             question.primaryCategory = category
@@ -278,5 +278,3 @@ extension String {
         return hashed.map { String(format: "%02x", $0) }.joined()
     }
 }
-
-import CommonCrypto

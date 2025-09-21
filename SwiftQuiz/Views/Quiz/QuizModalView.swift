@@ -20,8 +20,9 @@ struct QuizModalView: View {
     init(context: NSManagedObjectContext) {
         self._quizSessionService = StateObject(wrappedValue: QuizSessionService(
             context: context,
-            settingsService: .shared,
-            dailyRegimenService: .shared
+            aiService: AIService.shared,
+            settingsService: SettingsService.shared,
+            dailyRegimenService: DailyRegimenService.shared
         ))
     }
 

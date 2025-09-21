@@ -10,7 +10,7 @@ import Foundation
 
 @MainActor
 class AIService: ObservableObject {
-    static let shared = AIService()
+    static let shared = AIService(settingsService: SettingsService.shared)
 
     @Published var currentProvider: AIProvider = .claude
     @Published var claudeAPIKey: String = ""
@@ -19,7 +19,7 @@ class AIService: ObservableObject {
     private let settingsService: SettingsService
     private var cancellables = Set<AnyCancellable>()
 
-    init(settingsService: SettingsService = .shared) {
+    init(settingsService: SettingsService) {
         print("🤖 AIService: Initializing...")
 
         self.settingsService = settingsService

@@ -200,11 +200,11 @@ final class QuestionImportService {
                 question.type = codable.type
                 question.question = codable.question
                 question.category = category
-                question.choices = codable.choices as NSObject?
+                question.choices = codable.choices
                 question.answer = codable.answer
                 question.explanation = codable.explanation
                 question.difficulty = codable.difficulty
-                question.tags = codable.tags as NSObject?
+                question.tags = codable.tags
                 question.sourceTitle = codable.source?.title
                 question.sourceURL = codable.source?.url
                 question.contentHash = newContentHash

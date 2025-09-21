@@ -16,14 +16,14 @@ enum QuestionType: String, Codable {
 extension Question {
     // Computed property for transformable `choices`
     var choiceList: [String] {
-        get { (choices as? [String]) ?? [] }
-        set { choices = newValue as NSObject } // Optional: cast to NSObject if needed
+        get { choices ?? [] }
+        set { choices = newValue }
     }
 
     // Computed property for transformable `tags`
     var tagList: [String] {
-        get { (tags as? [String]) ?? [] }
-        set { tags = newValue as NSObject }
+        get { tags ?? [] }
+        set { tags = newValue }
     }
 
     var primaryTag: String? {

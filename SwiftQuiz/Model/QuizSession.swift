@@ -112,6 +112,10 @@ struct QuestionEvaluationResult: Identifiable, Codable {
     let feedback: String
     let userAnswer: String?
     let correctAnswer: String
+
+    enum CodingKeys: String, CodingKey {
+        case questionIndex, isCorrect, isSkipped, feedback, userAnswer, correctAnswer
+    }
 }
 
 struct QuizSession: Identifiable {

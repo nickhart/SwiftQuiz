@@ -5,6 +5,7 @@
 //  Created by Nick Hart on 9/19/25.
 //
 
+import CoreData
 import SwiftUI
 
 enum AnalyticsDestination: Hashable {
@@ -43,7 +44,14 @@ enum TimeframeFilter: String, CaseIterable {
 }
 
 struct ProgressOverviewView: View {
+    let context: NSManagedObjectContext
     @State private var selectedTimeframe: TimeframeFilter = .week
+    @StateObject private var analyticsService: LearningAnalyticsService
+
+    init(context: NSManagedObjectContext) {
+        self.context = context
+        self._analyticsService = StateObject(wrappedValue: LearningAnalyticsService(context: context))
+    }
 
     var body: some View {
         ScrollView {
@@ -74,21 +82,21 @@ struct ProgressOverviewView: View {
                 .padding(.horizontal)
 
                 // Study Streak Card
-                StudyStreakCard()
+                StudyStreakCard(analyticsService: self.analyticsService)
                     .padding(.horizontal)
 
-                // Quick Stats Row
+                // Quick Stats Row - Temporarily using old implementation
                 QuickStatsRow(timeframe: self.selectedTimeframe)
                     .padding(.horizontal)
 
-                // Performance Trends Chart
+                // Performance Trends Chart - Temporarily using old implementation
                 NavigationLink(value: AnalyticsDestination.performanceTrends) {
                     PerformanceTrendsSummary(timeframe: self.selectedTimeframe)
                 }
                 .buttonStyle(PlainButtonStyle())
                 .padding(.horizontal)
 
-                // Category Performance Grid
+                // Category Performance Grid - Temporarily using old implementation
                 NavigationLink(value: AnalyticsDestination.categoryBreakdown) {
                     CategoryPerformanceGrid()
                 }
@@ -125,5 +133,5 @@ struct ProgressOverviewView: View {
 }
 
 #Preview {
-    ProgressOverviewView()
+    ProgressOverviewView(context: PersistenceController.preview.container.viewContext)
 }

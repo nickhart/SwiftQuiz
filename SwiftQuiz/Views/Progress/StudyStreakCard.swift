@@ -5,11 +5,14 @@
 //  Created by Nick Hart on 9/19/25.
 //
 
+import CoreData
 import SwiftUI
 
 struct StudyStreakCard: View {
-    @State private var streak = StudyStreak(currentStreak: 7, longestStreak: 15, lastStudyDate: Date())
+    let analyticsService: LearningAnalyticsService
+    @State private var streak = StudyStreak(currentStreak: 0, longestStreak: 0, lastStudyDate: nil)
     @State private var showStreakAnimation = false
+    @State private var isLoading = true
 
     var body: some View {
         VStack(spacing: 16) {
@@ -82,6 +85,28 @@ struct StudyStreakCard: View {
         )
         .onAppear {
             self.showStreakAnimation = true
+            self.loadStreakData()
+        }
+    }
+
+    private func loadStreakData() {
+        Task {
+            do {
+                let streakData = try analyticsService.calculateStudyStreak()
+                await MainActor.run {
+                    self.streak = StudyStreak(
+                        currentStreak: streakData.currentStreak,
+                        longestStreak: streakData.longestStreak,
+                        lastStudyDate: streakData.lastStudyDate
+                    )
+                    self.isLoading = false
+                }
+            } catch {
+                print("Failed to load streak data: \(error)")
+                await MainActor.run {
+                    self.isLoading = false
+                }
+            }
         }
     }
 
@@ -134,6 +159,8 @@ struct StudyStreakCard: View {
 }
 
 #Preview {
-    StudyStreakCard()
-        .padding()
+    StudyStreakCard(analyticsService: LearningAnalyticsService(context: PersistenceController.preview.container
+            .viewContext
+    ))
+    .padding()
 }

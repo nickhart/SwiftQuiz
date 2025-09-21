@@ -36,8 +36,8 @@ class QuizSessionService: ObservableObject {
     @Published var lastEvaluationResult: QuizEvaluationResult?
     @Published var isEvaluating = false
 
-    init(context: NSManagedObjectContext, aiService: AIService = .shared, settingsService: SettingsService = .shared,
-         dailyRegimenService: DailyRegimenService = .shared) {
+    init(context: NSManagedObjectContext, aiService: AIService, settingsService: SettingsService,
+         dailyRegimenService: DailyRegimenService) {
         self.context = context
         self.aiService = aiService
         self.settingsService = settingsService

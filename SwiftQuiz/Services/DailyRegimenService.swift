@@ -10,7 +10,7 @@ import Foundation
 
 @MainActor
 final class DailyRegimenService: ObservableObject {
-    static let shared = DailyRegimenService()
+    static let shared = DailyRegimenService(notificationService: NotificationService.shared)
 
     // MARK: - Published Properties
 
@@ -35,7 +35,7 @@ final class DailyRegimenService: ObservableObject {
     private let insightsKey = "study_insights"
     private let recommendationsKey = "study_recommendations"
 
-    private init(notificationService: NotificationService = .shared) {
+    private init(notificationService: NotificationService) {
         self.notificationService = notificationService
         self.loadData()
         self.setupDailyCheck()
@@ -283,7 +283,7 @@ final class DailyRegimenService: ObservableObject {
     }
 
     private func checkGoalCompletion() {
-        guard let regimen = currentRegimen,
+        guard let _ = currentRegimen,
               var session = todaysSession else { return }
 
         let wasGoalAchieved = session.goalAchieved

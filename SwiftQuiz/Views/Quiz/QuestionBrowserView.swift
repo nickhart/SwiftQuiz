@@ -40,7 +40,7 @@ struct QuestionBrowserView: View {
         if !self.searchText.isEmpty {
             filtered = filtered.filter { question in
                 let questionText = question.question ?? ""
-                let tags = question.tags as? [String] ?? []
+                let tags = question.tags ?? []
                 let allText = ([questionText] + tags).joined(separator: " ")
                 return allText.localizedCaseInsensitiveContains(self.searchText)
             }

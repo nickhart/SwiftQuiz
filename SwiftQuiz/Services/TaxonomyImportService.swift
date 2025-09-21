@@ -72,8 +72,7 @@ struct LearningResourceData: Codable {
     let topics: [String]
 }
 
-@MainActor
-final class TaxonomyImportService: ObservableObject {
+final class TaxonomyImportService: ObservableObject, @unchecked Sendable {
     enum ImportError: LocalizedError {
         case fileNotFound(String)
         case invalidFormat(String)
