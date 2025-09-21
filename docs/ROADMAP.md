@@ -281,13 +281,54 @@ Prepare for App Store launch and open source release with production-quality pol
 
 ## Post-1.0.0 Considerations
 
-### Future Features
-- Social learning features (study groups, leaderboards)
-- Custom question creation by users
+### Future Features (Phase 2-4)
+
+#### Phase 2: Infrastructure for Growth (2-3 weeks)
+- [ ] **Cloud Question Loading**
+  - Enable loading of question data from internet (S3 bucket)
+  - Background question updates and versioning
+  - Caching strategy and fallback to local questions
+  - Network-aware content delivery
+
+- [ ] **User Feedback System**
+  - Question rating experience (let users rate questions)
+  - Propose changes and submit feedback to server
+  - "Report Issue" and "Suggest Better Answer" flows
+  - Local storage with sync-to-server capability
+
+- [ ] **Question Submission Experience**
+  - Community question submission interface
+  - Moderation queue system for user-submitted content
+  - Quality guidelines and contribution tracking
+  - User recognition for accepted submissions
+
+#### Phase 3: Advanced Question Generation (3-4 weeks)
+- [ ] **AI-Powered Question Quality Improvement**
+  - Comprehensive analysis and rewrite of existing questions
+  - Eliminate repetitive "What is the purpose of X" phrasing
+  - Generate high-quality code snippet questions
+  - Multiple choice questions with realistic scenarios
+  - See `PHASE_3_QUESTION_GENERATION.md` for detailed plan
+
+#### Phase 4: Social & Sharing Features (2-3 weeks)
+- [ ] **Social Media Integration**
+  - Share your accomplishments on social platforms
+  - Achievement graphics and progress summaries
+  - "Study Streak" and expertise level celebrations
+  - Custom shareable content for milestones
+
+- [ ] **Community Features**
+  - Study groups and leaderboards
+  - Weekly/monthly challenges
+  - Developer community integration
+  - Peer learning experiences
+
+### Advanced Technical Features
 - Integration with Swift Playgrounds
 - Apple Watch companion app
 - Offline mode support
 - Multiple language support
+- Advanced analytics and ML-powered recommendations
 
 ### Community Building
 - Developer blog with Swift tips
@@ -297,5 +338,5 @@ Prepare for App Store launch and open source release with production-quality pol
 
 ---
 
-*Last Updated: September 16, 2025*
+*Last Updated: September 21, 2025*
 *Next Review: Start of each milestone*
