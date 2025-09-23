@@ -26,6 +26,11 @@ struct CodableQuestion: Codable {
     }
 }
 
+struct CodableQuestionFile: Codable {
+    let category: String
+    let questions: [CodableQuestion]
+}
+
 final class QuestionImportService {
     private let context: NSManagedObjectContext
 
@@ -131,7 +136,24 @@ final class QuestionImportService {
     func importQuestionsSync(from url: URL, saveAfterImport: Bool) throws -> Int {
         let data = try Data(contentsOf: url)
         let decoder = JSONDecoder()
-        let codableQuestions = try decoder.decode([CodableQuestion].self, from: data)
+
+        // Try new format first (with category), fallback to old format
+        let (codableQuestions, category): ([CodableQuestion], String)
+        if let questionFile = try? decoder.decode(CodableQuestionFile.self, from: data) {
+            codableQuestions = questionFile.questions
+            category = questionFile.category
+            print("🔍 IMPORT DEBUG: New format detected, category = '\(category)', questions = \(codableQuestions.count)"
+            )
+        } else {
+            // Fallback to old format (array of questions without category)
+            codableQuestions = try decoder.decode([CodableQuestion].self, from: data)
+            category = "Swift" // Default category for legacy files
+            print(
+                """
+                🔍 IMPORT DEBUG: Legacy format detected, category = '\(category)', questions = \(codableQuestions.count)
+                """
+            )
+        }
 
         var importedCount = 0
         var updatedCount = 0
@@ -152,10 +174,22 @@ final class QuestionImportService {
                 let existing = (try? self.context.fetch(fetchRequest))?.first
                 let newContentHash = self.calculateContentHash(for: codable)
 
-                // Skip if content hasn't changed
+                // Skip if content hasn't changed AND category matches
                 if let existingQuestion = existing,
-                   existingQuestion.contentHash == newContentHash {
+                   existingQuestion.contentHash == newContentHash,
+                   existingQuestion.category == category {
+                    print("🔍 IMPORT DEBUG: Skipping \(codable.id) - no changes needed")
                     continue
+                }
+
+                if let existingQuestion = existing {
+                    print(
+                        """
+                        🔍 IMPORT DEBUG: Will update \(codable.id) - category: '\(existingQuestion
+                            .category ?? "nil"
+                        )' -> '\(category)'
+                        """
+                    )
                 }
 
                 assert(self.context.persistentStoreCoordinator != nil)
@@ -165,18 +199,22 @@ final class QuestionImportService {
                 question.id = codable.id
                 question.type = codable.type
                 question.question = codable.question
-                question.choices = codable.choices as NSObject?
+                question.category = category
+                question.choices = codable.choices
                 question.answer = codable.answer
                 question.explanation = codable.explanation
                 question.difficulty = codable.difficulty
-                question.tags = codable.tags as NSObject?
+                question.tags = codable.tags
                 question.sourceTitle = codable.source?.title
                 question.sourceURL = codable.source?.url
                 question.contentHash = newContentHash
 
+                print("🔍 IMPORT DEBUG: Setting question \(codable.id) category to '\(category)'")
                 if existing == nil {
+                    print("🔍 IMPORT DEBUG: Creating new question \(codable.id)")
                     importedCount += 1
                 } else {
+                    print("🔍 IMPORT DEBUG: Updating existing question \(codable.id)")
                     updatedCount += 1
                 }
             }
@@ -248,6 +286,47 @@ final class QuestionImportService {
             } catch {
                 DispatchQueue.main.async {
                     completion(.failure(error))
+                }
+            }
+        }
+    }
+
+    /// Imports all question files from the Questions directory
+    func importAllQuestionFiles(saveAfterImport: Bool = true, completion: @escaping (Result<Int, Error>) -> Void) {
+        let questionFiles = ["swift", "swift_advanced", "coredata", "coreanimation"]
+        var totalImported = 0
+        var remainingFiles = questionFiles.count
+        var firstError: Error?
+
+        for filename in questionFiles {
+            self.importQuestions(fromJSONFileNamed: filename, saveAfterImport: false) { result in
+                switch result {
+                case let .success(count):
+                    totalImported += count
+                case let .failure(error):
+                    print("❌ Failed to import \(filename): \(error)")
+                    if firstError == nil {
+                        firstError = error
+                    }
+                }
+
+                remainingFiles -= 1
+                if remainingFiles == 0 {
+                    // All files processed
+                    if saveAfterImport, self.context.hasChanges {
+                        do {
+                            try self.context.save()
+                        } catch {
+                            completion(.failure(error))
+                            return
+                        }
+                    }
+
+                    if let error = firstError, totalImported == 0 {
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(totalImported))
+                    }
                 }
             }
         }

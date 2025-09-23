@@ -61,6 +61,28 @@ struct QuizEvaluationResult: Codable {
     let strengths: [String]
     let areasForImprovement: [String]
     let evaluationTimestamp: Date
+    let categoriesInSession: [String]
+    let categoryPerformance: [String: CategoryPerformance]
+
+    init(sessionId: UUID, overallScore: Double, totalQuestions: Int, correctAnswers: Int,
+         skippedQuestions: Int, individualResults: [QuestionEvaluationResult], insights: [String],
+         recommendations: [String], strengths: [String], areasForImprovement: [String],
+         evaluationTimestamp: Date, categoriesInSession: [String] = [],
+         categoryPerformance: [String: CategoryPerformance] = [:]) {
+        self.sessionId = sessionId
+        self.overallScore = overallScore
+        self.totalQuestions = totalQuestions
+        self.correctAnswers = correctAnswers
+        self.skippedQuestions = skippedQuestions
+        self.individualResults = individualResults
+        self.insights = insights
+        self.recommendations = recommendations
+        self.strengths = strengths
+        self.areasForImprovement = areasForImprovement
+        self.evaluationTimestamp = evaluationTimestamp
+        self.categoriesInSession = categoriesInSession
+        self.categoryPerformance = categoryPerformance
+    }
 
     var scorePercentage: Int {
         Int(self.overallScore * 100)
@@ -90,33 +112,9 @@ struct QuestionEvaluationResult: Identifiable, Codable {
     let feedback: String
     let userAnswer: String?
     let correctAnswer: String
-}
 
-enum PerformanceLevel: String, Codable, CaseIterable {
-    case excellent = "Excellent"
-    case good = "Good"
-    case fair = "Fair"
-    case needsImprovement = "Needs Improvement"
-    case poor = "Poor"
-
-    var emoji: String {
-        switch self {
-        case .excellent: "🌟"
-        case .good: "👍"
-        case .fair: "👌"
-        case .needsImprovement: "📈"
-        case .poor: "📚"
-        }
-    }
-
-    var color: String {
-        switch self {
-        case .excellent: "green"
-        case .good: "blue"
-        case .fair: "orange"
-        case .needsImprovement: "yellow"
-        case .poor: "red"
-        }
+    enum CodingKeys: String, CodingKey {
+        case questionIndex, isCorrect, isSkipped, feedback, userAnswer, correctAnswer
     }
 }
 
@@ -133,6 +131,20 @@ struct QuizSession: Identifiable {
         self.startTime = Date()
         self.userAnswers = []
         self.status = .inProgress
+    }
+
+    // Analytics properties
+    var categoriesInSession: [String] {
+        Array(Set(self.questions.compactMap(\.category))).sorted()
+    }
+
+    var categoryBreakdown: [String: Int] {
+        var breakdown: [String: Int] = [:]
+        for question in self.questions {
+            let category = question.category ?? "Unknown"
+            breakdown[category, default: 0] += 1
+        }
+        return breakdown
     }
 
     var duration: TimeInterval? {

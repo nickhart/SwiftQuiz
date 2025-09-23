@@ -13,6 +13,19 @@ enum AIProvider: String, CaseIterable {
     case disabled = "None"
 }
 
+#if DEBUG
+    enum DebugEvaluationMode: String, CaseIterable {
+        case useAI = "Use AI"
+        case randomScores = "Random Scores"
+        case allCorrect = "All Correct"
+        case allIncorrect = "All Incorrect"
+
+        var displayName: String {
+            rawValue
+        }
+    }
+#endif
+
 enum AIError: Error, LocalizedError {
     case missingAPIKey
     case networkError

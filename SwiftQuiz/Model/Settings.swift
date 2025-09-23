@@ -23,6 +23,31 @@ extension Settings {
         }
     }
 
+    #if DEBUG
+        /// Debug evaluation mode for development/testing (stored in UserDefaults)
+        var debugEvaluationMode: DebugEvaluationMode {
+            get {
+                let rawValue = UserDefaults.standard.string(forKey: "debug_evaluation_mode") ?? "Use AI"
+                return DebugEvaluationMode(rawValue: rawValue) ?? .useAI
+            }
+            set {
+                UserDefaults.standard.set(newValue.rawValue, forKey: "debug_evaluation_mode")
+                lastModified = Date()
+            }
+        }
+
+        /// Whether debug mode is enabled (only in DEBUG builds, stored in UserDefaults)
+        var isDebugModeEnabled: Bool {
+            get {
+                UserDefaults.standard.bool(forKey: "debug_mode_enabled")
+            }
+            set {
+                UserDefaults.standard.set(newValue, forKey: "debug_mode_enabled")
+                lastModified = Date()
+            }
+        }
+    #endif
+
     /// Convenience method to fetch or create the singleton settings
     static func fetchOrCreate(context: NSManagedObjectContext) -> Settings {
         let request: NSFetchRequest<Settings> = Settings.fetchRequest()
@@ -42,6 +67,16 @@ extension Settings {
         newSettings.id = self.settingsID
         newSettings.aiProvider = AIProvider.disabled.rawValue
         newSettings.lastModified = Date()
+
+        #if DEBUG
+            // Initialize debug UserDefaults if needed
+            if UserDefaults.standard.object(forKey: "debug_mode_enabled") == nil {
+                UserDefaults.standard.set(false, forKey: "debug_mode_enabled")
+            }
+            if UserDefaults.standard.object(forKey: "debug_evaluation_mode") == nil {
+                UserDefaults.standard.set(DebugEvaluationMode.useAI.rawValue, forKey: "debug_evaluation_mode")
+            }
+        #endif
 
         do {
             try context.save()

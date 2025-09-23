@@ -24,26 +24,21 @@ class MainViewModel: ObservableObject {
 
         self.loadingState = .loading
 
-        assert(context.persistentStoreCoordinator != nil)
-        DispatchQueue.global(qos: .userInitiated).async {
-            let importer = QuestionImportService(context: context)
-            guard let url = Bundle.main.url(forResource: "swift_questions", withExtension: "json") else {
-                DispatchQueue.main.async {
-                    self.loadingState = .error("Missing swift_questions.json")
-                }
-                return
-            }
-
+        Task {
             do {
-                let count = try importer.importQuestionsSync(from: url, saveAfterImport: true)
-                print("Imported \(count) questions")
-                DispatchQueue.main.async {
-                    self.loadingState = .loaded
-                }
+                let taxonomyImporter = TaxonomyImportService(context: context)
+                let questionImporter = EnhancedQuestionImportService(context: context)
+
+                try await taxonomyImporter.importTaxonomy(from: "swift_taxonomy")
+                print("✅ Taxonomy import completed")
+
+                try await questionImporter.importQuestions(from: "swift_questions")
+                print("✅ Questions import completed")
+
+                self.loadingState = .loaded
             } catch {
-                DispatchQueue.main.async {
-                    self.loadingState = .error("Failed to import: \(error.localizedDescription)")
-                }
+                print("❌ Import failed: \(error)")
+                self.loadingState = .error("Failed to import: \(error.localizedDescription)")
             }
         }
     }

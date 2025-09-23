@@ -205,6 +205,12 @@ private func parseQuizEvaluationResponse(_ responseText: String, session: QuizSe
             )
         }
 
+        // Calculate category performance
+        let categoryPerformance = calculateCategoryPerformance(
+            session: session,
+            individualResults: fullIndividualResults
+        )
+
         // Convert to full QuizEvaluationResult with session info
         let result = QuizEvaluationResult(
             sessionId: session.id,
@@ -217,7 +223,9 @@ private func parseQuizEvaluationResponse(_ responseText: String, session: QuizSe
             recommendations: aiResult.recommendations,
             strengths: aiResult.strengths,
             areasForImprovement: aiResult.areasForImprovement,
-            evaluationTimestamp: Date()
+            evaluationTimestamp: Date(),
+            categoriesInSession: session.categoriesInSession,
+            categoryPerformance: categoryPerformance
         )
 
         return result
@@ -226,6 +234,36 @@ private func parseQuizEvaluationResponse(_ responseText: String, session: QuizSe
         print("Response text: \(cleanedResponse)")
         throw error
     }
+}
+
+private func calculateCategoryPerformance(session: QuizSession,
+                                          individualResults: [QuestionEvaluationResult])
+    -> [String: CategoryPerformance] {
+    var categoryStats: [String: (total: Int, correct: Int)] = [:]
+
+    for (index, question) in session.questions.enumerated() {
+        let category = question.category ?? "Unknown"
+        let isCorrect = index < individualResults.count ? individualResults[index].isCorrect : false
+
+        let current = categoryStats[category, default: (total: 0, correct: 0)]
+        categoryStats[category] = (
+            total: current.total + 1,
+            correct: current.correct + (isCorrect ? 1 : 0)
+        )
+    }
+
+    var performance: [String: CategoryPerformance] = [:]
+    for (category, stats) in categoryStats {
+        let score = stats.total > 0 ? Double(stats.correct) / Double(stats.total) : 0.0
+        performance[category] = CategoryPerformance(
+            category: category,
+            totalQuestions: stats.total,
+            correctAnswers: stats.correct,
+            score: score
+        )
+    }
+
+    return performance
 }
 
 // MARK: - Main Type

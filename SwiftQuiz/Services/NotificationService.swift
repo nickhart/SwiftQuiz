@@ -20,6 +20,8 @@ final class NotificationService: ObservableObject {
     private let reminderTimeKey = "dailyReminderTime"
     private let reminderEnabledKey = "isDailyReminderEnabled"
     private let notificationIdentifier = "dailyQuizReminder"
+    private let regimenReminderIdentifier = "dailyRegimenReminder"
+    private let streakRecoveryIdentifier = "streakRecoveryReminder"
 
     private init() {
         self.loadSettings()
@@ -145,15 +147,128 @@ final class NotificationService: ObservableObject {
         return formatter.string(from: date)
     }
 
+    // MARK: - Daily Regimen Notifications
+
+    func scheduleDailyRegimenReminder(at time: Date, goal: DailyGoal) async {
+        // Cancel existing regimen notifications
+        await self.cancelDailyRegimenReminders()
+
+        guard self.isAuthorized else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Daily Study Goal"
+        content.body = "Time to work on your daily goal: \(goal.displayText) 📚"
+        content.sound = .default
+        content.badge = 1
+        content.userInfo = ["action": "openDailyQuiz", "type": "regimen"]
+
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.hour, .minute], from: time)
+
+        let trigger = UNCalendarNotificationTrigger(
+            dateMatching: components,
+            repeats: true
+        )
+
+        let request = UNNotificationRequest(
+            identifier: regimenReminderIdentifier,
+            content: content,
+            trigger: trigger
+        )
+
+        do {
+            try await UNUserNotificationCenter.current().add(request)
+            print("📅 Daily regimen reminder scheduled for \(self.formatTime(time))")
+        } catch {
+            print("❌ Failed to schedule regimen reminder: \(error)")
+        }
+    }
+
+    func scheduleStreakRecoveryReminder(streakCount: Int) async {
+        guard self.isAuthorized else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Don't Lose Your Streak! 🔥"
+        content.body = "You had a \(streakCount)-day streak going! Study now to get back on track."
+        content.sound = .default
+        content.badge = 1
+        content.userInfo = ["action": "openStreakRecovery", "type": "streakRecovery"]
+
+        // Schedule for 2 hours from now
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 7200, repeats: false)
+
+        let request = UNNotificationRequest(
+            identifier: streakRecoveryIdentifier,
+            content: content,
+            trigger: trigger
+        )
+
+        do {
+            try await UNUserNotificationCenter.current().add(request)
+            print("🔥 Streak recovery reminder scheduled")
+        } catch {
+            print("❌ Failed to schedule streak recovery reminder: \(error)")
+        }
+    }
+
+    func scheduleGoalAchievedCelebration(streakCount: Int) async {
+        guard self.isAuthorized else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Goal Achieved! 🎉"
+        content.body = streakCount > 1 ?
+            "Congratulations! You've maintained your streak for \(streakCount) days!" :
+            "Great job completing your daily study goal!"
+        content.sound = .default
+        content.userInfo = ["action": "openCelebration", "type": "celebration"]
+
+        // Schedule immediately
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+
+        let request = UNNotificationRequest(
+            identifier: "goalAchieved_\(Date().timeIntervalSince1970)",
+            content: content,
+            trigger: trigger
+        )
+
+        do {
+            try await UNUserNotificationCenter.current().add(request)
+            print("🎉 Goal achievement celebration scheduled")
+        } catch {
+            print("❌ Failed to schedule celebration: \(error)")
+        }
+    }
+
+    func cancelDailyRegimenReminders() async {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(
+            withIdentifiers: [self.regimenReminderIdentifier, self.streakRecoveryIdentifier]
+        )
+        print("📅 Daily regimen reminders cancelled")
+    }
+
     func handleNotificationResponse(_ response: UNNotificationResponse) -> Bool {
-        guard response.notification.request.identifier == self.notificationIdentifier else {
-            return false
+        let identifier = response.notification.request.identifier
+
+        // Handle legacy daily reminder
+        if identifier == self.notificationIdentifier {
+            if let action = response.notification.request.content.userInfo["action"] as? String,
+               action == "openQuiz" {
+                return true
+            }
         }
 
-        if let action = response.notification.request.content.userInfo["action"] as? String,
-           action == "openQuiz" {
-            // Notification was tapped - app should open to quiz
-            return true
+        // Handle regimen notifications
+        if identifier == self.regimenReminderIdentifier ||
+            identifier == self.streakRecoveryIdentifier ||
+            identifier.hasPrefix("goalAchieved_") {
+            if let action = response.notification.request.content.userInfo["action"] as? String {
+                switch action {
+                case "openDailyQuiz", "openStreakRecovery", "openCelebration":
+                    return true
+                default:
+                    break
+                }
+            }
         }
 
         return false
