@@ -2,14 +2,22 @@ import CoreData
 import Foundation
 
 @MainActor
-final class APIKeyService: ObservableObject {
-    static let shared = APIKeyService()
+final class APIKeyService: ObservableObject, APIKeyProvider {
+    static let shared: APIKeyService = {
+        @MainActor in
+        APIKeyService(
+            persistenceController: PersistenceController.shared,
+            keychainManager: KeychainManager.shared
+        )
+    }()
 
-    private let persistenceController: PersistenceController
-    private let keychainManager = KeychainManager.shared
+    private let persistenceController: PersistenceProvider
+    private let keychainManager: KeychainProvider
 
-    private init(persistenceController: PersistenceController = .shared) {
+    init(persistenceController: PersistenceProvider = PersistenceController.shared,
+         keychainManager: KeychainProvider = KeychainManager.shared) {
         self.persistenceController = persistenceController
+        self.keychainManager = keychainManager
     }
 
     // MARK: - API Key Management

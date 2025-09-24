@@ -26,6 +26,7 @@ targets:
       - SwiftQuiz/App/
       - SwiftQuiz/Extensions/
       - SwiftQuiz/Model/
+      - SwiftQuiz/Protocols/
       - SwiftQuiz/Services/
       - SwiftQuiz/Views/
       - SwiftQuiz/ViewModels/
@@ -73,6 +74,7 @@ targets:
       - SwiftQuiz/App/
       - SwiftQuiz/Extensions/
       - SwiftQuiz/Model/
+      - SwiftQuiz/Protocols/
       - SwiftQuiz/Services/
       - SwiftQuiz/Views/
       - SwiftQuiz/ViewModels/

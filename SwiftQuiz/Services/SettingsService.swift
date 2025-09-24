@@ -11,7 +11,13 @@ import Foundation
 
 @MainActor
 final class SettingsService: ObservableObject {
-    static let shared = SettingsService()
+    static let shared: SettingsService = {
+        @MainActor in
+        SettingsService(
+            persistenceController: PersistenceController.shared,
+            apiKeyService: APIKeyService.shared
+        )
+    }()
 
     // MARK: - Published Properties
 
@@ -22,14 +28,16 @@ final class SettingsService: ObservableObject {
 
     // MARK: - Private Properties
 
-    private let persistenceController: PersistenceController
-    private let apiKeyService = APIKeyService.shared
+    private let persistenceController: PersistenceProvider
+    private let apiKeyService: APIKeyProvider
     private let userDefaults = UserDefaults.standard
     private var settings: UserSettings?
     private var cancellables = Set<AnyCancellable>()
 
-    private init(persistenceController: PersistenceController = .shared) {
+    init(persistenceController: PersistenceProvider = PersistenceController.shared,
+         apiKeyService: APIKeyProvider = APIKeyService.shared) {
         self.persistenceController = persistenceController
+        self.apiKeyService = apiKeyService
 
         // Load settings immediately
         self.loadSettings()

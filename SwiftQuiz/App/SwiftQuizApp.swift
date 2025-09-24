@@ -75,7 +75,7 @@ struct SwiftQuizApp: App {
         @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     #endif
 
-    let persistenceController = PersistenceController.shared
+    let persistenceController: PersistenceController = .shared
 
     @StateObject private var notificationService = NotificationService.shared
     @StateObject private var settingsService = SettingsService.shared
