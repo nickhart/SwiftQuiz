@@ -31,6 +31,7 @@ enum NavigationDestination: String, CaseIterable, Hashable {
 class NavigationCoordinator: ObservableObject {
     @Published var selectedDestination: NavigationDestination? = .todaysQuiz
     @Published var showQuizModal = false
+    @Published var showOnboardingModal = false
 
     func startQuizSession() {
         self.showQuizModal = true
@@ -38,6 +39,14 @@ class NavigationCoordinator: ObservableObject {
 
     func dismissQuizModal() {
         self.showQuizModal = false
+    }
+
+    func showOnboarding() {
+        self.showOnboardingModal = true
+    }
+
+    func dismissOnboarding() {
+        self.showOnboardingModal = false
     }
 
     func navigateTo(_ destination: NavigationDestination) {

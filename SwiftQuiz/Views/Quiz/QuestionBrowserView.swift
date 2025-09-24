@@ -13,7 +13,7 @@ struct QuestionBrowserView: View {
     @EnvironmentObject private var settingsService: SettingsService
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Question.category, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(key: "category.name", ascending: true)],
         animation: .default
     )
     private var questions: FetchedResults<Question>
@@ -24,7 +24,7 @@ struct QuestionBrowserView: View {
     @State private var showingOnlyUnanswered: Bool = false
 
     private var availableCategories: [String] {
-        let allCategories = Set(self.questions.compactMap(\.category))
+        let allCategories = Set(self.questions.compactMap(\.category?.name))
         return ["All"] + Array(allCategories).sorted()
     }
 
@@ -33,15 +33,15 @@ struct QuestionBrowserView: View {
 
         // Filter by category
         if self.selectedCategory != "All" {
-            filtered = filtered.filter { $0.category == self.selectedCategory }
+            filtered = filtered.filter { $0.category?.name == self.selectedCategory }
         }
 
         // Filter by search text
         if !self.searchText.isEmpty {
             filtered = filtered.filter { question in
                 let questionText = question.question ?? ""
-                let tags = question.tags ?? []
-                let allText = ([questionText] + tags).joined(separator: " ")
+                let tagNames = (question.tags?.allObjects as? [Tag])?.compactMap(\.name) ?? []
+                let allText = ([questionText] + tagNames).joined(separator: " ")
                 return allText.localizedCaseInsensitiveContains(self.searchText)
             }
         }
@@ -59,7 +59,7 @@ struct QuestionBrowserView: View {
     private var questionCountByCategory: [String: Int] {
         var counts: [String: Int] = [:]
         for question in self.questions {
-            let category = question.category ?? "Unknown"
+            let category = question.category?.name ?? "Unknown"
             counts[category, default: 0] += 1
         }
         return counts

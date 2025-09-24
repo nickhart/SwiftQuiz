@@ -7,13 +7,74 @@
 
 import SwiftUI
 
+struct APIKeyInputView: View {
+    let provider: String
+    let placeholder: String
+    @Binding var apiKey: String
+
+    @State private var isSecureEntry = true
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("\(self.provider) API Key")
+                    .font(.caption)
+                    .fontWeight(.medium)
+                Spacer()
+                Button(action: { self.isSecureEntry.toggle() }, label: {
+                    Image(systemName: self.isSecureEntry ? "eye.slash" : "eye")
+                        .foregroundColor(.secondary)
+                })
+                .buttonStyle(.plain)
+            }
+
+            HStack {
+                Group {
+                    if self.isSecureEntry {
+                        SecureField(self.placeholder, text: self.$apiKey)
+                    } else {
+                        TextField(self.placeholder, text: self.$apiKey)
+                    }
+                }
+                .textFieldStyle(.roundedBorder)
+                .font(.caption)
+
+                if !self.apiKey.isEmpty {
+                    Button("Clear") {
+                        self.apiKey = ""
+                    }
+                    .font(.caption)
+                    .foregroundColor(.red)
+                }
+            }
+
+            if self.apiKey.isEmpty {
+                Text("Enter your \(self.provider) API key to enable AI-powered feedback")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            } else {
+                HStack {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                    Text("API key saved securely in Keychain")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
 struct AIAssistantSection: View {
     @EnvironmentObject private var settingsService: SettingsService
     @EnvironmentObject private var aiService: AIService
+    @EnvironmentObject private var coordinator: NavigationCoordinator
 
     @State private var testResult = ""
     @State private var isTesting = false
-    @State private var showOnboarding = false
+    @State private var localClaudeKey = ""
+    @State private var localOpenAIKey = ""
 
     var body: some View {
         Section(header: Text("AI Assistant")) {
@@ -57,11 +118,35 @@ struct AIAssistantSection: View {
             .font(.caption)
 
             if self.settingsService.aiProvider == .claude {
-                ClaudeAPIKeyView()
+                APIKeyInputView(
+                    provider: "Claude",
+                    placeholder: "sk-ant-api...",
+                    apiKey: self.$localClaudeKey
+                )
+                .onAppear {
+                    // Load current value when view appears
+                    self.localClaudeKey = self.settingsService.claudeAPIKey
+                }
+                .onChange(of: self.localClaudeKey) { _, newValue in
+                    // Save when user stops typing (debounced)
+                    self.saveAPIKeyDebounced(provider: "Claude", key: newValue)
+                }
             }
 
             if self.settingsService.aiProvider == .openai {
-                OpenAIAPIKeyView()
+                APIKeyInputView(
+                    provider: "OpenAI",
+                    placeholder: "sk-proj-...",
+                    apiKey: self.$localOpenAIKey
+                )
+                .onAppear {
+                    // Load current value when view appears
+                    self.localOpenAIKey = self.settingsService.openAIAPIKey
+                }
+                .onChange(of: self.localOpenAIKey) { _, newValue in
+                    // Save when user stops typing (debounced)
+                    self.saveAPIKeyDebounced(provider: "OpenAI", key: newValue)
+                }
             }
 
             if self.settingsService.aiProvider == .disabled {
@@ -75,7 +160,7 @@ struct AIAssistantSection: View {
                         .foregroundColor(.orange)
 
                     Button("Setup AI Assistant") {
-                        self.showOnboarding = true
+                        self.coordinator.showOnboarding()
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
@@ -106,10 +191,6 @@ struct AIAssistantSection: View {
                 .padding(.vertical, 4)
             }
         }
-        .sheet(isPresented: self.$showOnboarding) {
-            OnboardingView()
-                .environmentObject(self.aiService)
-        }
     }
 
     func testAPIConnection() {
@@ -117,19 +198,30 @@ struct AIAssistantSection: View {
         self.testResult = ""
 
         Task {
-            let result = switch self.settingsService.aiProvider {
-            case .claude:
-                await self.settingsService.testClaudeAuthentication()
-            case .openai:
-                await self.settingsService.testOpenAIAuthentication()
-            case .disabled:
-                "❌ No AI provider selected"
-            }
+            let result = await self.settingsService.testCurrentAPIAuthentication()
 
             await MainActor.run {
                 self.testResult = result
                 self.isTesting = false
             }
+        }
+    }
+
+    private func saveAPIKeyDebounced(provider: String, key: String) {
+        // Simple approach: save immediately but don't read back
+        // This prevents the clearing issue
+        do {
+            switch provider {
+            case "Claude":
+                try self.settingsService.createOrUpdateAPIKey(name: "Claude", key: key)
+            case "OpenAI":
+                try self.settingsService.createOrUpdateAPIKey(name: "OpenAI", key: key)
+            default:
+                break
+            }
+            print("✅ Saved \(provider) API key (length: \(key.count))")
+        } catch {
+            print("❌ Failed to save \(provider) API key: \(error)")
         }
     }
 }
@@ -140,4 +232,5 @@ struct AIAssistantSection: View {
     }
     .environmentObject(SettingsService.shared)
     .environmentObject(AIService.shared)
+    .environmentObject(NavigationCoordinator())
 }

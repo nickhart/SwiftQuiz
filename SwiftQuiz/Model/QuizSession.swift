@@ -6,6 +6,55 @@
 //
 
 import Foundation
+import SwiftUI
+
+// MARK: - Performance Level
+
+enum PerformanceLevel: String, CaseIterable {
+    case excellent = "Excellent"
+    case good = "Good"
+    case fair = "Fair"
+    case needsWork = "Needs Work"
+
+    var color: Color {
+        switch self {
+        case .excellent:
+            .green
+        case .good:
+            .blue
+        case .fair:
+            .orange
+        case .needsWork:
+            .red
+        }
+    }
+
+    var emoji: String {
+        switch self {
+        case .excellent:
+            "🌟"
+        case .good:
+            "👍"
+        case .fair:
+            "👌"
+        case .needsWork:
+            "📚"
+        }
+    }
+
+    static func from(score: Double) -> PerformanceLevel {
+        switch score {
+        case 0.9...1.0:
+            .excellent
+        case 0.7..<0.9:
+            .good
+        case 0.5..<0.7:
+            .fair
+        default:
+            .needsWork
+        }
+    }
+}
 
 struct QuizAnswer: Identifiable {
     let id = UUID()
@@ -62,13 +111,11 @@ struct QuizEvaluationResult: Codable {
     let areasForImprovement: [String]
     let evaluationTimestamp: Date
     let categoriesInSession: [String]
-    let categoryPerformance: [String: CategoryPerformance]
 
     init(sessionId: UUID, overallScore: Double, totalQuestions: Int, correctAnswers: Int,
          skippedQuestions: Int, individualResults: [QuestionEvaluationResult], insights: [String],
          recommendations: [String], strengths: [String], areasForImprovement: [String],
-         evaluationTimestamp: Date, categoriesInSession: [String] = [],
-         categoryPerformance: [String: CategoryPerformance] = [:]) {
+         evaluationTimestamp: Date, categoriesInSession: [String] = []) {
         self.sessionId = sessionId
         self.overallScore = overallScore
         self.totalQuestions = totalQuestions
@@ -81,7 +128,6 @@ struct QuizEvaluationResult: Codable {
         self.areasForImprovement = areasForImprovement
         self.evaluationTimestamp = evaluationTimestamp
         self.categoriesInSession = categoriesInSession
-        self.categoryPerformance = categoryPerformance
     }
 
     var scorePercentage: Int {
@@ -89,18 +135,7 @@ struct QuizEvaluationResult: Codable {
     }
 
     var performanceLevel: PerformanceLevel {
-        switch self.overallScore {
-        case 0.9...1.0:
-            .excellent
-        case 0.8..<0.9:
-            .good
-        case 0.6..<0.8:
-            .fair
-        case 0.4..<0.6:
-            .needsImprovement
-        default:
-            .poor
-        }
+        PerformanceLevel.from(score: self.overallScore)
     }
 }
 
@@ -135,13 +170,13 @@ struct QuizSession: Identifiable {
 
     // Analytics properties
     var categoriesInSession: [String] {
-        Array(Set(self.questions.compactMap(\.category))).sorted()
+        Array(Set(self.questions.compactMap(\.category?.name))).sorted()
     }
 
     var categoryBreakdown: [String: Int] {
         var breakdown: [String: Int] = [:]
         for question in self.questions {
-            let category = question.category ?? "Unknown"
+            let category = question.category?.name ?? "Unknown"
             breakdown[category, default: 0] += 1
         }
         return breakdown

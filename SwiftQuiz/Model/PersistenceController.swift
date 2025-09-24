@@ -14,7 +14,7 @@ struct PersistenceController {
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        let importer = QuestionImportService(context: viewContext)
+        let importer = CategoryImportService(context: viewContext)
         if let url = Bundle.main.url(forResource: "samplequestions", withExtension: "json") {
             do {
                 let count = try importer.importQuestionsSync(from: url, saveAfterImport: true)

@@ -48,28 +48,28 @@ class AIService: ObservableObject {
     }
 
     private func bindToSettingsService() {
-        // Bind provider
-        self.settingsService.$aiProvider
-            .receive(on: RunLoop.main)
-            .assign(to: \.currentProvider, on: self)
-            .store(in: &self.cancellables)
+        // For now, just sync the values directly since we don't have publishers for API keys
+        // We may need to add proper binding later when the new architecture is complete
+        self.claudeAPIKey = self.settingsService.claudeAPIKey
+        self.openAIAPIKey = self.settingsService.openAIAPIKey
 
-        // Bind Claude API key
-        self.settingsService.$claudeAPIKey
-            .receive(on: RunLoop.main)
-            .assign(to: \.claudeAPIKey, on: self)
-            .store(in: &self.cancellables)
+        // Set up a timer to periodically sync (temporary solution)
+        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            Task { @MainActor in
+                self.claudeAPIKey = self.settingsService.claudeAPIKey
+                self.openAIAPIKey = self.settingsService.openAIAPIKey
+            }
+        }
 
-        // Bind OpenAI API key
-        self.settingsService.$openAIAPIKey
-            .receive(on: RunLoop.main)
-            .assign(to: \.openAIAPIKey, on: self)
-            .store(in: &self.cancellables)
+        // Store timer in cancellables for cleanup
+        AnyCancellable {
+            timer.invalidate()
+        }.store(in: &self.cancellables)
     }
 
     func testClaudeAuthentication() async -> String {
         print("🧪 AIService: Delegating authentication test to SettingsService")
-        return await self.settingsService.testClaudeAuthentication()
+        return await self.settingsService.testClaudeAuthentication(apiKey: self.claudeAPIKey)
     }
 
     func evaluateAnswer(question: String, userAnswer: String, correctAnswer: String) async throws -> String {

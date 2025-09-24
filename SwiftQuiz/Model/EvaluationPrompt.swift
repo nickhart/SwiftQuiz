@@ -21,7 +21,7 @@ struct EvaluationPrompt {
         var lines = [
             "You are a quiz grader for a Swift development training app.",
             "",
-            "Topic: \(question.primaryTag ?? "General")",
+            "Topic: \(question.category?.name ?? "General")",
             "Difficulty: \(self.question.difficulty)",
             "",
             "Question:",
