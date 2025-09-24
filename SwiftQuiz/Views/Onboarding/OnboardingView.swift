@@ -9,6 +9,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @EnvironmentObject private var aiService: AIService
+    @EnvironmentObject private var coordinator: NavigationCoordinator
     @Environment(\.dismiss) private var dismiss
 
     @State private var currentStep: OnboardingStep = .welcome
@@ -56,30 +57,80 @@ struct OnboardingView: View {
                             withAnimation { self.currentStep = .chooseProvider }
                         }
                     case .chooseProvider:
-                        AIProviderSelectionView(
-                            selectedProvider: self.$selectedProvider,
-                            onNext: { withAnimation { self.currentStep = .apiKeySetup } },
-                            onBack: { withAnimation { self.currentStep = .welcome } }
-                        )
+                        VStack {
+                            Text("Choose AI Provider")
+                                .font(.title2)
+
+                            Picker("Provider", selection: self.$selectedProvider) {
+                                ForEach(AIProvider.allCases, id: \.self) { provider in
+                                    Text(provider.rawValue).tag(provider)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+
+                            Spacer()
+
+                            HStack {
+                                Button("Back") {
+                                    self.currentStep = .welcome
+                                }
+                                Spacer()
+                                Button("Next") {
+                                    self.currentStep = .apiKeySetup
+                                }
+                            }
+                        }
+                        .padding()
                     case .apiKeySetup:
-                        APIKeySetupView(
-                            apiKey: self.$apiKey,
-                            showError: self.$showError,
-                            errorMessage: self.$errorMessage,
-                            selectedProvider: self.selectedProvider,
-                            onNext: { withAnimation { self.currentStep = .complete } },
-                            onBack: { withAnimation { self.currentStep = .chooseProvider } },
-                            onTestKey: self.testAndContinue
-                        )
+                        VStack {
+                            Text("Enter \(self.selectedProvider.rawValue) API Key")
+                                .font(.title2)
+
+                            SecureField("API Key", text: self.$apiKey)
+                                .textFieldStyle(.roundedBorder)
+
+                            if self.showError {
+                                Text(self.errorMessage)
+                                    .foregroundColor(.red)
+                                    .font(.caption)
+                            }
+
+                            Spacer()
+
+                            HStack {
+                                Button("Back") {
+                                    self.currentStep = .chooseProvider
+                                }
+                                Spacer()
+                                Button("Test & Continue") {
+                                    Task {
+                                        await self.testAndContinue()
+                                    }
+                                }
+                            }
+                        }
+                        .padding()
                     case .complete:
-                        OnboardingCompletionView(
-                            selectedProvider: self.selectedProvider,
-                            onComplete: self.completeOnboarding
-                        )
+                        VStack {
+                            Text("🎉")
+                                .font(.system(size: 60))
+
+                            Text("Setup Complete!")
+                                .font(.title)
+
+                            Text("Your \(self.selectedProvider.rawValue) API key has been configured.")
+                                .multilineTextAlignment(.center)
+                                .padding()
+
+                            Button("Get Started") {
+                                self.completeOnboarding()
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                        .padding()
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .animation(.easeInOut, value: self.currentStep)
 
                 Spacer()
             }
@@ -124,9 +175,7 @@ struct OnboardingView: View {
 
             // Success - move to completion
             await MainActor.run {
-                withAnimation {
-                    self.currentStep = .complete
-                }
+                self.currentStep = .complete
                 self.showError = false
             }
         } catch {
@@ -140,6 +189,7 @@ struct OnboardingView: View {
 
     private func completeOnboarding() {
         UserDefaults.standard.set(true, forKey: "has_completed_onboarding")
+        self.coordinator.dismissOnboarding()
         self.dismiss()
     }
 }

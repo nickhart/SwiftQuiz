@@ -14,8 +14,6 @@ struct ContentView: View {
     @EnvironmentObject private var aiService: AIService
     @EnvironmentObject private var coordinator: NavigationCoordinator
     @EnvironmentObject private var viewModel: MainViewModel
-    // TODO: move this into the viewModel
-    @State private var showOnboarding = !UserDefaults.standard.bool(forKey: "has_completed_onboarding")
 
 //    @FetchRequest(
 //        entity: Question.entity(),
@@ -52,7 +50,7 @@ struct ContentView: View {
             .sheet(isPresented: self.$coordinator.showQuizModal) {
                 QuizModalView(context: self.viewContext) // Pass context directly
             }
-            .fullScreenCover(isPresented: self.$showOnboarding) {
+            .fullScreenCover(isPresented: self.$coordinator.showOnboardingModal) {
                 OnboardingView()
                     .environmentObject(self.aiService)
             }
@@ -61,7 +59,7 @@ struct ContentView: View {
                 QuizModalView(context: self.viewContext)
                     .frame(minWidth: 600, minHeight: 700)
             }
-            .sheet(isPresented: self.$showOnboarding) {
+            .sheet(isPresented: self.$coordinator.showOnboardingModal) {
                 OnboardingView()
                     .environmentObject(self.aiService)
                     .frame(minWidth: 600, minHeight: 700)
@@ -69,6 +67,11 @@ struct ContentView: View {
         #endif
             .onAppear {
                 self.viewModel.importQuestionsIfNeeded(using: self.viewContext)
+
+                // Show onboarding for first-time users
+                if !UserDefaults.standard.bool(forKey: "has_completed_onboarding") {
+                    self.coordinator.showOnboarding()
+                }
 
                 // Request notification permission after app loads
                 if !self.notificationService.isAuthorized {

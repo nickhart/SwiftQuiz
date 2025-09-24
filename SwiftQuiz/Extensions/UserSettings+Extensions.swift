@@ -16,7 +16,7 @@ extension UserSettings {
             let settings = UserSettings(context: context)
             settings.id = "user_settings"
             settings.lastModified = Date()
-            settings.enabledCategories = ["Swift"]
+            settings.enabledCategories = ["Advanced Swift"]
             settings.isDebugModeEnabled = false
 
             try context.save()

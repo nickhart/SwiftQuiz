@@ -10,23 +10,20 @@ import SwiftUI
 struct HelpSupportSection: View {
     @EnvironmentObject private var settingsService: SettingsService
     @EnvironmentObject private var notificationService: NotificationService
+    @EnvironmentObject private var coordinator: NavigationCoordinator
 
-    @State private var showOnboarding = false
     @State private var showResetConfirmation = false
 
     var body: some View {
         Section(header: Text("Help & Support")) {
             Button("Show AI Setup Guide") {
-                self.showOnboarding = true
+                self.coordinator.showOnboarding()
             }
 
             Button("Reset All Settings") {
                 self.showResetConfirmation = true
             }
             .foregroundColor(.red)
-        }
-        .sheet(isPresented: self.$showOnboarding) {
-            OnboardingView()
         }
         .alert("Reset All Settings", isPresented: self.$showResetConfirmation) {
             Button("Reset", role: .destructive) {
@@ -50,7 +47,7 @@ struct HelpSupportSection: View {
         self.settingsService.updateOpenAIAPIKey("")
 
         // Reset category settings
-        self.settingsService.enabledCategories = ["Swift"]
+        self.settingsService.enabledCategories = ["Advanced Swift"]
         UserDefaults.standard.removeObject(forKey: "enabled_categories")
 
         // Reset notification settings
@@ -69,4 +66,5 @@ struct HelpSupportSection: View {
     }
     .environmentObject(SettingsService.shared)
     .environmentObject(NotificationService.shared)
+    .environmentObject(NavigationCoordinator())
 }

@@ -14,12 +14,17 @@ class KeychainManager {
     }
 
     func store(key: String, service: String, data: Data) throws {
+        #if DEBUG
+            let enableCloudSync = false
+        #else
+            let enableCloudSync = true
+        #endif
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
             kSecAttrAccount as String: key,
             kSecValueData as String: data,
-            kSecAttrSynchronizable as String: true,
+            kSecAttrSynchronizable as String: enableCloudSync,
         ]
 
         let status = SecItemAdd(query as CFDictionary, nil)
@@ -100,10 +105,69 @@ class KeychainManager {
     }
 
     func storeOrUpdate(key: String, service: String, data: Data) throws {
+        print("🔍 KEYCHAIN: Starting storeOrUpdate for service: \(service)")
+
+        // Strategy 1: Try update first (most efficient if item exists)
         do {
-            try self.store(key: key, service: service, data: data)
-        } catch KeychainError.duplicateEntry {
+            print("🔍 KEYCHAIN: Attempting update...")
             try self.update(key: key, service: service, data: data)
+            print("✅ KEYCHAIN: Update succeeded")
+            return
+        } catch let error as KeychainError {
+            print("⚠️ KEYCHAIN: Update failed with: \(error)")
+            if case .itemNotFound = error {
+                // Continue to create new entry
+            } else {
+                // Update failed, delete and recreate
+                print("🔍 KEYCHAIN: Deleting after failed update...")
+                try? self.delete(key: key, service: service)
+            }
+        } catch {
+            print("⚠️ KEYCHAIN: Update failed with unknown error: \(error)")
+            try? self.delete(key: key, service: service)
+        }
+
+        // Strategy 2: Try create new entry
+        do {
+            print("🔍 KEYCHAIN: Attempting store...")
+            try self.store(key: key, service: service, data: data)
+            print("✅ KEYCHAIN: Store succeeded")
+            return
+        } catch let error as KeychainError {
+            print("⚠️ KEYCHAIN: Store failed with: \(error)")
+            if case .duplicateEntry = error {
+                print("🔍 KEYCHAIN: Handling duplicate entry...")
+
+                // Check if item actually exists and is retrievable
+                do {
+                    _ = try self.retrieve(key: key, service: service)
+                    print("✅ KEYCHAIN: Item exists and is retrievable - trying update instead")
+                    try self.update(key: key, service: service, data: data)
+                    print("✅ KEYCHAIN: Update succeeded for existing item")
+                    return
+                } catch {
+                    print("❌ KEYCHAIN: Item not retrievable despite duplicate error: \(error)")
+                }
+
+                // Force delete
+                print("🔍 KEYCHAIN: Force deleting duplicate...")
+                do {
+                    try self.delete(key: key, service: service)
+                    print("✅ KEYCHAIN: Delete succeeded")
+                } catch {
+                    print("⚠️ KEYCHAIN: Delete failed: \(error)")
+                }
+
+                // Retry store
+                print("🔍 KEYCHAIN: Retrying store after delete...")
+                try self.store(key: key, service: service, data: data)
+                print("✅ KEYCHAIN: Store succeeded after delete")
+            } else {
+                throw error
+            }
+        } catch {
+            print("⚠️ KEYCHAIN: Store failed with unknown error: \(error)")
+            throw error
         }
     }
 }
@@ -126,5 +190,62 @@ extension KeychainManager {
 
     func deleteAPIKey(for serviceName: String) throws {
         try self.delete(key: "api-key", service: serviceName)
+    }
+
+    // MARK: - Debug Utilities
+
+    func debugListAllEntries() {
+        print("🔍 KEYCHAIN DEBUG: Listing all keychain entries...")
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecReturnAttributes as String: true,
+            kSecMatchLimit as String: kSecMatchLimitAll,
+        ]
+
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+
+        if status == errSecSuccess, let items = result as? [[String: Any]] {
+            print("🔍 KEYCHAIN DEBUG: Found \(items.count) total entries")
+            let swiftQuizEntries = items.filter { item in
+                if let service = item[kSecAttrService as String] as? String {
+                    return service.contains("SwiftQuiz")
+                }
+                return false
+            }
+
+            print("🔍 KEYCHAIN DEBUG: Found \(swiftQuizEntries.count) SwiftQuiz entries:")
+            for item in swiftQuizEntries {
+                if let service = item[kSecAttrService as String] as? String,
+                   let account = item[kSecAttrAccount as String] as? String {
+                    print("  - Service: \(service), Account: \(account)")
+                }
+            }
+        } else {
+            print("🔍 KEYCHAIN DEBUG: Error listing entries: \(status)")
+        }
+    }
+
+    func nukeAllSwiftQuizEntries() {
+        print("💥 NUKING all SwiftQuiz keychain entries...")
+
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: "SwiftQuiz", // This will match all SwiftQuiz.* services
+        ]
+
+        let status = SecItemDelete(query as CFDictionary)
+        print("💥 Nuke result: \(status)")
+
+        // Also try specific known services
+        let services = ["SwiftQuiz.Claude.API", "SwiftQuiz.OpenAI.API"]
+        for service in services {
+            let specificQuery: [String: Any] = [
+                kSecClass as String: kSecClassGenericPassword,
+                kSecAttrService as String: service,
+            ]
+            let specificStatus = SecItemDelete(specificQuery as CFDictionary)
+            print("💥 Nuked \(service): \(specificStatus)")
+        }
     }
 }

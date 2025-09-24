@@ -24,6 +24,10 @@ import SwiftUI
                 }
                 .padding(.vertical, 4)
 
+                Button(action: {
+                    KeychainManager.shared.nukeAllSwiftQuizEntries()
+                }, label: { Label("Nuke Keychain", systemImage: "trash") })
+                    .foregroundColor(.red)
                 Toggle("Enable Debug Mode", isOn: Binding(
                     get: { self.settingsService.isDebugModeEnabled },
                     set: { newValue in

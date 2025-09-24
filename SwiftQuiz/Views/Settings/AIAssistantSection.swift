@@ -69,10 +69,12 @@ struct APIKeyInputView: View {
 struct AIAssistantSection: View {
     @EnvironmentObject private var settingsService: SettingsService
     @EnvironmentObject private var aiService: AIService
+    @EnvironmentObject private var coordinator: NavigationCoordinator
 
     @State private var testResult = ""
     @State private var isTesting = false
-    @State private var showOnboarding = false
+    @State private var localClaudeKey = ""
+    @State private var localOpenAIKey = ""
 
     var body: some View {
         Section(header: Text("AI Assistant")) {
@@ -119,22 +121,32 @@ struct AIAssistantSection: View {
                 APIKeyInputView(
                     provider: "Claude",
                     placeholder: "sk-ant-api...",
-                    apiKey: Binding(
-                        get: { self.settingsService.claudeAPIKey },
-                        set: { self.settingsService.claudeAPIKey = $0 }
-                    )
+                    apiKey: self.$localClaudeKey
                 )
+                .onAppear {
+                    // Load current value when view appears
+                    self.localClaudeKey = self.settingsService.claudeAPIKey
+                }
+                .onChange(of: self.localClaudeKey) { _, newValue in
+                    // Save when user stops typing (debounced)
+                    self.saveAPIKeyDebounced(provider: "Claude", key: newValue)
+                }
             }
 
             if self.settingsService.aiProvider == .openai {
                 APIKeyInputView(
                     provider: "OpenAI",
                     placeholder: "sk-proj-...",
-                    apiKey: Binding(
-                        get: { self.settingsService.openAIAPIKey },
-                        set: { self.settingsService.openAIAPIKey = $0 }
-                    )
+                    apiKey: self.$localOpenAIKey
                 )
+                .onAppear {
+                    // Load current value when view appears
+                    self.localOpenAIKey = self.settingsService.openAIAPIKey
+                }
+                .onChange(of: self.localOpenAIKey) { _, newValue in
+                    // Save when user stops typing (debounced)
+                    self.saveAPIKeyDebounced(provider: "OpenAI", key: newValue)
+                }
             }
 
             if self.settingsService.aiProvider == .disabled {
@@ -148,7 +160,7 @@ struct AIAssistantSection: View {
                         .foregroundColor(.orange)
 
                     Button("Setup AI Assistant") {
-                        self.showOnboarding = true
+                        self.coordinator.showOnboarding()
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
@@ -179,10 +191,6 @@ struct AIAssistantSection: View {
                 .padding(.vertical, 4)
             }
         }
-        .sheet(isPresented: self.$showOnboarding) {
-            OnboardingView()
-                .environmentObject(self.aiService)
-        }
     }
 
     func testAPIConnection() {
@@ -198,6 +206,24 @@ struct AIAssistantSection: View {
             }
         }
     }
+
+    private func saveAPIKeyDebounced(provider: String, key: String) {
+        // Simple approach: save immediately but don't read back
+        // This prevents the clearing issue
+        do {
+            switch provider {
+            case "Claude":
+                try self.settingsService.createOrUpdateAPIKey(name: "Claude", key: key)
+            case "OpenAI":
+                try self.settingsService.createOrUpdateAPIKey(name: "OpenAI", key: key)
+            default:
+                break
+            }
+            print("✅ Saved \(provider) API key (length: \(key.count))")
+        } catch {
+            print("❌ Failed to save \(provider) API key: \(error)")
+        }
+    }
 }
 
 #Preview {
@@ -206,4 +232,5 @@ struct AIAssistantSection: View {
     }
     .environmentObject(SettingsService.shared)
     .environmentObject(AIService.shared)
+    .environmentObject(NavigationCoordinator())
 }

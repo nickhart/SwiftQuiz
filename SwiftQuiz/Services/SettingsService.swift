@@ -18,7 +18,7 @@ final class SettingsService: ObservableObject {
     @Published var aiProvider: AIProvider = .disabled
     @Published var selectedAPIKey: APIKey?
     @Published var isCloudKitSyncing: Bool = false
-    @Published var enabledCategories: Set<String> = ["Swift"]
+    @Published var enabledCategories: Set<String> = ["Advanced Swift"]
 
     // MARK: - Private Properties
 
@@ -60,10 +60,19 @@ final class SettingsService: ObservableObject {
         let cleanedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
         print("⚙️ Settings: Creating/updating API key for \(name) (length: \(cleanedKey.count))")
 
-        if let existingKey = apiKeyService.getAPIKey(named: name) {
-            try self.apiKeyService.updateAPIKey(existingKey, newKey: cleanedKey)
-        } else {
-            _ = try self.apiKeyService.createAPIKey(name: name, key: cleanedKey)
+        // Debug keychain state before operation
+        KeychainManager.shared.debugListAllEntries()
+
+        do {
+            if let existingKey = apiKeyService.getAPIKey(named: name) {
+                try self.apiKeyService.updateAPIKey(existingKey, newKey: cleanedKey)
+            } else {
+                _ = try self.apiKeyService.createAPIKey(name: name, key: cleanedKey)
+            }
+        } catch {
+            print("❌ Settings: Keychain operation failed, current state:")
+            KeychainManager.shared.debugListAllEntries()
+            throw error
         }
     }
 
@@ -88,9 +97,22 @@ final class SettingsService: ObservableObject {
 
     /// Legacy method for updating AI provider (compatibility)
     func updateProvider(_ provider: AIProvider) {
-        // For now, just store the provider type but we'll need to rework this
-        // when we have proper provider selection UI
-        print("⚠️ updateProvider called with \(provider) - needs implementation")
+        print("⚙️ Settings: Updating AI provider to \(provider)")
+        self.aiProvider = provider
+
+        // Optionally set selectedAPIKey based on provider
+        switch provider {
+        case .claude:
+            if let claudeKey = apiKeyService.getAPIKey(named: "Claude") {
+                self.updateSelectedAPIKey(claudeKey)
+            }
+        case .openai:
+            if let openAIKey = apiKeyService.getAPIKey(named: "OpenAI") {
+                self.updateSelectedAPIKey(openAIKey)
+            }
+        case .disabled:
+            self.updateSelectedAPIKey(nil)
+        }
     }
 
     /// Legacy method for updating Claude API key (compatibility)
@@ -124,7 +146,9 @@ final class SettingsService: ObservableObject {
     /// Legacy property for Claude API key (compatibility)
     var claudeAPIKey: String {
         get {
-            guard let claudeKey = apiKeyService.getAPIKey(named: "Claude") else { return "" }
+            guard let claudeKey = apiKeyService.getAPIKey(named: "Claude") else {
+                return ""
+            }
             do {
                 return try self.apiKeyService.getAPIKey(for: claudeKey)
             } catch {
@@ -282,7 +306,7 @@ final class SettingsService: ObservableObject {
         if let enabledCats = settings.enabledCategories {
             self.enabledCategories = Set(enabledCats)
         } else {
-            self.enabledCategories = ["Swift"]
+            self.enabledCategories = ["Advanced Swift"]
         }
 
         print(

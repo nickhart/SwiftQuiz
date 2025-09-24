@@ -37,11 +37,16 @@ final class APIKeyService: ObservableObject {
     }
 
     func updateAPIKey(_ apiKey: APIKey, newKey: String) throws {
-        // Update Keychain
-        guard let keyData = newKey.data(using: .utf8) else {
-            throw NSError(domain: "APIKeyService", code: 1, userInfo: [NSLocalizedDescriptionKey: "Invalid key data"])
+        guard let serviceName = apiKey.serviceName else {
+            throw NSError(
+                domain: "APIKeyService",
+                code: 2,
+                userInfo: [NSLocalizedDescriptionKey: "API key has no service name"]
+            )
         }
-        try self.keychainManager.storeOrUpdate(key: "api-key", service: apiKey.serviceName ?? "unknown", data: keyData)
+
+        // Store API key in Keychain (handles both create and update cases)
+        try self.keychainManager.storeAPIKey(newKey, for: serviceName)
 
         // Update CoreData
         apiKey.lastUsed = Date()
