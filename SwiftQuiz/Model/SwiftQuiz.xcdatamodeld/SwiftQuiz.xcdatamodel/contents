@@ -3,158 +3,69 @@
     <entity name="Achievement" representedClassName="Achievement" syncable="YES" codeGenerationType="class">
         <attribute name="achievementDescription" optional="YES" attributeType="String"/>
         <attribute name="earnedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="iconName" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="isEarned" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="isHidden" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="metadata" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
-        <attribute name="points" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="progress" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="requirements" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
-        <attribute name="tier" optional="YES" attributeType="String"/>
         <attribute name="type" attributeType="String" defaultValueString=""/>
-        <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="achievements" inverseEntity="Category"/>
-        <relationship name="subject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Subject" inverseName="achievements" inverseEntity="Subject"/>
-        <relationship name="topic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Topic" inverseName="achievements" inverseEntity="Topic"/>
+    </entity>
+    <entity name="APIKey" representedClassName="APIKey" syncable="YES" codeGenerationType="class">
+        <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="isActive" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="lastUsed" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="serviceName" attributeType="String" defaultValueString=""/>
     </entity>
     <entity name="Category" representedClassName="Category" syncable="YES" codeGenerationType="class">
         <attribute name="categoryDescription" optional="YES" attributeType="String"/>
         <attribute name="color" optional="YES" attributeType="String"/>
         <attribute name="iconName" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
-        <attribute name="isCore" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
-        <attribute name="sortOrder" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="achievements" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Achievement" inverseName="category" inverseEntity="Achievement"/>
-        <relationship name="childCategories" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Category" inverseName="parentCategory" inverseEntity="Category"/>
-        <relationship name="parentCategory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="childCategories" inverseEntity="Category"/>
-        <relationship name="questions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Question" inverseName="primaryCategory" inverseEntity="Question"/>
-        <relationship name="subject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Subject" inverseName="categories" inverseEntity="Subject"/>
-        <relationship name="topics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Topic" inverseName="categories" inverseEntity="Topic"/>
-    </entity>
-    <entity name="LearningResource" representedClassName="LearningResource" syncable="YES" codeGenerationType="class">
-        <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="difficulty" attributeType="Integer 16" defaultValueString="1" usesScalarValueType="YES"/>
-        <attribute name="estimatedTime" attributeType="Integer 16" defaultValueString="5" usesScalarValueType="YES"/>
-        <attribute name="id" attributeType="String" defaultValueString=""/>
-        <attribute name="isOfficial" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="language" optional="YES" attributeType="String"/>
-        <attribute name="lastVerified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="rating" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="resourceDescription" optional="YES" attributeType="String"/>
-        <attribute name="title" attributeType="String" defaultValueString=""/>
-        <attribute name="type" attributeType="String" defaultValueString=""/>
-        <attribute name="url" attributeType="String" defaultValueString=""/>
-        <relationship name="questions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Question" inverseName="resources" inverseEntity="Question"/>
-        <relationship name="topic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Topic" inverseName="resources" inverseEntity="Topic"/>
+        <relationship name="questions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Question" inverseName="category" inverseEntity="Question"/>
     </entity>
     <entity name="Question" representedClassName="Question" syncable="YES" codeGenerationType="class">
         <attribute name="answer" optional="YES" attributeType="String"/>
-        <attribute name="bloomsLevel" attributeType="Integer 16" defaultValueString="1" usesScalarValueType="YES"/>
-        <attribute name="category" optional="YES" attributeType="String"/>
-        <attribute name="choices" optional="YES" attributeType="Transformable" valueTransformerName="SecureStringArrayTransformer" customClassName="[String]"/>
-        <attribute name="contentHash" optional="YES" attributeType="String"/>
+        <attribute name="choices" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
         <attribute name="difficulty" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="estimatedTime" attributeType="Integer 16" defaultValueString="30" usesScalarValueType="YES"/>
         <attribute name="explanation" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>
-        <attribute name="metadata" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
         <attribute name="question" optional="YES" attributeType="String"/>
-        <attribute name="sourceTitle" optional="YES" attributeType="String"/>
-        <attribute name="sourceURL" optional="YES" attributeType="String"/>
-        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="SecureStringArrayTransformer" customClassName="[String]"/>
         <attribute name="type" optional="YES" attributeType="String"/>
-        <relationship name="primaryCategory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="questions" inverseEntity="Category"/>
-        <relationship name="resources" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LearningResource" inverseName="questions" inverseEntity="LearningResource"/>
-        <relationship name="subject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Subject" inverseName="questions" inverseEntity="Subject"/>
-        <relationship name="subjectVersion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SubjectVersion" inverseName="questions" inverseEntity="SubjectVersion"/>
-        <relationship name="topics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Topic" inverseName="questions" inverseEntity="Topic"/>
-        <relationship name="userAnswer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserAnswer" inverseName="question" inverseEntity="UserAnswer"/>
+        <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="questions" inverseEntity="Category"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="questions" inverseEntity="Tag"/>
+        <relationship name="userAnswer" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UserAnswer" inverseName="question" inverseEntity="UserAnswer"/>
         <relationship name="userProgress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UserProgress" inverseName="question" inverseEntity="UserProgress"/>
     </entity>
-    <entity name="Settings" representedClassName="Settings" syncable="YES" codeGenerationType="class">
-        <attribute name="aiProvider" optional="YES" attributeType="String" defaultValueString="None"/>
-        <attribute name="claudeAPIKeyRef" optional="YES" attributeType="String"/>
-        <attribute name="id" attributeType="String" defaultValueString="user_settings"/>
-        <attribute name="lastModified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="openAIAPIKeyRef" optional="YES" attributeType="String"/>
-    </entity>
-    <entity name="Subject" representedClassName="Subject" syncable="YES" codeGenerationType="class">
-        <attribute name="color" optional="YES" attributeType="String"/>
-        <attribute name="displayName" optional="YES" attributeType="String"/>
-        <attribute name="iconName" optional="YES" attributeType="String"/>
+    <entity name="Tag" representedClassName="Tag" syncable="YES" codeGenerationType="class">
         <attribute name="id" attributeType="String" defaultValueString=""/>
-        <attribute name="isActive" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
-        <attribute name="metadata" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
-        <attribute name="sortOrder" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="subjectDescription" optional="YES" attributeType="String"/>
-        <relationship name="achievements" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Achievement" inverseName="subject" inverseEntity="Achievement"/>
-        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Category" inverseName="subject" inverseEntity="Category"/>
-        <relationship name="questions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Question" inverseName="subject" inverseEntity="Question"/>
-        <relationship name="versions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SubjectVersion" inverseName="subject" inverseEntity="SubjectVersion"/>
-    </entity>
-    <entity name="SubjectVersion" representedClassName="SubjectVersion" syncable="YES" codeGenerationType="class">
-        <attribute name="changelog" optional="YES" attributeType="String"/>
-        <attribute name="id" attributeType="String" defaultValueString=""/>
-        <attribute name="isLatest" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="isSupported" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
-        <attribute name="name" attributeType="String" defaultValueString=""/>
-        <attribute name="releaseDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="version" attributeType="String" defaultValueString=""/>
-        <relationship name="questions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Question" inverseName="subjectVersion" inverseEntity="Question"/>
-        <relationship name="subject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Subject" inverseName="versions" inverseEntity="Subject"/>
-    </entity>
-    <entity name="Topic" representedClassName="Topic" syncable="YES" codeGenerationType="class">
-        <attribute name="difficulty" attributeType="Integer 16" defaultValueString="1" usesScalarValueType="YES"/>
-        <attribute name="estimatedTime" attributeType="Integer 16" defaultValueString="5" usesScalarValueType="YES"/>
-        <attribute name="id" attributeType="String" defaultValueString=""/>
-        <attribute name="isCore" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
-        <attribute name="metadata" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
-        <attribute name="name" attributeType="String" defaultValueString=""/>
-        <attribute name="sortOrder" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="topicDescription" optional="YES" attributeType="String"/>
-        <relationship name="achievements" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Achievement" inverseName="topic" inverseEntity="Achievement"/>
-        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Category" inverseName="topics" inverseEntity="Category"/>
-        <relationship name="dependents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Topic" inverseName="prerequisites" inverseEntity="Topic"/>
-        <relationship name="prerequisites" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Topic" inverseName="dependents" inverseEntity="Topic"/>
-        <relationship name="questions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Question" inverseName="topics" inverseEntity="Question"/>
-        <relationship name="resources" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="LearningResource" inverseName="topic" inverseEntity="LearningResource"/>
+        <attribute name="tagDescription" optional="YES" attributeType="String"/>
+        <relationship name="questions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Question" inverseName="tags" inverseEntity="Question"/>
     </entity>
     <entity name="UserAnswer" representedClassName="UserAnswer" syncable="YES" codeGenerationType="class">
         <attribute name="answer" optional="YES" attributeType="String"/>
-        <attribute name="confidence" attributeType="Integer 16" defaultValueString="3" usesScalarValueType="YES"/>
-        <attribute name="deviceType" optional="YES" attributeType="String"/>
-        <attribute name="difficulty" attributeType="Integer 16" defaultValueString="3" usesScalarValueType="YES"/>
-        <attribute name="hintsUsed" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="interactionType" optional="YES" attributeType="String" defaultValueString="answered"/>
         <attribute name="isCorrect" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isPartial" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="questionID" optional="YES" attributeType="String"/>
-        <attribute name="sessionId" optional="YES" attributeType="String"/>
-        <attribute name="timeSpent" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="question" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Question" inverseName="userAnswer" inverseEntity="Question"/>
         <relationship name="userProgress" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserProgress" inverseName="userAnswers" inverseEntity="UserProgress"/>
     </entity>
     <entity name="UserProgress" representedClassName="UserProgress" syncable="YES" codeGenerationType="class">
         <attribute name="correctAttempts" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="currentStreak" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="easinessFactor" attributeType="Double" defaultValueString="2.5" usesScalarValueType="YES"/>
-        <attribute name="firstAttempt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="lastAttempt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="lastMasteryUpdate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="longestStreak" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="masteryLevel" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="needsReview" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="nextReviewDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="questionId" attributeType="String" defaultValueString=""/>
-        <attribute name="repetitionInterval" attributeType="Integer 32" defaultValueString="1" usesScalarValueType="YES"/>
-        <attribute name="repetitionNumber" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="totalAttempts" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="userId" attributeType="String" defaultValueString="default"/>
         <relationship name="question" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Question" inverseName="userProgress" inverseEntity="Question"/>
         <relationship name="userAnswers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="UserAnswer" inverseName="userProgress" inverseEntity="UserAnswer"/>
+    </entity>
+    <entity name="UserSettings" representedClassName="UserSettings" syncable="YES" codeGenerationType="class">
+        <attribute name="enabledCategories" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="id" attributeType="String" defaultValueString="user_settings"/>
+        <attribute name="isDebugModeEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="lastModified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="selectedAIProvider" optional="YES" attributeType="String"/>
     </entity>
 </model>

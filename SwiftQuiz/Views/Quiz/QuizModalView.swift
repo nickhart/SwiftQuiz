@@ -21,8 +21,7 @@ struct QuizModalView: View {
         self._quizSessionService = StateObject(wrappedValue: QuizSessionService(
             context: context,
             aiService: AIService.shared,
-            settingsService: SettingsService.shared,
-            dailyRegimenService: DailyRegimenService.shared
+            settingsService: SettingsService.shared
         ))
     }
 
@@ -126,7 +125,7 @@ struct QuizModalView: View {
         VStack(alignment: .leading, spacing: 16) {
             if let category = question.category {
                 HStack {
-                    Text(category.uppercased())
+                    Text(category.name?.uppercased() ?? "UNKNOWN")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundColor(.blue)

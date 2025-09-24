@@ -149,15 +149,15 @@ final class NotificationService: ObservableObject {
 
     // MARK: - Daily Regimen Notifications
 
-    func scheduleDailyRegimenReminder(at time: Date, goal: DailyGoal) async {
+    func scheduleDailyRegimenReminder(at time: Date) async {
         // Cancel existing regimen notifications
         await self.cancelDailyRegimenReminders()
 
         guard self.isAuthorized else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "Daily Study Goal"
-        content.body = "Time to work on your daily goal: \(goal.displayText) 📚"
+        content.title = "Daily Quiz"
+        content.body = "Time to work on your daily quiz"
         content.sound = .default
         content.badge = 1
         content.userInfo = ["action": "openDailyQuiz", "type": "regimen"]

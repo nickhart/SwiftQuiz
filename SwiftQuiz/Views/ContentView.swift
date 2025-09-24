@@ -32,18 +32,12 @@ struct ContentView: View {
             NavigationStack {
                 switch self.coordinator.selectedDestination {
                 case .todaysQuiz: TodaysQuizView()
-                case .analytics: AnalyticsView()
-                    .navigationDestination(for: AnalyticsDestination.self) { destination in
-                        switch destination {
-                        case .performanceTrends:
-                            PerformanceTrendsView()
-                        case .categoryBreakdown:
-                            CategoryBreakdownView()
-                        case .badgeCollection:
-                            BadgeCollectionView()
-                        case .studyInsights:
-                            StudyInsightsView()
-                        }
+                case .analytics:
+                    VStack {
+                        Text("Analytics")
+                            .font(.largeTitle)
+                        Text("Coming Soon")
+                            .foregroundColor(.secondary)
                     }
                 case .questionBank: QuestionBrowserView()
                 case .settings: SettingsView()

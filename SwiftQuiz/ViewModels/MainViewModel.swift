@@ -26,15 +26,33 @@ class MainViewModel: ObservableObject {
 
         Task {
             do {
-                let taxonomyImporter = TaxonomyImportService(context: context)
-                let questionImporter = EnhancedQuestionImportService(context: context)
+                let categoryImporter = CategoryImportService(context: context)
 
-                try await taxonomyImporter.importTaxonomy(from: "swift_taxonomy")
-                print("✅ Taxonomy import completed")
+                // Import question files with categories
+                let questionFiles = ["swift_questions", "swift_advanced", "coredata", "coreanimation"]
+                var totalImported = 0
 
-                try await questionImporter.importQuestions(from: "swift_questions")
-                print("✅ Questions import completed")
+                for filename in questionFiles {
+                    do {
+                        let result = try categoryImporter.importQuestions(
+                            fromJSONFileNamed: filename,
+                            saveAfterImport: false
+                        )
+                        totalImported += result.totalProcessed
+                        print("✅ Imported \(result.totalProcessed) questions from \(filename)")
+                    } catch ImportError.fileNotFound {
+                        print("⚠️ Skipping missing file: \(filename).json")
+                    } catch {
+                        print("❌ Failed to import \(filename): \(error)")
+                    }
+                }
 
+                // Save all changes at once
+                if context.hasChanges {
+                    try context.save()
+                }
+
+                print("✅ Questions import completed: \(totalImported) total questions")
                 self.loadingState = .loaded
             } catch {
                 print("❌ Import failed: \(error)")

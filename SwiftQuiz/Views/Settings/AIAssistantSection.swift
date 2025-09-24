@@ -7,6 +7,65 @@
 
 import SwiftUI
 
+struct APIKeyInputView: View {
+    let provider: String
+    let placeholder: String
+    @Binding var apiKey: String
+
+    @State private var isSecureEntry = true
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("\(self.provider) API Key")
+                    .font(.caption)
+                    .fontWeight(.medium)
+                Spacer()
+                Button(action: { self.isSecureEntry.toggle() }, label: {
+                    Image(systemName: self.isSecureEntry ? "eye.slash" : "eye")
+                        .foregroundColor(.secondary)
+                })
+                .buttonStyle(.plain)
+            }
+
+            HStack {
+                Group {
+                    if self.isSecureEntry {
+                        SecureField(self.placeholder, text: self.$apiKey)
+                    } else {
+                        TextField(self.placeholder, text: self.$apiKey)
+                    }
+                }
+                .textFieldStyle(.roundedBorder)
+                .font(.caption)
+
+                if !self.apiKey.isEmpty {
+                    Button("Clear") {
+                        self.apiKey = ""
+                    }
+                    .font(.caption)
+                    .foregroundColor(.red)
+                }
+            }
+
+            if self.apiKey.isEmpty {
+                Text("Enter your \(self.provider) API key to enable AI-powered feedback")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            } else {
+                HStack {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                    Text("API key saved securely in Keychain")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
 struct AIAssistantSection: View {
     @EnvironmentObject private var settingsService: SettingsService
     @EnvironmentObject private var aiService: AIService
@@ -57,11 +116,25 @@ struct AIAssistantSection: View {
             .font(.caption)
 
             if self.settingsService.aiProvider == .claude {
-                ClaudeAPIKeyView()
+                APIKeyInputView(
+                    provider: "Claude",
+                    placeholder: "sk-ant-api...",
+                    apiKey: Binding(
+                        get: { self.settingsService.claudeAPIKey },
+                        set: { self.settingsService.claudeAPIKey = $0 }
+                    )
+                )
             }
 
             if self.settingsService.aiProvider == .openai {
-                OpenAIAPIKeyView()
+                APIKeyInputView(
+                    provider: "OpenAI",
+                    placeholder: "sk-proj-...",
+                    apiKey: Binding(
+                        get: { self.settingsService.openAIAPIKey },
+                        set: { self.settingsService.openAIAPIKey = $0 }
+                    )
+                )
             }
 
             if self.settingsService.aiProvider == .disabled {
@@ -117,14 +190,7 @@ struct AIAssistantSection: View {
         self.testResult = ""
 
         Task {
-            let result = switch self.settingsService.aiProvider {
-            case .claude:
-                await self.settingsService.testClaudeAuthentication()
-            case .openai:
-                await self.settingsService.testOpenAIAuthentication()
-            case .disabled:
-                "❌ No AI provider selected"
-            }
+            let result = await self.settingsService.testCurrentAPIAuthentication()
 
             await MainActor.run {
                 self.testResult = result

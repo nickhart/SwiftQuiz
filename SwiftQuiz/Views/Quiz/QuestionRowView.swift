@@ -24,7 +24,7 @@ struct QuestionRowView: View {
             // Header with category and status
             HStack {
                 if let category = question.category {
-                    Text(category.uppercased())
+                    Text(category.name?.uppercased() ?? "UNKNOWN")
                         .font(.caption2)
                         .fontWeight(.medium)
                         .foregroundColor(.blue)

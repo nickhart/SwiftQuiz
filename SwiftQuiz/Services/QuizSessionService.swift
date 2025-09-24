@@ -30,18 +30,15 @@ class QuizSessionService: ObservableObject {
     private let context: NSManagedObjectContext
     private let aiService: AIService
     private let settingsService: SettingsService
-    private let dailyRegimenService: DailyRegimenService
 
     @Published var currentSession: QuizSession?
     @Published var lastEvaluationResult: QuizEvaluationResult?
     @Published var isEvaluating = false
 
-    init(context: NSManagedObjectContext, aiService: AIService, settingsService: SettingsService,
-         dailyRegimenService: DailyRegimenService) {
+    init(context: NSManagedObjectContext, aiService: AIService, settingsService: SettingsService) {
         self.context = context
         self.aiService = aiService
         self.settingsService = settingsService
-        self.dailyRegimenService = dailyRegimenService
     }
 
     func startQuizSession(config: QuizSessionConfig = QuizSessionConfig()) throws -> QuizSession {
@@ -92,9 +89,9 @@ class QuizSessionService: ObservableObject {
             Array(self.settingsService.enabledCategories)
         }
 
-        // Apply category filter using the new category field
+        // Apply category filter using the new category relationship
         if !categoriesToUse.isEmpty {
-            request.predicate = NSPredicate(format: "category IN %@", categoriesToUse)
+            request.predicate = NSPredicate(format: "category.name IN %@", categoriesToUse)
             print("🎯 Quiz: Selecting questions from categories: \(categoriesToUse)")
         } else {
             print("⚠️ Quiz: No categories enabled - will select from all questions")
@@ -109,16 +106,13 @@ class QuizSessionService: ObservableObject {
             let allQuestionsRequest: NSFetchRequest<Question> = Question.fetchRequest()
             let totalQuestions = try context.fetch(allQuestionsRequest)
             print("🔍 DEBUG: Total questions in database: \(totalQuestions.count)")
-            let categoryCounts = Dictionary(grouping: totalQuestions, by: { $0.category ?? "nil" })
+            let categoryCounts = Dictionary(grouping: totalQuestions, by: { $0.category?.name ?? "nil" })
                 .mapValues { $0.count }
             print("🔍 DEBUG: Questions by category: \(categoryCounts)")
         }
 
         // Filter to available questions (not answered recently or answered incorrectly)
-        let availableQuestions = allQuestions.filter { question in
-            guard let userAnswer = question.userAnswer else { return true }
-            return userAnswer.shouldRetry(thresholdHours: 48)
-        }
+        let availableQuestions = try getAvailableQuestions(from: allQuestions, thresholdHours: 48)
 
         // If we don't have enough available questions, include some recently answered ones
         let questionsToUse: [Question] = if availableQuestions.count >= config.questionCount {
@@ -148,18 +142,11 @@ class QuizSessionService: ObservableObject {
 
             // Save individual results to Core Data
             await self.saveSessionResults(session: session, evaluation: result)
-
-            // Record progress in daily regimen
-            self.dailyRegimenService.recordProgress(from: session, evaluation: result)
-
         } catch {
             print("❌ Failed to evaluate quiz session: \(error)")
             // Create a basic evaluation result as fallback
             let fallbackResult = self.createFallbackEvaluation(for: session)
             self.lastEvaluationResult = fallbackResult
-
-            // Still record progress for daily regimen
-            self.dailyRegimenService.recordProgress(from: session, evaluation: fallbackResult)
         }
 
         self.isEvaluating = false
@@ -184,7 +171,6 @@ class QuizSessionService: ObservableObject {
 
             userAnswer.answer = answer.answer
             userAnswer.timestamp = answer.timestamp
-            userAnswer.interactionTypeEnum = answer.isSkipped ? .skipped : .answered
             userAnswer.isCorrect = questionResult?.isCorrect ?? false
         }
 
@@ -224,12 +210,6 @@ class QuizSessionService: ObservableObject {
             )
         }
 
-        // Calculate category performance
-        let categoryPerformance = self.calculateCategoryPerformance(
-            session: session,
-            individualResults: individualResults
-        )
-
         return QuizEvaluationResult(
             sessionId: session.id,
             overallScore: overallScore,
@@ -243,37 +223,51 @@ class QuizSessionService: ObservableObject {
             areasForImprovement: [],
             evaluationTimestamp: Date(),
             categoriesInSession: session.categoriesInSession,
-            categoryPerformance: categoryPerformance
         )
     }
 
-    private func calculateCategoryPerformance(session: QuizSession,
-                                              individualResults: [QuestionEvaluationResult])
-        -> [String: CategoryPerformance] {
-        var categoryStats: [String: (total: Int, correct: Int)] = [:]
+    /// Get available questions using a fetch request instead of filtering in memory
+    private func getAvailableQuestions(from allQuestions: [Question],
+                                       thresholdHours: TimeInterval) throws -> [Question] {
+        let thresholdDate = Date().addingTimeInterval(-thresholdHours * 3600) // Convert hours to seconds
 
-        for (index, question) in session.questions.enumerated() {
-            let category = question.category ?? "Unknown"
-            let isCorrect = index < individualResults.count ? individualResults[index].isCorrect : false
+        // Create fetch request for questions that should be retried
+        let request: NSFetchRequest<Question> = Question.fetchRequest()
 
-            let current = categoryStats[category, default: (total: 0, correct: 0)]
-            categoryStats[category] = (
-                total: current.total + 1,
-                correct: current.correct + (isCorrect ? 1 : 0)
-            )
+        // Build predicate: questions with no answer OR answered incorrectly/partially OR answered before threshold
+        let noAnswerPredicate = NSPredicate(format: "userAnswer == nil")
+        let incorrectAnswerPredicate = NSPredicate(format: "userAnswer.isCorrect == false")
+        let partialAnswerPredicate = NSPredicate(format: "userAnswer.isPartial == true")
+        let oldAnswerPredicate = NSPredicate(format: "userAnswer.timestamp < %@", thresholdDate as NSDate)
+
+        // Combine predicates with OR logic
+        let availablePredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [
+            noAnswerPredicate,
+            incorrectAnswerPredicate,
+            partialAnswerPredicate,
+            oldAnswerPredicate,
+        ])
+
+        // Only include questions from our current set
+        let questionIds = allQuestions.compactMap(\.id)
+        let inSetPredicate = NSPredicate(format: "id IN %@", questionIds)
+
+        // Combine with AND logic
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+            availablePredicate,
+            inSetPredicate,
+        ])
+
+        do {
+            let fetchedQuestions = try self.context.fetch(request)
+            print("🔍 DEBUG: Fetched \(fetchedQuestions.count) available questions out of \(allQuestions.count) total")
+            return fetchedQuestions
+        } catch {
+            print("❌ Failed to fetch available questions: \(error)")
+            // Fallback to filtering in memory
+            return allQuestions.filter { question in
+                question.shouldRetry(thresholdHours: thresholdHours)
+            }
         }
-
-        var performance: [String: CategoryPerformance] = [:]
-        for (category, stats) in categoryStats {
-            let score = stats.total > 0 ? Double(stats.correct) / Double(stats.total) : 0.0
-            performance[category] = CategoryPerformance(
-                category: category,
-                totalQuestions: stats.total,
-                correctAnswers: stats.correct,
-                score: score
-            )
-        }
-
-        return performance
     }
 }

@@ -16,22 +16,17 @@ final class SettingsService: ObservableObject {
     // MARK: - Published Properties
 
     @Published var aiProvider: AIProvider = .disabled
-    @Published var claudeAPIKey: String = ""
-    @Published var openAIAPIKey: String = ""
+    @Published var selectedAPIKey: APIKey?
     @Published var isCloudKitSyncing: Bool = false
     @Published var enabledCategories: Set<String> = ["Swift"]
 
     // MARK: - Private Properties
 
     private let persistenceController: PersistenceController
-    private let keychain = KeychainService.shared
+    private let apiKeyService = APIKeyService.shared
     private let userDefaults = UserDefaults.standard
-    private var settings: Settings?
+    private var settings: UserSettings?
     private var cancellables = Set<AnyCancellable>()
-
-    // MARK: - Migration Keys
-
-    private let migrationKey = "settings_migrated_to_coredata"
 
     private init(persistenceController: PersistenceController = .shared) {
         self.persistenceController = persistenceController
@@ -39,94 +34,160 @@ final class SettingsService: ObservableObject {
         // Load settings immediately
         self.loadSettings()
 
-        // Migrate from UserDefaults if needed
-        self.migrateFromUserDefaults()
-
         // Set up CoreData change notifications
         self.setupCoreDataNotifications()
     }
 
     // MARK: - Public Methods
 
-    /// Update the AI provider
-    func updateProvider(_ provider: AIProvider) {
-        print("⚙️ Settings: Updating AI provider to: \(provider)")
-        self.aiProvider = provider
+    /// Update the selected API key
+    func updateSelectedAPIKey(_ apiKey: APIKey?) {
+        print("⚙️ Settings: Updating selected API key to: \(apiKey?.name ?? "None")")
+        self.selectedAPIKey = apiKey
 
         guard let settings else {
             print("❌ Settings: No settings entity available")
             return
         }
 
-        settings.aiProviderType = provider
+        settings.selectedAIProvider = apiKey?.name
+        settings.touch()
         self.saveContext()
     }
 
-    /// Update Claude API key
+    /// Create or update an API key
+    func createOrUpdateAPIKey(name: String, key: String) throws {
+        let cleanedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
+        print("⚙️ Settings: Creating/updating API key for \(name) (length: \(cleanedKey.count))")
+
+        if let existingKey = apiKeyService.getAPIKey(named: name) {
+            try self.apiKeyService.updateAPIKey(existingKey, newKey: cleanedKey)
+        } else {
+            _ = try self.apiKeyService.createAPIKey(name: name, key: cleanedKey)
+        }
+    }
+
+    /// Get all available API keys
+    var availableAPIKeys: [APIKey] {
+        self.apiKeyService.getAllAPIKeys()
+    }
+
+    /// Get the current API key value for the selected provider
+    func getCurrentAPIKey() -> String? {
+        guard let selectedAPIKey else { return nil }
+
+        do {
+            return try self.apiKeyService.getAPIKey(for: selectedAPIKey)
+        } catch {
+            print("❌ Settings: Failed to get API key: \(error)")
+            return nil
+        }
+    }
+
+    // MARK: - Legacy Compatibility Methods
+
+    /// Legacy method for updating AI provider (compatibility)
+    func updateProvider(_ provider: AIProvider) {
+        // For now, just store the provider type but we'll need to rework this
+        // when we have proper provider selection UI
+        print("⚠️ updateProvider called with \(provider) - needs implementation")
+    }
+
+    /// Legacy method for updating Claude API key (compatibility)
     func updateClaudeAPIKey(_ key: String) {
-        let cleanedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
-        print("⚙️ Settings: Updating Claude API key (length: \(cleanedKey.count))")
-
-        self.claudeAPIKey = cleanedKey
-
-        guard let settings else {
-            print("❌ Settings: No settings entity available")
-            return
-        }
-
-        self.updateAPIKeyInKeychain(cleanedKey, currentRef: settings.claudeAPIKeyRef, provider: "claude") { newRef in
-            settings.claudeAPIKeyRef = newRef
-            settings.touch()
-            self.saveContext()
+        do {
+            try self.createOrUpdateAPIKey(name: "Claude", key: key)
+            // Set as selected provider if we don't have one
+            if self.selectedAPIKey == nil {
+                let claudeKey = self.apiKeyService.getAPIKey(named: "Claude")
+                self.updateSelectedAPIKey(claudeKey)
+            }
+        } catch {
+            print("❌ Failed to update Claude API key: \(error)")
         }
     }
 
-    /// Update OpenAI API key
+    /// Legacy method for updating OpenAI API key (compatibility)
     func updateOpenAIAPIKey(_ key: String) {
-        let cleanedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
-        print("⚙️ Settings: Updating OpenAI API key (length: \(cleanedKey.count))")
-
-        self.openAIAPIKey = cleanedKey
-
-        guard let settings else {
-            print("❌ Settings: No settings entity available")
-            return
-        }
-
-        self.updateAPIKeyInKeychain(cleanedKey, currentRef: settings.openAIAPIKeyRef, provider: "openai") { newRef in
-            settings.openAIAPIKeyRef = newRef
-            settings.touch()
-            self.saveContext()
+        do {
+            try self.createOrUpdateAPIKey(name: "OpenAI", key: key)
+            // Set as selected provider if we don't have one
+            if self.selectedAPIKey == nil {
+                let openAIKey = self.apiKeyService.getAPIKey(named: "OpenAI")
+                self.updateSelectedAPIKey(openAIKey)
+            }
+        } catch {
+            print("❌ Failed to update OpenAI API key: \(error)")
         }
     }
 
-    /// Test Claude API authentication
-    func testClaudeAuthentication() async -> String {
-        guard !self.claudeAPIKey.isEmpty else {
-            return "❌ No Claude API key configured"
+    /// Legacy property for Claude API key (compatibility)
+    var claudeAPIKey: String {
+        get {
+            guard let claudeKey = apiKeyService.getAPIKey(named: "Claude") else { return "" }
+            do {
+                return try self.apiKeyService.getAPIKey(for: claudeKey)
+            } catch {
+                return ""
+            }
+        }
+        set {
+            self.updateClaudeAPIKey(newValue)
+        }
+    }
+
+    /// Legacy property for OpenAI API key (compatibility)
+    var openAIAPIKey: String {
+        get {
+            guard let openAIKey = apiKeyService.getAPIKey(named: "OpenAI") else { return "" }
+            do {
+                return try self.apiKeyService.getAPIKey(for: openAIKey)
+            } catch {
+                return ""
+            }
+        }
+        set {
+            self.updateOpenAIAPIKey(newValue)
+        }
+    }
+
+    /// Test API authentication for the selected provider
+    func testCurrentAPIAuthentication() async -> String {
+        guard let selectedAPIKey else {
+            return "❌ No API key selected"
         }
 
+        guard let apiKey = getCurrentAPIKey() else {
+            return "❌ Failed to retrieve API key"
+        }
+
+        switch selectedAPIKey.name?.lowercased() ?? "" {
+        case "claude", "anthropic":
+            return await self.testClaudeAuthentication(apiKey: apiKey)
+        case "openai":
+            return await self.testOpenAIAuthentication(apiKey: apiKey)
+        default:
+            return "⚠️ Unknown provider: \(selectedAPIKey.name ?? "nil")"
+        }
+    }
+
+    func testClaudeAuthentication(apiKey: String) async -> String {
         // This would typically make an API call
         // For now, just validate the key format
-        if self.claudeAPIKey.hasPrefix("sk-ant-"), self.claudeAPIKey.count > 50 {
-            return "✅ API key format appears valid"
+        if apiKey.hasPrefix("sk-ant-"), apiKey.count > 50 {
+            "✅ API key format appears valid"
         } else {
-            return "⚠️ API key format may be invalid"
+            "⚠️ API key format may be invalid"
         }
     }
 
-    /// Test OpenAI API authentication
-    func testOpenAIAuthentication() async -> String {
-        guard !self.openAIAPIKey.isEmpty else {
-            return "❌ No OpenAI API key configured"
-        }
-
+    func testOpenAIAuthentication(apiKey: String) async -> String {
         // Test with a simple API call
         do {
             var request = URLRequest(url: URL(string: "https://api.openai.com/v1/models")!)
             request.httpMethod = "GET"
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.addValue("Bearer \(self.openAIAPIKey)", forHTTPHeaderField: "Authorization")
+            request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
 
             let (_, response) = try await URLSession.shared.data(for: request)
 
@@ -161,7 +222,7 @@ final class SettingsService: ObservableObject {
         } else {
             self.enabledCategories.remove(category)
         }
-        self.saveCategoriesToUserDefaults()
+        self.saveCategoriesToSettings()
     }
 
     /// Check if a category is enabled
@@ -177,6 +238,7 @@ final class SettingsService: ObservableObject {
             }
             set {
                 self.settings?.isDebugModeEnabled = newValue
+                self.settings?.touch()
                 self.saveContext()
             }
         }
@@ -204,72 +266,31 @@ final class SettingsService: ObservableObject {
         let context = self.persistenceController.container.viewContext
 
         // Fetch or create settings
-        settings = Settings.fetchOrCreate(context: context)
+        settings = UserSettings.fetchOrCreate(context: context)
 
         guard let settings else {
             print("❌ Settings: Failed to load or create settings")
             return
         }
 
-        // Load provider
-        self.aiProvider = settings.aiProviderType
-
-        // Load API keys from Keychain
-        if let claudeRef = settings.claudeAPIKeyRef {
-            self.claudeAPIKey = self.loadAPIKeyFromKeychain(reference: claudeRef) ?? ""
+        // Load selected API provider
+        if let selectedProviderID = settings.selectedAIProvider {
+            self.selectedAPIKey = self.apiKeyService.getAPIKey(named: selectedProviderID)
         }
 
-        if let openAIRef = settings.openAIAPIKeyRef {
-            self.openAIAPIKey = self.loadAPIKeyFromKeychain(reference: openAIRef) ?? ""
+        // Load categories
+        if let enabledCats = settings.enabledCategories {
+            self.enabledCategories = Set(enabledCats)
+        } else {
+            self.enabledCategories = ["Swift"]
         }
-
-        // Load categories from UserDefaults
-        self.loadCategoriesFromUserDefaults()
 
         print(
             """
-            ⚙️ Settings: Loaded settings - Provider: \(self.aiProvider), \
-            Claude key: \(!self.claudeAPIKey.isEmpty), OpenAI key: \(!self.openAIAPIKey.isEmpty), \
+            ⚙️ Settings: Loaded settings - Selected API Key: \(self.selectedAPIKey?.name ?? "None"), \
             Categories: \(self.enabledCategories)
             """
         )
-    }
-
-    private func loadAPIKeyFromKeychain(reference: String) -> String? {
-        do {
-            return try self.keychain.retrieveAPIKey(reference: reference)
-        } catch KeychainService.KeychainError.itemNotFound {
-            print("⚠️ Settings: API key not found in Keychain for reference: \(reference)")
-            return nil
-        } catch {
-            print("❌ Settings: Failed to load API key from Keychain: \(error)")
-            return nil
-        }
-    }
-
-    private func updateAPIKeyInKeychain(_ key: String, currentRef: String?, provider: String,
-                                        completion: (String?) -> Void) {
-        // Delete old key if exists
-        if let currentRef {
-            do {
-                try self.keychain.deleteAPIKey(reference: currentRef)
-            } catch {
-                print("⚠️ Settings: Failed to delete old API key: \(error)")
-            }
-        }
-
-        // Store new key if not empty
-        if !key.isEmpty {
-            do {
-                let newRef = try keychain.storeAPIKey(key, provider: provider)
-                completion(newRef)
-            } catch {
-                print("❌ Settings: Failed to store API key in Keychain: \(error)")
-                completion(currentRef) // Keep old reference on failure
-            }
-        } else {
-            completion(nil) // No key to store
-        }
     }
 
     private func saveContext() {
@@ -302,50 +323,16 @@ final class SettingsService: ObservableObject {
             .store(in: &self.cancellables)
     }
 
-    private func migrateFromUserDefaults() {
-        guard !self.userDefaults.bool(forKey: self.migrationKey) else {
-            print("⚙️ Settings: Already migrated from UserDefaults")
-            return
-        }
-
-        print("⚙️ Settings: Starting migration from UserDefaults...")
-
-        // Migrate AI provider
-        if let providerString = userDefaults.string(forKey: "ai_provider"),
-           let provider = AIProvider(rawValue: providerString) {
-            self.updateProvider(provider)
-        }
-
-        // Migrate Claude API key
-        if let claudeKey = userDefaults.string(forKey: "claude_api_key"), !claudeKey.isEmpty {
-            self.updateClaudeAPIKey(claudeKey)
-        }
-
-        // Migrate OpenAI API key
-        if let openAIKey = userDefaults.string(forKey: "openai_api_key"), !openAIKey.isEmpty {
-            self.updateOpenAIAPIKey(openAIKey)
-        }
-
-        // Mark migration as completed
-        self.userDefaults.set(true, forKey: self.migrationKey)
-        self.userDefaults.synchronize()
-
-        // Clean up old keys from UserDefaults
-        self.userDefaults.removeObject(forKey: "ai_provider")
-        self.userDefaults.removeObject(forKey: "claude_api_key")
-        self.userDefaults.removeObject(forKey: "openai_api_key")
-
-        print("✅ Settings: Migration from UserDefaults completed")
-    }
-
     private func loadCategoriesFromUserDefaults() {
         let categoriesArray = self.userDefaults.stringArray(forKey: "enabled_categories") ?? ["Swift"]
         self.enabledCategories = Set(categoriesArray)
     }
 
-    private func saveCategoriesToUserDefaults() {
-        let categoriesArray = Array(enabledCategories)
-        self.userDefaults.set(categoriesArray, forKey: "enabled_categories")
-        self.userDefaults.synchronize()
+    private func saveCategoriesToSettings() {
+        guard let settings else { return }
+
+        settings.enabledCategories = Array(self.enabledCategories)
+        settings.touch()
+        self.saveContext()
     }
 }
